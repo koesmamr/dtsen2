@@ -146,6 +146,8 @@
                                 <div class="grid grid-cols-2 gap-3 mt-3">
                                     <div><label class="text-[10px] text-slate-800 font-bold ml-1">RT</label><input type="number" name="rtKTP" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
                                     <div><label class="text-[10px] text-slate-800 font-bold ml-1">RW</label><input type="number" name="rwKTP" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">Provinsi</label><input type="text" name="provinsiKTP" value="JAWA TIMUR" readonly class="w-full glass-input rounded-lg px-3 py-2 text-xs opacity-80 cursor-not-allowed"></div>
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kabupaten</label><input type="text" name="kabupatenKTP" value="TUBAN" readonly class="w-full glass-input rounded-lg px-3 py-2 text-xs opacity-80 cursor-not-allowed"></div>
                                     <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                     <div><label class="text-[10px] text-slate-800 font-bold ml-1">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                 </div>
@@ -183,7 +185,11 @@
                                 <label class="flex items-center gap-2 text-xs text-slate-900 font-bold cursor-pointer mb-3 bg-white/50 p-2 rounded-lg border border-white/50 inline-flex shadow-sm"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox" onchange="toggleDomisili()"> SAMA DENGAN ALAMAT KTP</label>
                                 <div id="boxDomisili" class="transition-all mt-2 space-y-3">
                                     <textarea name="alamatDom" rows="2" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="Nama Jalan Domisili..."></textarea>
-                                    <div class="grid grid-cols-2 gap-3">
+                                    <div class="grid grid-cols-2 gap-3 mt-3">
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">RT</label><input type="number" name="rtDom" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">RW</label><input type="number" name="rwDom" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">Provinsi</label><input type="text" name="provinsiDom" value="JAWA TIMUR" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kabupaten</label><input type="text" name="kabupatenDom" value="TUBAN" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
                                         <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                         <div><label class="text-[10px] text-slate-800 font-bold ml-1">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                     </div>
@@ -1243,7 +1249,8 @@
             pdfContainer.style.padding = '15px'; pdfContainer.style.fontFamily = 'Arial, sans-serif';
             pdfContainer.style.fontSize = '10px'; pdfContainer.style.color = '#000'; pdfContainer.style.backgroundColor = '#fff';
 
-            const alamatKtp = `${d.alamatKTP||'-'} RT ${d.rtKTP||'-'}/${d.rwKTP||'-'} Kec.${d.kecamatan||'-'} Des.${d.desa||'-'}`;
+            const alamatKtp = `${d.alamatKTP||'-'} RT ${d.rtKTP||'-'}/${d.rwKTP||'-'} Kec.${d.kecamatan||'-'} Des.${d.desa||'-'} Kab.${d.kabupatenKTP||'TUBAN'} Prov.${d.provinsiKTP||'JAWA TIMUR'}`;
+            const alamatDom = d.samaDenganKtp ? "SAMA DENGAN KTP" : `${d.alamatDom||'-'} RT ${d.rtDom||'-'}/${d.rwDom||'-'} Kec.${d.kecamatanDom||'-'} Des.${d.desaDom||'-'} Kab.${d.kabupatenDom||'TUBAN'} Prov.${d.provinsiDom||'JAWA TIMUR'}`;
             
             const renderImage = (imgSrc) => {
                 if(!imgSrc) return `<div style="width:100px;height:100px;border:1px dashed #ccc;text-align:center;line-height:100px;font-size:9px;">TIDAK ADA</div>`;
@@ -1278,6 +1285,7 @@
                     <tr><td style="width:25%; padding:4px; border:1px solid #ccc;"><b>No. KK</b></td><td style="padding:4px; border:1px solid #ccc;">${d.nomorKK||'-'}</td></tr>
                     <tr><td style="padding:4px; border:1px solid #ccc;"><b>Nama Kepala Kel.</b></td><td style="padding:4px; border:1px solid #ccc;">${d.namaKK?d.namaKK.toUpperCase():'-'}</td></tr>
                     <tr><td style="padding:4px; border:1px solid #ccc;"><b>Alamat KTP</b></td><td style="padding:4px; border:1px solid #ccc;">${alamatKtp}</td></tr>
+                    <tr><td style="padding:4px; border:1px solid #ccc;"><b>Alamat Domisili</b></td><td style="padding:4px; border:1px solid #ccc;">${alamatDom}</td></tr>
                     <tr><td style="padding:4px; border:1px solid #ccc;"><b>Anggota Keluarga</b></td><td style="padding:4px; border:1px solid #ccc;">${d.jmlAnggota||'0'} Orang</td></tr>
                 </table>
 
