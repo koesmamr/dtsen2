@@ -4,27 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DTSEN (OFFLINE)</title>
-    
-    <!-- Favicon / Logo Web -->
     <link rel="icon" href="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" type="image/png">
-    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
-    <!-- Pustaka Login & Alert -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
-    <!-- Pustaka Generate PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.25rem; height: 1.25rem; }
+        .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.1rem; height: 1.1rem; }
         .section-card { transition: all 0.3s ease; }
+        /* Efek modal overlay */
+        .modal-overlay { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
     </style>
     
     <meta name="theme-color" content="#1d4ed8">
@@ -34,25 +28,15 @@
 <body class="bg-slate-100 text-slate-800 font-sans antialiased pb-20 selection:bg-blue-200">
 
     <!-- HALAMAN LOGIN -->
-    <div id="login-page" class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 to-blue-900 p-4">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl z-10 w-full max-w-sm text-center transform transition-all">
-            
-            <!-- Logo Aplikasi -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 to-blue-900 p-4 z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl z-10 w-full max-w-sm text-center">
             <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" alt="Logo DTSEN" class="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-md">
-            
             <h1 class="text-2xl font-bold mb-1 text-slate-800">DTSEN (OFFLINE)</h1>
             <p class="text-sm mb-6 text-slate-500">Data Tunggal Sosial dan Ekonomi Nasional</p>
-            
             <div class="bg-amber-50 text-amber-800 p-3 rounded-lg text-xs mb-6 text-left border border-amber-200">
                 <i class="fas fa-lock mr-1"></i> Data yang disimpan bersifat pribadi per akun. Silakan login untuk melanjutkan.
             </div>
-
-            <!-- Google Sign-In Button Container -->
-            <div id="g_id_onload"
-                 data-client_id="181120297143-lvpop0ra4o9q6i3g18b74ubsuc8e59fh.apps.googleusercontent.com" 
-                 data-callback="handleCredentialResponse"
-                 data-auto_prompt="false">
-            </div>
+            <div id="g_id_onload" data-client_id="181120297143-lvpop0ra4o9q6i3g18b74ubsuc8e59fh.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
             <div class="flex justify-center mt-4 w-full">
                 <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
             </div>
@@ -61,8 +45,8 @@
 
     <!-- APP CONTAINER -->
     <div id="app-container" class="hidden">
-        <!-- Navbar Sticky -->
-        <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50">
+        <!-- Navbar -->
+        <header class="bg-blue-700 text-white shadow-md sticky top-0 z-40">
             <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <img id="userAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer" onclick="confirmLogout()" title="Klik untuk Logout">
@@ -76,114 +60,366 @@
                         <i class="fas fa-cloud-upload-alt"></i>
                         <span id="queueCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow hidden">0</span>
                     </button>
-                    <div id="statusIndicator" class="flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors">
-                        <i class="fas fa-wifi"></i>
-                    </div>
+                    <div id="statusIndicator" class="flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors"><i class="fas fa-wifi"></i></div>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-3xl mx-auto px-4 py-6">
-            <!-- Notifikasi Auto Save -->
+        <main class="max-w-3xl mx-auto px-3 sm:px-4 py-6">
             <div id="draftNotice" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm flex justify-between items-center shadow-sm">
-                <span><i class="fas fa-info-circle mr-2"></i>Draf isian sebelumnya telah dimuat ulang.</span>
+                <span><i class="fas fa-info-circle mr-2"></i>Draf belum tersimpan dimuat ulang.</span>
                 <button type="button" onclick="clearDraft()" class="text-amber-600 hover:text-amber-800 font-semibold underline">Hapus Draf</button>
             </div>
 
             <form id="sensusForm" class="space-y-6">
-                <!-- SECTION 1: DATA DASAR -->
+                <!-- ============================
+                     BAGIAN I: DATA DASAR
+                ============================= -->
                 <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
-                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">1</div>
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
+                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">1</div>
                         DATA DASAR (Keluarga)
                     </div>
-                    <div class="p-5 space-y-5">
-                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">Titik Koordinat Lokasi Sensus</label>
+                    <div class="p-4 space-y-4">
+                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Titik Koordinat Lokasi Sensus</label>
                             <div class="flex gap-2">
-                                <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded-lg bg-white px-3 py-2 text-sm text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 border">
-                                <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm">
-                                    <i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS
-                                </button>
+                                <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded bg-white px-2 py-1.5 text-xs text-slate-500 border focus:outline-none">
+                                <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm"><i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS</button>
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">1. Nomor KK</label><input type="number" name="nomorKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300" required></div>
-                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label><input type="text" name="namaKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 uppercase" required></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div><label class="block text-xs font-semibold text-slate-700 mb-1">1. Nomor KK</label><input type="number" name="nomorKK" class="w-full border rounded px-3 py-1.5 text-sm border-slate-300" required></div>
+                            <div><label class="block text-xs font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label><input type="text" name="namaKK" class="w-full border rounded px-3 py-1.5 text-sm border-slate-300 uppercase" required></div>
                         </div>
 
-                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">3. Alamat KTP Lengkap</label>
-                            <textarea name="alamatKTP" rows="2" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 text-sm" placeholder="Nama Jalan/Gang/Blok..."></textarea>
+                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                            <label class="block text-xs font-semibold text-slate-700 mb-2">3. Alamat KTP Lengkap</label>
+                            <textarea name="alamatKTP" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs" placeholder="Nama Jalan/Gang/Blok..."></textarea>
                             <div class="grid grid-cols-2 gap-2 mt-2">
-                                <div><label class="text-xs text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
-                                <div><label class="text-xs text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
-                                <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
-                                <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
+                                <div><label class="text-[10px] text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
+                                <div><label class="text-[10px] text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
+                                <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
                             </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-slate-700 mb-2">4. Status Keberadaan Keluarga</label>
-                            <div class="space-y-2">
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="Ditemukan" class="form-radio" required> Ditemukan</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="Pindah/Tidak Bertemu" class="form-radio"> Pindah/Tidak Bertemu</label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">4. Status Keberadaan Keluarga</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="TIDAK ELIGIBLE" class="form-radio"> TIDAK ELIGIBLE</label>
                             </div>
                         </div>
 
                         <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="block text-sm font-semibold text-slate-700">5. Alamat Domisili</label>
-                                <label class="flex items-center gap-2 text-sm text-blue-600 font-medium cursor-pointer"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox" onchange="toggleDomisili()"> Sama dengan KTP</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-xs font-semibold text-slate-700">5. Alamat Domisili</label>
+                                <label class="flex items-center gap-1 text-xs text-blue-600 font-medium cursor-pointer"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox w-3 h-3" onchange="toggleDomisili()"> Sama dgn KTP</label>
                             </div>
-                            <div id="boxDomisili" class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all">
-                                <textarea name="alamatDom" rows="2" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm" placeholder="Nama Jalan Domisili..."></textarea>
+                            <div id="boxDomisili" class="bg-gray-50 p-3 rounded-lg border border-gray-200 transition-all">
+                                <textarea name="alamatDom" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs" placeholder="Nama Jalan Domisili..."></textarea>
                                 <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
-                                    <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                <!-- ============================
+                     BAGIAN II: DATA RUMAH
+                ============================= -->
                 <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
-                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">2</div>
-                        DATA RUMAH & ASET
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
+                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">2</div>
+                        DATA RUMAH & FASILITAS
                     </div>
-                    <div class="p-5 space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-semibold text-slate-700">Jml Anggota</label><input type="number" name="jmlAnggota" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
-                            <div><label class="block text-xs font-semibold text-slate-700">Status Kepemilikan</label><select name="statusRumah" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"><option value="Milik Sendiri">Milik Sendiri</option><option value="Kontrak/Sewa">Kontrak/Sewa</option></select></div>
-                            <div><label class="block text-xs font-semibold text-slate-700">Motor (Unit)</label><input type="number" name="asetMotor" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
-                            <div><label class="block text-xs font-semibold text-slate-700">Sapi (Ekor)</label><input type="number" name="asetSapi" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
+                    <div class="p-4 space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">6. Jml Anggota</label><input type="number" name="jmlAnggota" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" required></div>
+                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">7. Jml KK dlm Rumah</label><input type="number" name="jmlKkDalamRumah" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Berapa KK?"></div>
+                        </div>
+                        <div><label class="block text-[10px] font-bold text-slate-700 uppercase">List NIK/KK Lain dlm Rumah</label><input type="text" name="listNikKkLain" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Pisahkan dengan koma jika ada"></div>
+
+                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-dashed">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">8. Kepemilikan Rumah</label>
+                                <select name="statusRumah" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="MILIK SENDIRI">MILIK SENDIRI</option><option value="KONTRAK/SEWA">KONTRAK/SEWA</option><option value="BEBAS SEWA">BEBAS SEWA</option><option value="DINAS">DINAS</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">9. Luas Lantai (m2)</label><input type="number" name="luasLantai" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">10. Lantai Terluas</label>
+                                <select name="jenisLantai" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="MARMER/GRANIT">MARMER/GRANIT</option><option value="KERAMIK">KERAMIK</option><option value="PARKET/VINIL/KARPET">PARKET/VINIL/KARPET</option><option value="UBIN/TEGEL/TERASO">UBIN/TEGEL/TERASO</option><option value="KAYU/PAPAN">KAYU/PAPAN</option><option value="SEMEN/BATA MERAH">SEMEN/BATA MERAH</option><option value="BAMBU">BAMBU</option><option value="TANAH">TANAH</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">11. Dinding Terluas</label>
+                                <select name="jenisDinding" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="TEMBOK">TEMBOK</option><option value="PLESTERAN/ANYAMAN BAMBU/KAWAT">PLESTERAN/ANYAMAN BAMBU/KAWAT</option><option value="KAYU/PAPAN/GYPSUM">KAYU/PAPAN/GYPSUM</option><option value="ANYAMAN BAMBU">ANYAMAN BAMBU</option><option value="BATANG KAYU">BATANG KAYU</option><option value="BAMBU">BAMBU</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">12. Atap Terluas</label>
+                                <select name="jenisAtap" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="BETON">BETON</option><option value="GENTENG">GENTENG</option><option value="SENG">SENG</option><option value="ASBES">ASBES</option><option value="BAMBU">BAMBU</option><option value="KAYU/SIRAP">KAYU/SIRAP</option><option value="JERAMI/IJUK/RUMBIA">JERAMI/IJUK/RUMBIA</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-dashed">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">13. Sumber Air Utama</label>
+                                <select name="sumberAir" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="AIR KEMASAN BERMERK">AIR KEMASAN BERMERK</option><option value="AIR ISI ULANG">AIR ISI ULANG</option><option value="LEDING/PDAM">LEDING/PDAM</option><option value="SUMUR BOR/POMPA">SUMUR BOR/POMPA</option><option value="SUMUR TERLINDUNG">SUMUR TERLINDUNG</option><option value="SUMUR TAK TERLINDUNG">SUMUR TAK TERLINDUNG</option><option value="MATA AIR TERLINDUNG">MATA AIR TERLINDUNG</option><option value="MATA AIR TAK TERLINDUNG">MATA AIR TAK TERLINDUNG</option><option value="AIR PERMUKAAN">AIR PERMUKAAN (SUNGAI/DANAU)</option><option value="AIR HUJAN">AIR HUJAN</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">14. Bahan Bakar Memasak</label>
+                                <select name="bahanBakar" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
+                                    <option value="">-- Pilih --</option><option value="TIDAK MEMASAK DI RUMAH">TIDAK MEMASAK DI RUMAH</option><option value="LISTRIK">LISTRIK</option><option value="GAS ELPIJI 5,5 KG/BLUE GAZ">GAS ELPIJI 5,5 KG/BLUE GAZ</option><option value="GAS ELPIJI 12 KG">GAS ELPIJI 12 KG</option><option value="GAS ELPIJI 3 KG">GAS ELPIJI 3 KG</option><option value="GAS KOTA/METERAN PGN">GAS KOTA/METERAN PGN</option><option value="BIOGAS">BIOGAS</option><option value="MINYAK TANAH">MINYAK TANAH</option><option value="BRIKET">BRIKET</option><option value="ARANG">ARANG</option><option value="KAYU BAKAR">KAYU BAKAR</option><option value="LAINNYA">LAINNYA</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-dashed">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">15. Akses Sinyal Internet</label>
+                                <select name="aksesTelkom" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"><option value="">-- Pilih --</option><option value="ADA">ADA</option><option value="TIDAK ADA">TIDAK ADA</option></select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase">16. Sumber Penerangan</label>
+                                <select name="sumberPenerangan" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"><option value="">-- Pilih --</option><option value="LISTRIK PLN DENGAN METERAN">LISTRIK PLN DENGAN METERAN</option><option value="LISTRIK PLN TANPA METERAN">LISTRIK PLN TANPA METERAN</option><option value="LISTRIK NON-PLN">LISTRIK NON-PLN</option><option value="BUKAN LISTRIK">BUKAN LISTRIK</option></select>
+                            </div>
+                        </div>
+                        <div><label class="block text-[10px] font-bold text-slate-700 uppercase">ID Pelanggan PLN & Daya (Khusus PLN Meteran)</label><input type="text" name="idPln" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Contoh: 123456789 - 900W"></div>
+
+                        <div class="pt-3 border-t border-dashed">
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-2">FASILITAS SANITASI (17, 18, 19)</label>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-[10px] text-slate-500">17. Fasilitas BAB</label>
+                                    <select name="fasilitasBAB" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI">ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI</option><option value="ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU">ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU</option><option value="ADA, DI MCK KOMUNAL">ADA, DI MCK KOMUNAL</option><option value="ADA, DI MCK UMUM">ADA, DI MCK UMUM</option><option value="ADA, TAPI TIDAK MENGGUNAKAN">ADA, TAPI TIDAK MENGGUNAKAN</option><option value="TIDAK ADA FASILITAS">TIDAK ADA FASILITAS</option></select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label class="text-[10px] text-slate-500">18. Jenis Kloset</label>
+                                        <select name="jenisKloset" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="LEHER ANGSA">LEHER ANGSA</option><option value="PLENGSENGAN DENGAN TUTUP">PLENGSENGAN DGN TUTUP</option><option value="PLENGSENGAN TANPA TUTUP">PLENGSENGAN TANPA TUTUP</option><option value="CEMPLUNG/CUBLUK">CEMPLUNG/CUBLUK</option></select>
+                                    </div>
+                                    <div>
+                                        <label class="text-[10px] text-slate-500">19. Buang Akhir Tinja</label>
+                                        <select name="pembuanganTinja" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="TANGKI SEPTIK">TANGKI SEPTIK</option><option value="IPAL">IPAL</option><option value="KOLAM/SAWAH/SUNGAI/DANAU/LAUT">KOLAM/SAWAH/SUNGAI</option><option value="LUBANG TANAH">LUBANG TANAH</option><option value="PANTAI/TANAH LAPANG/KEBUN">PANTAI/TANAH LAPANG</option><option value="TANPA TANGKI SEPTIK">TANPA TANGKI SEPTIK</option><option value="LAINNYA">LAINNYA</option></select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
+                <!-- ============================
+                     BAGIAN III: ASET 
+                ============================= -->
                 <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
-                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">3</div>
-                        FOTO DOKUMENTASI
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
+                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">3</div>
+                        KEPEMILIKAN ASET
                     </div>
-                    <div class="p-5 space-y-4 grid grid-cols-2 gap-4">
-                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
-                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
-                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
-                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
+                    <div class="p-4 space-y-4">
+                        <p class="text-[10px] text-slate-500 italic">Isi dengan angka (0 jika tidak punya).</p>
+                        
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">20. ASET BERGERAK (UNIT)</label>
+                            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                <div><label class="text-[9px] text-slate-500">Gas >=5.5kg</label><input type="number" name="asetGas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Kulkas</label><input type="number" name="asetKulkas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">AC</label><input type="number" name="asetAC" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Pemanas Air</label><input type="number" name="asetPemanas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Telp Rumah</label><input type="number" name="asetTelp" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">TV >=30"</label><input type="number" name="asetTV" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Emas (Gram)</label><input type="number" name="asetEmas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Komputer/Lap</label><input type="number" name="asetKomputer" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Sepeda</label><input type="number" name="asetSepeda" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Motor</label><input type="number" name="asetMotor" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Mobil</label><input type="number" name="asetMobil" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Smartphone</label><input type="number" name="asetHP" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Perahu</label><input type="number" name="asetPerahu" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Kapal</label><input type="number" name="asetKapal" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Alat Berat</label><input type="number" name="asetAlatBerat" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <div><label class="text-[9px] text-slate-500">Total Harga Jual Motor (Rp)</label><input type="number" name="hargaMotor" class="w-full border rounded px-2 py-1 text-xs mt-1"></div>
+                                <div><label class="text-[9px] text-slate-500">Total Harga Jual Mobil (Rp)</label><input type="number" name="hargaMobil" class="w-full border rounded px-2 py-1 text-xs mt-1"></div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-dashed">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">21. ASET TAK BERGERAK</label>
+                                <div><label class="text-[9px] text-slate-500">Luas Lahan Lain (m2)</label><input type="number" name="luasLahan" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                <div class="mt-1"><label class="text-[9px] text-slate-500">Jml Rumah/Bangunan Lain</label><input type="number" name="jmlBangunanLain" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">22. TERNAK (EKOR)</label>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <div><label class="text-[9px] text-slate-500">Sapi</label><input type="number" name="asetSapi" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kerbau</label><input type="number" name="asetKerbau" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kuda</label><input type="number" name="asetKuda" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-500">Babi</label><input type="number" name="asetBabi" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                    <div class="col-span-2"><label class="text-[9px] text-slate-500">Kambing/Domba</label><input type="number" name="asetKambing" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
-                <div class="pt-4 pb-10">
+                <!-- ============================
+                     BAGIAN IV: DATA INDIVIDU
+                ============================= -->
+                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-indigo-50 border-b border-indigo-200 px-4 py-3 font-bold text-indigo-800 flex justify-between items-center text-sm sm:text-base">
+                        <div class="flex items-center">
+                            <div class="bg-indigo-200 text-indigo-800 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">4</div>
+                            DATA INDIVIDU (ANGGOTA KELUARGA)
+                        </div>
+                        <button type="button" onclick="openIndividuModal()" class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs hover:bg-indigo-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>
+                    </div>
+                    <div class="p-4 bg-indigo-50/30 min-h-[100px]">
+                        <div id="individuListContainer" class="space-y-3">
+                            <p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-4">Belum ada data anggota keluarga. Klik 'Tambah' untuk mengisi detail (Q1-Q37).</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================
+                     BAGIAN V: FOTO DOKUMENTASI
+                ============================= -->
+                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
+                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">5</div>
+                        FOTO DOKUMENTASI
+                    </div>
+                    <div class="p-4 grid grid-cols-2 gap-4">
+                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
+                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
+                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
+                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
+                    </div>
+                </section>
+
+                <div class="pt-2 pb-10">
                     <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 active:scale-95 transition-transform flex justify-center items-center gap-2">
-                        <i class="fas fa-save"></i> Simpan Data Sensus
+                        <i class="fas fa-save"></i> Simpan Data Sensus Lengkap
                     </button>
-                    <p class="text-center text-xs text-slate-500 mt-3">Data akan diantrekan, dan dikirim otomatis saat ada internet.</p>
                 </div>
             </form>
         </main>
+    </div>
+
+    <!-- ==========================================
+         MODAL FORM DATA INDIVIDU (Q1 - Q37)
+    =========================================== -->
+    <div id="modalIndividu" class="fixed inset-0 modal-overlay z-[150] hidden items-center justify-center p-2 sm:p-4">
+        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl flex flex-col h-[95vh] sm:h-[85vh]">
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-indigo-600 text-white rounded-t-xl">
+                <h2 class="font-bold text-sm sm:text-base"><i class="fas fa-user-plus mr-2"></i>Formulir Data Individu</h2>
+                <button type="button" onclick="closeIndividuModal()" class="w-8 h-8 rounded-full bg-indigo-500 hover:bg-indigo-400"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-4 bg-slate-50">
+                <form id="formIndividuSingle" class="space-y-4">
+                    <!-- Q1 - Q7: Identitas -->
+                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">IDENTITAS INDIVIDU</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">1. NIK</label><input type="number" id="ind_nik" class="w-full border rounded px-2 py-1 text-xs"></div>
+                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">2. Nama Lengkap</label><input type="text" id="ind_nama" class="w-full border rounded px-2 py-1 text-xs uppercase"></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">3. Jenis Kelamin</label><select id="ind_jk" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="LAKI-LAKI">LAKI-LAKI</option><option value="PEREMPUAN">PEREMPUAN</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">4. Keberadaan</label><select id="ind_keberadaan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="DITEMUKAN">DITEMUKAN</option><option value="PINDAH/TIDAK DITEMUKAN">PINDAH/TDK DITEMUKAN</option><option value="MENINGGAL">MENINGGAL</option><option value="MENOLAK SURVEY">MENOLAK SURVEY</option><option value="DALAM LEMBAGA">DALAM LEMBAGA</option><option value="TIDAK ELIGIBLE">TIDAK ELIGIBLE</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">5. Hubungan Keluarga</label><select id="ind_hubungan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="KEPALA KELUARGA">KEPALA KELUARGA</option><option value="ISTRI">ISTRI</option><option value="SUAMI">SUAMI</option><option value="ANAK">ANAK</option><option value="MENANTU">MENANTU</option><option value="CUCU">CUCU</option><option value="ORANG TUA">ORANG TUA</option><option value="MERTUA">MERTUA</option><option value="FAMILI LAIN">FAMILI LAIN</option><option value="PEMBANTU">PEMBANTU</option><option value="LAINNYA">LAINNYA</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">6. Tanggal Lahir</label><input type="date" id="ind_tglLahir" class="w-full border rounded px-2 py-1 text-xs"></div>
+                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">7. Status Kawin</label><select id="ind_statusKawin" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="BELUM KAWIN">BELUM KAWIN</option><option value="KAWIN">KAWIN</option><option value="CERAI HIDUP">CERAI HIDUP</option><option value="CERAI MATI">CERAI MATI</option></select></div>
+                        </div>
+                    </div>
+
+                    <!-- Q8 - Q12: Pendidikan -->
+                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">PENDIDIKAN</h3>
+                        <div class="space-y-2">
+                            <div><label class="text-[10px] font-semibold text-slate-600">8. Partisipasi Sekolah</label><select id="ind_sekolah" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="TIDAK/BELUM PERNAH SEKOLAH">TIDAK/BELUM PERNAH SEKOLAH</option><option value="MASIH SEKOLAH">MASIH SEKOLAH</option><option value="TIDAK BERSEKOLAH LAGI">TIDAK BERSEKOLAH LAGI</option></select></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="text-[10px] font-semibold text-slate-600">9. Jenjang Tertinggi</label><select id="ind_jenjang" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="SD/MI/PAKET A/SDLB">SD/Sederajat</option><option value="SMP/MTS/PAKET B/SMPLB">SMP/Sederajat</option><option value="SMA/SMK/MA/PAKET C/SMLB">SMA/SMK/Sederajat</option><option value="D1/D2/D3">D1/D2/D3</option><option value="D4/S1">D4/S1</option><option value="S2/S3">S2/S3</option><option value="PROFESI">PROFESI</option></select></div>
+                                <div><label class="text-[10px] font-semibold text-slate-600">10. Kelas Tertinggi</label><input type="number" id="ind_kelas" class="w-full border rounded px-2 py-1 text-xs" placeholder="Kelas (1-8)"></div>
+                            </div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">11. Ijazah Tertinggi</label><input type="text" id="ind_ijazah" class="w-full border rounded px-2 py-1 text-xs" placeholder="Cth: SMA, S1"></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">12. Sedang di Pesantren?</label><select id="ind_pesantren" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
+                        </div>
+                    </div>
+
+                    <!-- Q13 - Q24: Pekerjaan -->
+                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">PEKERJAAN & USAHA</h3>
+                        <div class="space-y-2">
+                            <div><label class="text-[10px] font-semibold text-slate-600">13. Bekerja/Membantu Bekerja?</label><select id="ind_kerja" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">14. Lapangan Usaha (Utama)</label><select id="ind_lapUsaha" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="PERTANIAN/PERKEBUNAN/PETERNAKAN/PERIKANAN">PERTANIAN/PERKEBUNAN/PETERNAKAN/PERIKANAN</option><option value="PERTAMBANGAN/PENGGALIAN">PERTAMBANGAN/PENGGALIAN</option><option value="INDUSTRI PENGOLAHAN">INDUSTRI PENGOLAHAN</option><option value="KONSTRUKSI">KONSTRUKSI</option><option value="PERDAGANGAN/REPARASI">PERDAGANGAN/REPARASI</option><option value="PENGANGKUTAN/PERGUDANGAN">PENGANGKUTAN/PERGUDANGAN</option><option value="PENYEDIAAN AKOMODASI/MAKAN MINUM">PENYEDIAAN AKOMODASI/MAKAN MINUM</option><option value="PENDIDIKAN/KESEHATAN">PENDIDIKAN/KESEHATAN</option><option value="JASA LAINNYA">JASA LAINNYA</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">15. Status Pekerjaan</label><select id="ind_statusKerja" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="BERUSAHA SENDIRI">BERUSAHA SENDIRI</option><option value="BERUSAHA DIBANTU BURUH">BERUSAHA DIBANTU BURUH</option><option value="BURUH/KARYAWAN/SWASTA">BURUH/KARYAWAN/SWASTA</option><option value="ASN/TNI/POLRI/BUMN">ASN/TNI/POLRI/BUMN</option><option value="PEKERJA BEBAS">PEKERJA BEBAS</option><option value="PEKERJA KELUARGA/TIDAK DIBAYAR">PEKERJA KELUARGA/TIDAK DIBAYAR</option></select></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="text-[10px] font-semibold text-slate-600">16. Punya Usaha?</label><select id="ind_punyaUsaha" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
+                                <div><label class="text-[10px] font-semibold text-slate-600">17. Jml Usaha Dimiliki</label><input type="number" id="ind_jmlUsaha" class="w-full border rounded px-2 py-1 text-xs"></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">21. Omzet Usaha Utama</label><select id="ind_omzet" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="<5 JUTA (ULTRA MIKRO)"><5 JUTA (ULTRA MIKRO)</option><option value="5 - 15 JUTA (ULTRA MIKRO)">5 - 15 JUTA (ULTRA MIKRO)</option><option value="15 - 25 JUTA (ULTRA MIKRO)">15 - 25 JUTA (ULTRA MIKRO)</option><option value="25 - 167 JUTA (MIKRO)">25 - 167 JUTA (MIKRO)</option><option value="167 - 1250 JUTA (KECIL)">167 - 1250 JUTA (KECIL)</option><option value=">1250 JUTA">> 1250 JUTA (MENENGAH/BESAR)</option></select></div>
+                                <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">22. Pendapatan Sebulan</label><select id="ind_pendapatan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="TIDAK ADA PENGHASILAN">TIDAK ADA PENGHASILAN</option><option value="<1 JUTA PER BULAN">< 1 JUTA PER BULAN</option><option value="UMK">UMK</option><option value=">= 1 JUTA S/D < UMK">>= 1 JUTA S/D < UMK</option><option value="> UMK S/D 10 JUTA">> UMK S/D 10 JUTA</option><option value="> 10 JUTA">> 10 JUTA</option></select></div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="text-[10px] font-semibold text-slate-600">23. BPJS Ketenagakerjaan/Taspen</label><select id="ind_bpjstk" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
+                                <div><label class="text-[10px] font-semibold text-slate-600">24. Sertifikat Keahlian</label><input type="text" id="ind_sertifikat" class="w-full border rounded px-2 py-1 text-xs" placeholder="Ketik jika ada"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Q25 - Q37: Kesehatan & Disabilitas -->
+                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">KESEHATAN & DISABILITAS</h3>
+                        <p class="text-[9px] text-slate-500 mb-2 font-semibold">Tingkat Kesulitan: 1=Tdk Bisa, 2=Banyak Kesulitan, 3=Sedikit Kesulitan, 4=Tdk Mengalami Kesulitan</p>
+                        <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                            <div><label class="text-[9px] text-slate-600">25. Penglihatan (1-4)</label><select id="ind_disNetra" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">26. Pendengaran (1-4)</label><select id="ind_disRungu" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">27. Berjalan (1-4)</label><select id="ind_disJalan" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">28. Tangan/Jari (1-4)</label><select id="ind_disTangan" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">29. Intelektual (1-4)</label><select id="ind_disMental" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">30. Berbicara (1-4)</label><select id="ind_disWicara" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">31. Mengurus Diri (1-4)</label><select id="ind_disUrusDiri" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                            <div><label class="text-[9px] text-slate-600">32. Mengingat (1-4)</label><select id="ind_disIngat" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
+                        </div>
+                        <div class="mt-2 space-y-2">
+                            <div><label class="text-[10px] font-semibold text-slate-600">33. Ggn Sedih/Depresi</label><select id="ind_depresi" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="SANGAT SERING">SANGAT SERING</option><option value="SERING">SERING</option><option value="JARANG">JARANG</option><option value="TIDAK PERNAH">TIDAK PERNAH</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">34. Jaminan Kesehatan</label><select id="ind_bpjskes" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="NON PBI JK (MANDIRI/PPU)">NON PBI JK (MANDIRI/PPU)</option><option value="PBI JK/PBID">PBI JK/PBID</option><option value="ASURANSI SWASTA">ASURANSI SWASTA</option><option value="TIDAK PUNYA">TIDAK PUNYA</option></select></div>
+                            <div><label class="text-[10px] font-semibold text-slate-600">35. Penyakit Kronis</label><input type="text" id="ind_kronis" class="w-full border rounded px-2 py-1 text-xs" placeholder="Cth: Kanker, Hipertensi (Kosongkan jika tdk ada)"></div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <div><label class="text-[10px] font-semibold text-slate-600">36. Gizi (Khusus Balita)</label><select id="ind_gizi" class="w-full border rounded px-2 py-1 text-xs"><option value="-">-</option><option value="NORMAL">NORMAL</option><option value="STUNTING">STUNTING</option><option value="WASTING">WASTING</option><option value="KEGEMUKAN">KEGEMUKAN</option></select></div>
+                                <div><label class="text-[10px] font-semibold text-slate-600">37. Status Hamil (Wnt >15)</label><select id="ind_hamil" class="w-full border rounded px-2 py-1 text-xs"><option value="-">-</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="p-3 border-t border-slate-200 bg-white rounded-b-xl flex gap-2">
+                <button type="button" onclick="closeIndividuModal()" class="w-1/3 bg-slate-200 text-slate-700 py-2 rounded font-semibold text-sm">Batal</button>
+                <button type="button" onclick="simpanIndividuKeList()" class="w-2/3 bg-indigo-600 text-white py-2 rounded font-semibold text-sm shadow-sm">Simpan Anggota Keluarga</button>
+            </div>
+        </div>
     </div>
 
     <!-- TOMBOL MENGAMBANG -->
@@ -272,27 +508,25 @@
             "Widang": ["Banjar", "Bunut", "Compreng", "Kedungharjo", "Kujung", "Minohorejo", "Mlangi", "Mrutuk", "Ngadipuro", "Ngadirejo", "Patihan", "Simorejo", "Sumberejo", "Tegalsari", "Tegalrejo", "Widang"]
         };
 
-        // --- MANAJEMEN USER & SESI ---
+        // --- VARIABEL GLOBAL ---
         let currentUser = null;
-        let DRAFT_KEY = '';
-        let QUEUE_KEY = '';
-        let HISTORY_KEY = '';
-        let sensusQueue = [];
-        let sensusHistory = [];
+        let DRAFT_KEY = ''; let QUEUE_KEY = ''; let HISTORY_KEY = '';
+        let sensusQueue = []; let sensusHistory = [];
         let isSyncingProcess = false;
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzj9ci9NhWSRaBJS6rrYAWgapOSBbJCRGy7x7dEJZS7aJEBYXppOUvrSx4mh-sJpQ4veQ/exec';
+        
+        // Data Independen: Anggota Keluarga (Array of Objects)
+        let listIndividu = [];
 
+        // --- LOGIN & SESSION ---
         function handleCredentialResponse(response) {
             try {
                 const payload = JSON.parse(atob(response.credential.split('.')[1]));
                 currentUser = { email: payload.email, name: payload.name, picture: payload.picture };
                 localStorage.setItem('sensus_user', JSON.stringify(currentUser));
-                
-                Swal.fire({ icon: 'success', title: 'Login Berhasil', text: `Selamat datang, ${currentUser.name}`, timer: 1500, showConfirmButton: false });
+                Swal.fire({ icon: 'success', title: 'Login Berhasil', timer: 1500, showConfirmButton: false });
                 initAppSession();
-            } catch (error) {
-                Swal.fire('Error', 'Gagal memproses login Google.', 'error');
-            }
+            } catch (error) { Swal.fire('Error', 'Gagal memproses login Google.', 'error'); }
         }
 
         function initAppSession() {
@@ -302,31 +536,19 @@
             document.getElementById('userAvatar').src = currentUser.picture || 'https://via.placeholder.com/40';
 
             const safeEmail = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_');
-            DRAFT_KEY = 'draft_' + safeEmail;
-            QUEUE_KEY = 'queue_' + safeEmail;
-            HISTORY_KEY = 'history_' + safeEmail;
+            DRAFT_KEY = 'draft_' + safeEmail; QUEUE_KEY = 'queue_' + safeEmail; HISTORY_KEY = 'history_' + safeEmail;
 
             sensusQueue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
             sensusHistory = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
             
-            initWilayah();
-            updateConnectionStatus(); 
-            updateQueueBadge();
-            loadDraft();
+            initWilayah(); updateConnectionStatus(); updateQueueBadge(); loadDraft();
         }
 
         function confirmLogout() {
-            Swal.fire({
-                title: 'Keluar Akun?',
-                text: "Anda akan keluar dari sesi saat ini. Draf dan antrean Anda akan tetap tersimpan aman di HP ini.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Logout',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('sensus_user');
-                    currentUser = null;
+            Swal.fire({ title: 'Keluar Akun?', text: "Draf dan antrean Anda aman di HP.", icon: 'question', showCancelButton: true, confirmButtonText: 'Logout', cancelButtonText: 'Batal' })
+            .then((r) => {
+                if (r.isConfirmed) {
+                    localStorage.removeItem('sensus_user'); currentUser = null;
                     document.getElementById('login-page').classList.remove('hidden');
                     document.getElementById('app-container').classList.add('hidden');
                     document.getElementById('offlinePendingIndicator').classList.add('hidden');
@@ -334,92 +556,156 @@
             });
         }
 
-        // --- FUNGSI ALAMAT & UI UMUM ---
+        // --- ALAMAT ---
         function initWilayah() {
             const kecSelects = ['kecamatanKTP', 'kecamatanDomisili'];
             const kecOptions = Object.keys(DATA_WILAYAH_TUBAN).sort();
             kecSelects.forEach(id => {
                 const el = document.getElementById(id);
                 if(el) {
-                    el.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    el.innerHTML = '<option value="">-- Pilih --</option>';
                     kecOptions.forEach(kec => el.innerHTML += `<option value="${kec}">${kec}</option>`);
-                    el.value = "Semanding"; // Default
+                    el.value = "Semanding";
                 }
             });
-            updateDesa('kecamatanKTP', 'desaKTP');
-            updateDesa('kecamatanDomisili', 'desaDomisili');
+            updateDesa('kecamatanKTP', 'desaKTP'); updateDesa('kecamatanDomisili', 'desaDomisili');
         }
 
         function updateDesa(kecId, desaId) {
-            const kec = document.getElementById(kecId).value;
-            const desaEl = document.getElementById(desaId);
-            desaEl.innerHTML = '<option value="">-- Pilih Desa --</option>';
-            if (kec && DATA_WILAYAH_TUBAN[kec]) {
-                DATA_WILAYAH_TUBAN[kec].sort().forEach(desa => desaEl.innerHTML += `<option value="${desa}">${desa}</option>`);
-            }
+            const kec = document.getElementById(kecId).value; const desaEl = document.getElementById(desaId);
+            desaEl.innerHTML = '<option value="">-- Pilih --</option>';
+            if (kec && DATA_WILAYAH_TUBAN[kec]) { DATA_WILAYAH_TUBAN[kec].sort().forEach(desa => desaEl.innerHTML += `<option value="${desa}">${desa}</option>`); }
         }
 
         function toggleDomisili() {
-            const cb = document.getElementById('samaDenganKtp');
-            const box = document.getElementById('boxDomisili');
+            const cb = document.getElementById('samaDenganKtp'); const box = document.getElementById('boxDomisili');
             cb.checked ? box.classList.add('hidden') : box.classList.remove('hidden');
         }
 
-        // --- OFFLINE & AUTO-SYNC LOGIC ---
-        function updateConnectionStatus() {
-            const statusEl = document.getElementById('statusIndicator');
-            const btnSync = document.getElementById('btnSyncNow');
-            
-            if (navigator.onLine) {
-                statusEl.innerHTML = '<i class="fas fa-wifi"></i>'; 
-                statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors';
-                if(btnSync) btnSync.disabled = false;
+        // --- DATA INDIVIDU (MODAL & RENDER) ---
+        function openIndividuModal() {
+            document.getElementById('formIndividuSingle').reset();
+            document.getElementById('modalIndividu').classList.remove('hidden');
+            document.getElementById('modalIndividu').classList.add('flex');
+        }
 
-                if (sensusQueue.length > 0 && currentUser && !isSyncingProcess) {
-                    showToast("Koneksi pulih. Memulai Sinkronisasi Otomatis...");
-                    syncDataToServer(true); 
-                }
+        function closeIndividuModal() {
+            document.getElementById('modalIndividu').classList.add('hidden');
+            document.getElementById('modalIndividu').classList.remove('flex');
+        }
+
+        function simpanIndividuKeList() {
+            const nama = document.getElementById('ind_nama').value;
+            if(!nama) return Swal.fire('Oops', 'Nama Lengkap wajib diisi', 'warning');
+            
+            const individu = {
+                nik: document.getElementById('ind_nik').value,
+                nama: nama,
+                jk: document.getElementById('ind_jk').value,
+                keberadaan: document.getElementById('ind_keberadaan').value,
+                hubungan: document.getElementById('ind_hubungan').value,
+                tglLahir: document.getElementById('ind_tglLahir').value,
+                statusKawin: document.getElementById('ind_statusKawin').value,
+                sekolah: document.getElementById('ind_sekolah').value,
+                jenjang: document.getElementById('ind_jenjang').value,
+                kelas: document.getElementById('ind_kelas').value,
+                ijazah: document.getElementById('ind_ijazah').value,
+                pesantren: document.getElementById('ind_pesantren').value,
+                kerja: document.getElementById('ind_kerja').value,
+                lapUsaha: document.getElementById('ind_lapUsaha').value,
+                statusKerja: document.getElementById('ind_statusKerja').value,
+                punyaUsaha: document.getElementById('ind_punyaUsaha').value,
+                jmlUsaha: document.getElementById('ind_jmlUsaha').value,
+                omzet: document.getElementById('ind_omzet').value,
+                pendapatan: document.getElementById('ind_pendapatan').value,
+                bpjstk: document.getElementById('ind_bpjstk').value,
+                sertifikat: document.getElementById('ind_sertifikat').value,
+                disNetra: document.getElementById('ind_disNetra').value,
+                disRungu: document.getElementById('ind_disRungu').value,
+                disJalan: document.getElementById('ind_disJalan').value,
+                disTangan: document.getElementById('ind_disTangan').value,
+                disMental: document.getElementById('ind_disMental').value,
+                disWicara: document.getElementById('ind_disWicara').value,
+                disUrusDiri: document.getElementById('ind_disUrusDiri').value,
+                disIngat: document.getElementById('ind_disIngat').value,
+                depresi: document.getElementById('ind_depresi').value,
+                bpjskes: document.getElementById('ind_bpjskes').value,
+                kronis: document.getElementById('ind_kronis').value,
+                gizi: document.getElementById('ind_gizi').value,
+                hamil: document.getElementById('ind_hamil').value
+            };
+
+            listIndividu.push(individu);
+            renderListIndividu();
+            saveDraft();
+            closeIndividuModal();
+        }
+
+        function renderListIndividu() {
+            const container = document.getElementById('individuListContainer');
+            if (listIndividu.length === 0) {
+                container.innerHTML = `<p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-4">Belum ada data anggota keluarga. Klik 'Tambah'.</p>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            listIndividu.forEach((ind, idx) => {
+                container.innerHTML += `
+                    <div class="bg-white p-3 rounded shadow-sm border border-indigo-100 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-xs text-indigo-900">${ind.nama.toUpperCase()} <span class="bg-indigo-100 text-indigo-700 font-normal px-1 rounded text-[9px] ml-1">${ind.hubungan}</span></p>
+                            <p class="text-[10px] text-slate-500">NIK: ${ind.nik || '-'} | L/P: ${ind.jk || '-'}</p>
+                        </div>
+                        <button type="button" onclick="hapusIndividu(${idx})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded"><i class="fas fa-trash text-xs"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function hapusIndividu(idx) {
+            listIndividu.splice(idx, 1);
+            renderListIndividu();
+            saveDraft();
+        }
+
+
+        // --- OFFLINE & AUTO-SYNC ---
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('statusIndicator'); const btnSync = document.getElementById('btnSyncNow');
+            if (navigator.onLine) {
+                statusEl.innerHTML = '<i class="fas fa-wifi"></i>'; statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow';
+                if(btnSync) btnSync.disabled = false;
+                if (sensusQueue.length > 0 && currentUser && !isSyncingProcess) { showToast("Koneksi pulih. Sinkronisasi..."); syncDataToServer(true); }
             } else {
-                statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; 
-                statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-red-500 px-2 py-1 rounded-full text-white shadow transition-colors';
+                statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-red-500 px-2 py-1 rounded-full text-white shadow';
                 if(btnSync) btnSync.disabled = true;
             }
             updateOfflineIndicator();
         }
-
-        window.addEventListener('online', updateConnectionStatus); 
-        window.addEventListener('offline', updateConnectionStatus);
+        window.addEventListener('online', updateConnectionStatus); window.addEventListener('offline', updateConnectionStatus);
 
         function updateOfflineIndicator() {
-            const indicator = document.getElementById('offlinePendingIndicator');
-            const textEl = document.getElementById('offlinePendingText');
+            const indicator = document.getElementById('offlinePendingIndicator'); const textEl = document.getElementById('offlinePendingText');
             if (!indicator || !currentUser) return;
-
             if (sensusQueue.length > 0) {
-                indicator.classList.remove('hidden');
-                document.getElementById('offlinePendingCount').innerText = sensusQueue.length;
-                
+                indicator.classList.remove('hidden'); document.getElementById('offlinePendingCount').innerText = sensusQueue.length;
                 if (isSyncingProcess) {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-all";
-                    textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3"; textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
                 } else if (!navigator.onLine) {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-amber-600 transition-all animate-bounce";
-                    textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 animate-bounce cursor-pointer hover:scale-105"; textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
                 } else {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-blue-700 transition-all";
-                    textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer"; textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
                 }
-            } else {
-                indicator.classList.add('hidden');
-            }
+            } else { indicator.classList.add('hidden'); }
         }
 
+        // --- DRAFT LOGIC ---
         const form = document.getElementById('sensusForm');
         function saveDraft() {
             if(!currentUser) return;
-            const formData = new FormData(form);
-            const dataObj = Object.fromEntries(formData.entries());
+            const formData = new FormData(form); const dataObj = Object.fromEntries(formData.entries());
             dataObj['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
+            dataObj['dataIndividu'] = listIndividu; // Simpan array individu ke draft
             localStorage.setItem(DRAFT_KEY, JSON.stringify(dataObj));
         }
 
@@ -431,6 +717,7 @@
                 if(dataObj.kecamatanDom) { document.getElementById('kecamatanDomisili').value = dataObj.kecamatanDom; updateDesa('kecamatanDomisili', 'desaDomisili'); }
 
                 for (let key in dataObj) {
+                    if(key === 'dataIndividu') continue; // Handle terpisah
                     const inputs = form.elements[key];
                     if (inputs) {
                         if (inputs instanceof NodeList) { const radio = Array.from(inputs).find(r => r.value === dataObj[key]); if(radio) radio.checked = true; } 
@@ -438,17 +725,25 @@
                         else { inputs.value = dataObj[key]; }
                     }
                 }
-                toggleDomisili(); document.getElementById('draftNotice').classList.remove('hidden');
+                toggleDomisili(); 
+                
+                // Load Individu
+                if(dataObj.dataIndividu && Array.isArray(dataObj.dataIndividu)) {
+                    listIndividu = dataObj.dataIndividu;
+                    renderListIndividu();
+                }
+
+                document.getElementById('draftNotice').classList.remove('hidden');
             }
         }
 
         function clearDraft() {
             localStorage.removeItem(DRAFT_KEY); form.reset();
             document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
-            document.getElementById('kecamatanKTP').value = 'Semanding';
-            document.getElementById('kecamatanDomisili').value = 'Semanding';
-            updateDesa('kecamatanKTP', 'desaKTP');
-            updateDesa('kecamatanDomisili', 'desaDomisili');
+            document.getElementById('kecamatanKTP').value = 'Semanding'; document.getElementById('kecamatanDomisili').value = 'Semanding';
+            updateDesa('kecamatanKTP', 'desaKTP'); updateDesa('kecamatanDomisili', 'desaDomisili');
+            
+            listIndividu = []; renderListIndividu();
             document.getElementById('draftNotice').classList.add('hidden');
         }
 
@@ -466,7 +761,7 @@
             }
         }
 
-        // --- SUBMIT FORM LOKAL ---
+        // --- SUBMIT FORM ---
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             if(!form.nomorKK.value || !form.namaKK.value) return Swal.fire('Error', 'Lengkapi Data Dasar!', 'warning');
@@ -476,6 +771,7 @@
             dataToSave['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
             dataToSave['petugasEmail'] = currentUser.email;
             dataToSave['petugasName'] = currentUser.name;
+            dataToSave['dataIndividu'] = listIndividu; // Tempelkan JSON Individu
 
             sensusQueue.unshift({ id: 'SENSUS-' + Date.now(), timestamp: new Date().toLocaleString('id-ID'), data: dataToSave });
             localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
@@ -483,18 +779,14 @@
             clearDraft();
             document.getElementById('gpsCoords').value = '';
             
-            updateQueueBadge();
-            renderQueueList();
-            
+            updateQueueBadge(); renderQueueList();
             showToast("Tersimpan sementara ke HP.");
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
-            if(navigator.onLine && !isSyncingProcess) {
-                setTimeout(() => syncDataToServer(true), 1000);
-            }
+            if(navigator.onLine && !isSyncingProcess) { setTimeout(() => syncDataToServer(true), 1000); }
         });
 
-        // --- MODAL ANTREAN & RIWAYAT ---
+        // --- MODAL ANTREAN ---
         function toggleQueueModal() {
             const modal = document.getElementById('queueModal'); const content = document.getElementById('queueModalContent');
             if (modal.classList.contains('hidden')) {
@@ -510,49 +802,40 @@
         function switchTab(tab) {
             const tabA = document.getElementById('tabAntrean'); const tabR = document.getElementById('tabRiwayat');
             const listA = document.getElementById('queueList'); const listR = document.getElementById('historyList');
-            const syncFooter = document.getElementById('syncFooter');
-            const histFooter = document.getElementById('historyFooter');
+            const syncFooter = document.getElementById('syncFooter'); const histFooter = document.getElementById('historyFooter');
 
             if(tab === 'antrean') {
-                tabA.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
-                tabR.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
-                listA.classList.remove('hidden'); listR.classList.add('hidden'); 
-                syncFooter.classList.remove('hidden'); histFooter.classList.add('hidden');
+                tabA.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600"; tabR.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                listA.classList.remove('hidden'); listR.classList.add('hidden'); syncFooter.classList.remove('hidden'); histFooter.classList.add('hidden');
                 renderQueueList();
             } else {
-                tabR.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
-                tabA.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
-                listR.classList.remove('hidden'); listA.classList.add('hidden'); 
-                syncFooter.classList.add('hidden'); histFooter.classList.remove('hidden');
+                tabR.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600"; tabA.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                listR.classList.remove('hidden'); listA.classList.add('hidden'); syncFooter.classList.add('hidden'); histFooter.classList.remove('hidden');
                 renderHistoryList();
             }
         }
 
         function updateQueueBadge() {
-            const badge = document.getElementById('queueCountBadge');
-            document.getElementById('countAntreanTab').innerText = sensusQueue.length;
-            if (sensusQueue.length > 0) { badge.innerText = sensusQueue.length; badge.classList.remove('hidden'); } 
-            else { badge.classList.add('hidden'); }
+            const badge = document.getElementById('queueCountBadge'); document.getElementById('countAntreanTab').innerText = sensusQueue.length;
+            if (sensusQueue.length > 0) { badge.innerText = sensusQueue.length; badge.classList.remove('hidden'); } else { badge.classList.add('hidden'); }
             updateOfflineIndicator();
         }
 
         function renderQueueList() {
             const list = document.getElementById('queueList'); list.innerHTML = '';
-            if (sensusQueue.length === 0) {
-                list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-check-circle text-4xl mb-3 text-slate-300"></i><p>Tidak ada data antrean.</p></div>`; return;
-            }
+            if (sensusQueue.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-check-circle text-4xl mb-3 text-slate-300"></i><p>Tidak ada data antrean.</p></div>`; return; }
             sensusQueue.forEach((item, index) => {
-                const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
+                const d = item.data;
                 list.innerHTML += `
                     <div class="bg-white p-3 rounded-lg border-l-4 border-amber-500 shadow-sm flex justify-between items-center">
                         <div class="flex-1">
-                            <p class="font-bold text-slate-800 text-sm">${nama}</p>
-                            <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
+                            <p class="font-bold text-slate-800 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
+                            <p class="text-[10px] text-slate-500">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
                             <p class="text-[10px] text-amber-600 mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
                         </div>
                         <div class="flex gap-1">
-                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded shadow-sm" title="Lihat/Cetak PDF"><i class="fas fa-file-pdf text-lg"></i></button>
-                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:text-red-600 p-2" title="Hapus"><i class="fas fa-trash-alt text-lg"></i></button>
+                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded"><i class="fas fa-file-pdf"></i></button>
+                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:bg-red-50 p-2 rounded"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>`;
             });
@@ -560,31 +843,24 @@
 
         function renderHistoryList() {
             const list = document.getElementById('historyList'); list.innerHTML = '';
-            if (sensusHistory.length === 0) {
-                list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-history text-4xl mb-3 text-slate-300"></i><p>Belum ada data yang tersinkron.</p></div>`; return;
-            }
+            if (sensusHistory.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-history text-4xl mb-3 text-slate-300"></i><p>Belum ada data yang tersinkron.</p></div>`; return; }
             sensusHistory.forEach((item, index) => {
-                const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
+                const d = item.data;
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80 hover:opacity-100 transition-opacity">
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80 hover:opacity-100">
                         <div class="flex-1">
-                            <p class="font-bold text-slate-800 text-sm">${nama}</p>
-                            <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
+                            <p class="font-bold text-slate-800 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
+                            <p class="text-[10px] text-slate-500">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
                             <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime || item.timestamp}</p>
                         </div>
-                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded shadow-sm" title="Lihat/Cetak PDF"><i class="fas fa-file-pdf text-lg"></i></button>
+                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded"><i class="fas fa-file-pdf"></i></button>
                     </div>`;
             });
         }
 
         function deleteQueueItem(index) {
             Swal.fire({ title: 'Hapus Antrean?', text: "Data ini akan dihapus permanen dari HP.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
-            .then((result) => {
-                if (result.isConfirmed) {
-                    sensusQueue.splice(index, 1); localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
-                    renderQueueList(); updateQueueBadge();
-                }
-            });
+            .then((r) => { if (r.isConfirmed) { sensusQueue.splice(index, 1); localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue)); renderQueueList(); updateQueueBadge(); } });
         }
 
         // --- SINKRONISASI PINTAR & CLOUD FETCH ---
@@ -604,64 +880,37 @@
         }
 
         async function syncDataToServer(isAutoMode = false) {
-            if (!navigator.onLine) {
-                if(!isAutoMode) Swal.fire('Offline', 'HP Anda tidak terhubung ke internet.', 'error');
-                return;
-            }
+            if (!navigator.onLine) { if(!isAutoMode) Swal.fire('Offline', 'HP Anda tidak terhubung ke internet.', 'error'); return; }
             if (sensusQueue.length === 0 || isSyncingProcess) return;
 
-            isSyncingProcess = true;
-            const btnSync = document.getElementById('btnSyncNow'); 
-            const originalText = btnSync.innerHTML;
-            btnSync.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...'; 
-            btnSync.disabled = true;
-            updateOfflineIndicator();
-
-            let hasError = false;
+            isSyncingProcess = true; const btnSync = document.getElementById('btnSyncNow'); 
+            const originalText = btnSync.innerHTML; btnSync.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...'; btnSync.disabled = true;
+            updateOfflineIndicator(); let hasError = false;
 
             for(let i = sensusQueue.length - 1; i >= 0; i--) {
                 try {
-                    // Update payload dengan Format Action Insert
                     const payload = { action: 'insert', data: sensusQueue[i].data };
                     const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                     const result = await response.json();
                     
                     if(result.status === "success") {
-                        const syncedItem = sensusQueue.pop();
-                        syncedItem.syncTime = new Date().toLocaleString('id-ID');
+                        const syncedItem = sensusQueue.pop(); syncedItem.syncTime = new Date().toLocaleString('id-ID');
                         sensusHistory.unshift(syncedItem);
-                        
-                        localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
-                        localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
-                        
+                        localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue)); localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
                         renderQueueList(); updateQueueBadge();
                     } else { throw new Error(result.message); }
-                } catch (error) {
-                    hasError = true;
-                    if(!isAutoMode) Swal.fire('Sinkronisasi Gagal', 'Terjadi kesalahan saat mengirim data. Coba lagi nanti.', 'error');
-                    break; 
-                }
+                } catch (error) { hasError = true; if(!isAutoMode) Swal.fire('Gagal', 'Terjadi kesalahan saat mengirim data.', 'error'); break; }
             }
 
-            isSyncingProcess = false;
-            btnSync.innerHTML = originalText; btnSync.disabled = false;
-            updateOfflineIndicator();
-
+            isSyncingProcess = false; btnSync.innerHTML = originalText; btnSync.disabled = false; updateOfflineIndicator();
             if(sensusQueue.length === 0 && !hasError) {
-                if(isAutoMode) {
-                    showToast("Semua data berhasil tersinkron otomatis!");
-                } else {
-                    Swal.fire('Berhasil', 'Semua data telah masuk ke Server!', 'success');
-                    switchTab('riwayat');
-                }
+                if(isAutoMode) showToast("Tersinkron otomatis!"); else { Swal.fire('Berhasil', 'Semua data telah masuk ke Server!', 'success'); switchTab('riwayat'); }
             }
         }
 
         async function fetchHistoryFromServer() {
-            if (!navigator.onLine) {
-                Swal.fire('Offline', 'Koneksi internet diperlukan untuk menarik data dari server.', 'error'); return;
-            }
-            Swal.fire({ title: 'Menarik Riwayat...', text: 'Mengambil data dari server Google Sheets.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+            if (!navigator.onLine) { Swal.fire('Offline', 'Koneksi internet diperlukan.', 'error'); return; }
+            Swal.fire({ title: 'Menarik Riwayat...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
 
             try {
                 const payload = { action: 'getHistory', email: currentUser.email };
@@ -669,200 +918,139 @@
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    sensusHistory = result.history || [];
-                    localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
-                    renderHistoryList();
-                    Swal.fire('Berhasil', `Ditemukan ${sensusHistory.length} data riwayat di server.`, 'success');
-                } else {
-                    throw new Error(result.message);
-                }
-            } catch (error) {
-                Swal.fire('Gagal', 'Terjadi kesalahan saat menghubungi server.', 'error');
-            }
+                    sensusHistory = result.history || []; localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
+                    renderHistoryList(); Swal.fire('Berhasil', `Ditemukan ${sensusHistory.length} data riwayat di server.`, 'success');
+                } else throw new Error(result.message);
+            } catch (error) { Swal.fire('Gagal', 'Terjadi kesalahan server.', 'error'); }
         }
 
-        // --- FUNGSI CETAK PDF (html2pdf) ---
+        // --- CETAK PDF ---
         function cetakPDF(index, listType) {
             const item = listType === 'queue' ? sensusQueue[index] : sensusHistory[index];
-            if (!item) return;
-            const d = item.data;
+            if (!item) return; const d = item.data;
 
             const pdfContainer = document.createElement('div');
-            pdfContainer.style.padding = '20px';
-            pdfContainer.style.fontFamily = 'Arial, sans-serif';
-            pdfContainer.style.fontSize = '12px';
-            pdfContainer.style.color = '#000';
-            pdfContainer.style.backgroundColor = '#fff';
+            pdfContainer.style.padding = '15px'; pdfContainer.style.fontFamily = 'Arial, sans-serif';
+            pdfContainer.style.fontSize = '10px'; pdfContainer.style.color = '#000'; pdfContainer.style.backgroundColor = '#fff';
 
-            const alamatKtpLengkap = `${d.alamatKTP || '-'} RT ${d.rtKTP || '-'}/RW ${d.rwKTP || '-'}, Kec. ${d.kecamatan || '-'}, Desa ${d.desa || '-'}`;
-            const alamatDomLengkap = d.samaDenganKtp ? "Sama dengan KTP" : `${d.alamatDom || '-'} RT ${d.rtDom || '-'}/RW ${d.rwDom || '-'}, Kec. ${d.kecamatanDom || '-'}, Desa ${d.desaDom || '-'}`;
+            const alamatKtp = `${d.alamatKTP||'-'} RT ${d.rtKTP||'-'}/${d.rwKTP||'-'} Kec.${d.kecamatan||'-'} Des.${d.desa||'-'}`;
             
-            // Karena gambar dari history server bentuknya link Google Drive, kita tidak menampilkannya di PDF karena kendala CORS browser. 
-            // Jika gambar berwujud base64 (lokal/queue), kita tampilkan utuh.
-            const renderImage = (imgSrc, title) => {
-                if(!imgSrc || imgSrc === "") return `<div style="width:120px;height:120px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;margin:auto;">TIDAK ADA</div>`;
-                if(imgSrc.startsWith("data:image")) return `<img src="${imgSrc}" style="width:120px;height:120px;object-fit:cover;border:1px solid #ccc;border-radius:4px;">`;
-                return `<div style="width:120px;height:120px;border:1px solid #ccc;background-color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;padding:5px;"><a href="${imgSrc}" target="_blank" style="color:#2563eb;text-decoration:none;">[Lihat Link Foto]</a></div>`;
+            const renderImage = (imgSrc) => {
+                if(!imgSrc) return `<div style="width:100px;height:100px;border:1px dashed #ccc;text-align:center;line-height:100px;font-size:9px;">TIDAK ADA</div>`;
+                if(imgSrc.startsWith("data:image")) return `<img src="${imgSrc}" style="width:100px;height:100px;object-fit:cover;border:1px solid #ccc;">`;
+                return `<div style="width:100px;height:100px;border:1px solid #ccc;background:#f1f5f9;font-size:9px;text-align:center;padding-top:40px;">[Cek Drive]</div>`;
             };
 
+            // Loop tabel Individu
+            let tbodyIndividu = '';
+            if(d.dataIndividu && d.dataIndividu.length > 0) {
+                d.dataIndividu.forEach((ind, i) => {
+                    tbodyIndividu += `
+                        <tr>
+                            <td style="padding:4px;border:1px solid #ccc;text-align:center;">${i+1}</td>
+                            <td style="padding:4px;border:1px solid #ccc;"><b>${ind.nama||'-'}</b><br>NIK: ${ind.nik||'-'}</td>
+                            <td style="padding:4px;border:1px solid #ccc;">${ind.hubungan||'-'}<br>${ind.jk||'-'}</td>
+                            <td style="padding:4px;border:1px solid #ccc;">Pdd: ${ind.jenjang||'-'}<br>Kerja: ${ind.kerja||'-'}</td>
+                        </tr>
+                    `;
+                });
+            } else {
+                tbodyIndividu = `<tr><td colspan="4" style="text-align:center;padding:4px;border:1px solid #ccc;">Tidak ada data individu yang dicatat.</td></tr>`;
+            }
+
             pdfContainer.innerHTML = `
-                <div style="text-align:center; margin-bottom: 15px;">
-                    <h2 style="margin:0; font-size:16px; font-weight:bold; text-transform:uppercase;">FORM SENSUS DATA PENDUDUK KABUPATEN TUBAN 2026</h2>
-                    <h3 style="margin:5px 0 0 0; font-size:14px; font-weight:normal;">DATA KELUARGA (DTSEN)</h3>
-                    <hr style="margin-top:10px; border:1px solid #333;">
+                <div style="text-align:center; margin-bottom: 10px;">
+                    <h2 style="margin:0; font-size:14px; font-weight:bold;">FORM SENSUS PENDUDUK TUBAN 2026 (DTSEN)</h2>
+                    <hr style="margin-top:5px; border:1px solid #333;">
                 </div>
-                
-                <div style="text-align:right; font-size:10px; margin-bottom:10px; color:#555;">
-                    Dicatat oleh: ${d.petugasName || '-'} | Waktu Pengisian: ${item.timestamp || item.syncTime}
-                </div>
+                <div style="text-align:right; font-size:8px; margin-bottom:5px;">Petugas: ${d.petugasName || '-'} | Waktu: ${item.timestamp || item.syncTime}</div>
 
-                <h4 style="background-color:#e2e8f0; padding:6px; margin:10px 0 5px 0; border:1px solid #cbd5e1;">I. DATA DASAR</h4>
-                <table style="width:100%; border-collapse:collapse; margin-bottom:10px; font-size:11px;">
-                    <tr><td style="width:35%; padding:6px; border:1px solid #cbd5e1; font-weight:bold;">1. Nomor KK</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.nomorKK || '-'}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">2. Nama Kepala Keluarga</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">3. Alamat KTP</td><td style="padding:6px; border:1px solid #cbd5e1;">${alamatKtpLengkap}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">4. Status Keberadaan</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.statusKeluarga || '-'}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">5. Alamat Domisili</td><td style="padding:6px; border:1px solid #cbd5e1;">${alamatDomLengkap}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Titik Koordinat GPS</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.gpsCoords || '-'}</td></tr>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
+                    <tr><td style="width:25%; padding:4px; border:1px solid #ccc;"><b>No. KK</b></td><td style="padding:4px; border:1px solid #ccc;">${d.nomorKK||'-'}</td></tr>
+                    <tr><td style="padding:4px; border:1px solid #ccc;"><b>Nama Kepala Kel.</b></td><td style="padding:4px; border:1px solid #ccc;">${d.namaKK?d.namaKK.toUpperCase():'-'}</td></tr>
+                    <tr><td style="padding:4px; border:1px solid #ccc;"><b>Alamat KTP</b></td><td style="padding:4px; border:1px solid #ccc;">${alamatKtp}</td></tr>
+                    <tr><td style="padding:4px; border:1px solid #ccc;"><b>Anggota Keluarga</b></td><td style="padding:4px; border:1px solid #ccc;">${d.jmlAnggota||'0'} Orang</td></tr>
                 </table>
 
-                <h4 style="background-color:#e2e8f0; padding:6px; margin:15px 0 5px 0; border:1px solid #cbd5e1;">II. DATA RUMAH & ASET</h4>
-                <table style="width:100%; border-collapse:collapse; margin-bottom:10px; font-size:11px;">
-                    <tr><td style="width:35%; padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Jumlah Anggota Keluarga</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.jmlAnggota || '0'} Orang</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Status Kepemilikan Rumah</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.statusRumah || '-'}</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Kepemilikan Sepeda Motor</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.asetMotor || '0'} Unit</td></tr>
-                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Kepemilikan Sapi</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.asetSapi || '0'} Ekor</td></tr>
+                <div style="font-weight:bold; background:#e2e8f0; padding:4px; border:1px solid #ccc; font-size:11px;">RANGKUMAN DAFTAR ANGGOTA KELUARGA</div>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px;">
+                    <tr style="background:#f8fafc;"><th style="padding:4px;border:1px solid #ccc;width:5%;">No</th><th style="padding:4px;border:1px solid #ccc;">Nama & NIK</th><th style="padding:4px;border:1px solid #ccc;">Status/JK</th><th style="padding:4px;border:1px solid #ccc;">Ringkasan</th></tr>
+                    ${tbodyIndividu}
                 </table>
 
-                <h4 style="background-color:#e2e8f0; padding:6px; margin:15px 0 5px 0; border:1px solid #cbd5e1;">III. FOTO DOKUMENTASI</h4>
-                <table style="width:100%; border-collapse:collapse; text-align:center; font-size:11px; margin-top:10px;">
+                <div style="font-weight:bold; background:#e2e8f0; padding:4px; border:1px solid #ccc; font-size:11px; margin-top:10px;">DOKUMENTASI FOTO</div>
+                <table style="width:100%; border-collapse:collapse; text-align:center; margin-top:5px;">
                     <tr>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Selfie GPS</b><br><br>${renderImage(d.fotoSelfie)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Depan Rumah</b><br><br>${renderImage(d.fotoRumahDepan)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Ruang Tamu</b><br><br>${renderImage(d.fotoRuangTamu)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Kamar Mandi</b><br><br>${renderImage(d.fotoKamarMandi)}</td>
+                        <td style="padding:5px; border:1px solid #ccc; width:25%;"><b>Selfie GPS</b><br><br>${renderImage(d.fotoSelfie)}</td>
+                        <td style="padding:5px; border:1px solid #ccc; width:25%;"><b>Depan Rumah</b><br><br>${renderImage(d.fotoRumahDepan)}</td>
+                        <td style="padding:5px; border:1px solid #ccc; width:25%;"><b>Ruang Tamu</b><br><br>${renderImage(d.fotoRuangTamu)}</td>
+                        <td style="padding:5px; border:1px solid #ccc; width:25%;"><b>Kamar Mandi</b><br><br>${renderImage(d.fotoKamarMandi)}</td>
                     </tr>
                 </table>
             `;
 
-            const opt = { 
-                margin: 10, 
-                filename: `DTSEN_${d.nomorKK}_${d.namaKK.replace(/[^a-zA-Z0-9]/g, "")}.pdf`, 
-                image: { type: 'jpeg', quality: 0.98 }, 
-                html2canvas: { scale: 2, useCORS: true }, 
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-            };
+            Swal.fire({ title: 'Mencetak PDF...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
 
-            Swal.fire({
-                title: 'Mencetak PDF...',
-                text: 'Mohon tunggu sebentar',
-                allowOutsideClick: false,
-                didOpen: () => { Swal.showLoading(); }
-            });
-
-            html2pdf().set(opt).from(pdfContainer).save().then(() => {
-                Swal.close();
-            }).catch(err => {
-                Swal.close();
-                Swal.fire('Error', 'Gagal membuat file PDF: ' + err.message, 'error');
-            });
+            html2pdf().set({ 
+                margin: 5, filename: `DTSEN_${d.nomorKK}_${d.namaKK.replace(/[^a-zA-Z0-9]/g, "")}.pdf`, 
+                image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            }).from(pdfContainer).save().then(() => Swal.close()).catch(err => { Swal.close(); Swal.fire('Error', 'Gagal membuat PDF', 'error'); });
         }
 
         function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toastMsg').innerText = msg;
-            toast.style.opacity = '1';
-            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+            const toast = document.getElementById('toast'); document.getElementById('toastMsg').innerText = msg;
+            toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        // --- PWA INIT DENGAN NETWORK-FIRST STRATEGY ---
+        // --- PWA INIT ---
         let deferredPrompt;
         function initPWA() {
             const manifest = {
-                name: "DTSEN (OFFLINE) - Data Tunggal Sosial Ekonomi Nasional",
-                short_name: "DTSEN",
-                start_url: window.location.href.split('?')[0],
-                display: "standalone",
-                background_color: "#f1f5f9",
-                theme_color: "#1d4ed8",
-                icons: [{
-                    src: "https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true",
-                    sizes: "512x512",
-                    type: "image/png"
-                }]
+                name: "DTSEN (OFFLINE) - Data Tunggal Sosial Ekonomi Nasional", short_name: "DTSEN", start_url: window.location.href.split('?')[0], display: "standalone", background_color: "#f1f5f9", theme_color: "#1d4ed8",
+                icons: [{ src: "https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true", sizes: "512x512", type: "image/png" }]
             };
             const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
-            const manifestURL = URL.createObjectURL(manifestBlob);
-            document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
+            document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
 
-            const swCode = `
-                const CACHE_NAME = 'dtsen-offline-v4';
-                const PAGE_URL = "${window.location.href.split('?')[0]}";
-                
-                self.addEventListener('install', (e) => { 
-                    e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.add(PAGE_URL)));
-                    self.skipWaiting(); 
-                });
-                
-                self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
-                
-                self.addEventListener('fetch', (e) => { 
-                    if (e.request.method !== 'GET' || !e.request.url.startsWith('http')) return;
-                    
-                    e.respondWith(
-                        fetch(e.request).then((response) => {
-                            const clone = response.clone();
-                            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
-                            return response;
-                        }).catch(() => {
-                            return caches.match(e.request).then((res) => {
-                                return res || caches.match(PAGE_URL);
-                            });
-                        })
-                    ); 
-                });
-            `;
-            const swBlob = new Blob([swCode], {type: 'application/javascript'});
-            const swURL = URL.createObjectURL(swBlob);
-            
+            // CATATAN PENTING: Browser modern (terutama Chrome) tidak mengizinkan pendaftaran
+            // Service Worker dari URL dengan protokol 'blob:' atau 'data:' demi alasan keamanan.
+            // Untuk mencegah error "Unhandled Rejection (TypeError): The URL protocol of the script... is not supported",
+            // kita menonaktifkan kode pendaftaran Service Worker berbasis 'blob:'.
+            // Mode offline data (localStorage) tetap berfungsi. Untuk offline cache UI, mohon hosting file 'sw.js' terpisah.
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register(swURL).catch(err => console.log('PWA SW err:', err));
+                if (window.location.protocol.startsWith('http')) {
+                    // navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW err:', err));
+                    console.log('Mode PWA Single-File: Service worker dilewati untuk menghindari error protocol blob.');
+                } else {
+                    console.warn('PWA Service Worker dinonaktifkan pada lingkungan ini (' + window.location.protocol + ').');
+                }
             }
 
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault(); deferredPrompt = e;
-                const banner = document.getElementById('installBanner');
-                banner.classList.remove('hidden'); banner.classList.add('flex');
-            });
-
-            document.getElementById('installBtn').addEventListener('click', async () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const { outcome } = await deferredPrompt.userChoice;
-                    if (outcome === 'accepted') {
-                        const banner = document.getElementById('installBanner');
-                        banner.classList.add('hidden'); banner.classList.remove('flex');
+            window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBanner').classList.replace('hidden', 'flex'); });
+            
+            const installBtn = document.getElementById('installBtn');
+            if(installBtn) {
+                installBtn.addEventListener('click', async () => {
+                    if (deferredPrompt) {
+                        deferredPrompt.prompt();
+                        const { outcome } = await deferredPrompt.userChoice;
+                        if (outcome === 'accepted') document.getElementById('installBanner').classList.replace('flex', 'hidden');
+                        deferredPrompt = null;
                     }
-                    deferredPrompt = null;
-                }
-            });
-
-            document.getElementById('closeInstallBtn').addEventListener('click', () => {
-                const banner = document.getElementById('installBanner');
-                banner.classList.add('hidden'); banner.classList.remove('flex');
-            });
+                });
+            }
+            
+            const closeInstallBtn = document.getElementById('closeInstallBtn');
+            if(closeInstallBtn) {
+                closeInstallBtn.addEventListener('click', () => document.getElementById('installBanner').classList.replace('flex', 'hidden'));
+            }
         }
 
-        // --- ONLOAD STARTUP ---
+        // --- ONLOAD ---
         window.onload = () => {
             const savedUser = localStorage.getItem('sensus_user');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                initAppSession();
-            } else {
-                document.getElementById('login-page').classList.remove('hidden');
-                document.getElementById('app-container').classList.add('hidden');
-            }
+            if (savedUser) { currentUser = JSON.parse(savedUser); initAppSession(); } 
+            else { document.getElementById('login-page').classList.remove('hidden'); document.getElementById('app-container').classList.add('hidden'); }
             initPWA();
         };
     </script>
