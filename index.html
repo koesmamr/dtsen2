@@ -18,8 +18,6 @@
         .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.1rem; height: 1.1rem; }
         .section-card { transition: all 0.3s ease; }
         .modal-overlay { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
-        /* Efek transisi halus untuk Akordeon */
-        .accordion-content { transition: max-height 0.3s ease-out; overflow: hidden; }
     </style>
     
     <meta name="theme-color" content="#1d4ed8">
@@ -474,7 +472,7 @@
             { id: 'ind_hamil', label: '37. Status Hamil (Wnt >15)', type: 'select', options: ['YA', 'TIDAK'] }
         ];
 
-        // --- RENDER FORM INDIVIDU (AKORDEON) ---
+        // --- RENDER FORM INDIVIDU (AKORDEON HIDDEN) ---
         function renderIndividuForm() {
             const container = document.getElementById('accordionContainer');
             container.innerHTML = '';
@@ -495,13 +493,13 @@
                     : `<button type="button" class="bg-green-500 text-white px-3 py-1.5 rounded text-[10px] font-bold shadow-sm hover:bg-green-600 transition-colors" onclick="simpanIndividuKeList()">Simpan Anggota <i class="fas fa-check ml-1"></i></button>`;
 
                 container.innerHTML += `
-                    <div class="border border-slate-200 rounded mb-2 overflow-hidden bg-white shadow-sm">
-                        <button type="button" id="q-btn-${index}" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center transition-colors" onclick="toggleQuestion(${index})">
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="q-container-${index}">
+                        <button type="button" id="q-btn-${index}" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center transition-colors rounded" onclick="toggleQuestion(${index})">
                             <span>${q.label}</span>
                             <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 transform" id="q-icon-${index}"></i>
                         </button>
-                        <div class="accordion-content max-h-0 bg-white border-t border-transparent" id="q-body-${index}">
-                            <div class="p-4">
+                        <div class="hidden border-t border-slate-100" id="q-body-${index}">
+                            <div class="p-4 bg-white rounded-b">
                                 ${inputHtml}
                                 <div class="mt-3 text-right">
                                     ${nextBtn}
@@ -513,35 +511,47 @@
             });
         }
 
-        // --- LOGIKA INTERAKSI AKORDEON ---
+        // --- LOGIKA INTERAKSI AKORDEON (MENGGUNAKAN HIDDEN) ---
         function toggleQuestion(index) {
             // Tutup yang sedang terbuka
             if (currentOpenQ !== null && currentOpenQ !== index) {
                 const oldBody = document.getElementById(`q-body-${currentOpenQ}`);
-                oldBody.style.maxHeight = null;
-                oldBody.classList.replace('border-slate-100', 'border-transparent');
-                document.getElementById(`q-icon-${currentOpenQ}`).classList.remove('rotate-180');
+                if (oldBody) {
+                    oldBody.classList.add('hidden');
+                    document.getElementById(`q-icon-${currentOpenQ}`).classList.remove('rotate-180');
+                    document.getElementById(`q-container-${currentOpenQ}`).classList.remove('ring-2', 'ring-indigo-400');
+                    document.getElementById(`q-btn-${currentOpenQ}`).classList.remove('rounded-t');
+                    document.getElementById(`q-btn-${currentOpenQ}`).classList.add('rounded');
+                }
             }
             
             const targetBody = document.getElementById(`q-body-${index}`);
             const targetIcon = document.getElementById(`q-icon-${index}`);
+            const targetContainer = document.getElementById(`q-container-${index}`);
+            const targetBtn = document.getElementById(`q-btn-${index}`);
             
             // Toggle yang diklik
-            if (targetBody.style.maxHeight) {
-                targetBody.style.maxHeight = null;
-                targetBody.classList.replace('border-slate-100', 'border-transparent');
+            if (!targetBody.classList.contains('hidden')) {
+                targetBody.classList.add('hidden');
                 targetIcon.classList.remove('rotate-180');
+                targetContainer.classList.remove('ring-2', 'ring-indigo-400');
+                targetBtn.classList.remove('rounded-t');
+                targetBtn.classList.add('rounded');
                 currentOpenQ = null;
             } else {
-                targetBody.style.maxHeight = targetBody.scrollHeight + "px";
-                targetBody.classList.replace('border-transparent', 'border-slate-100');
+                targetBody.classList.remove('hidden');
                 targetIcon.classList.add('rotate-180');
+                targetContainer.classList.add('ring-2', 'ring-indigo-400');
+                targetBtn.classList.remove('rounded');
+                targetBtn.classList.add('rounded-t');
                 currentOpenQ = index;
                 
-                // Gulir otomatis sedikit ke bawah agar fokus
+                // Fokus otomatis ke input & gulir
                 setTimeout(() => {
-                    document.getElementById(`q-btn-${index}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 150);
+                    targetContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const inputEl = document.getElementById(individuQuestions[index].id);
+                    if (inputEl) inputEl.focus();
+                }, 50);
             }
         }
 
@@ -551,12 +561,10 @@
             const btn = document.getElementById(`q-btn-${index}`);
             
             if (val && val.trim() !== '') {
-                // Beri warna Hijau Muda jika sudah diisi
-                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.add('bg-green-100', 'text-green-800');
                 btn.classList.remove('bg-slate-50', 'text-slate-700');
             } else {
-                // Kembalikan ke warna asli
-                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.remove('bg-green-100', 'text-green-800');
                 btn.classList.add('bg-slate-50', 'text-slate-700');
             }
         }
@@ -629,17 +637,24 @@
         function openIndividuModal() {
             document.getElementById('formIndividuSingle').reset();
             
-            // Reset semua warna hijau menjadi standar
-            individuQuestions.forEach((q, idx) => checkAnswered(idx));
-            
-            // Tutup semua akordeon secara default
-            if(currentOpenQ !== null) toggleQuestion(currentOpenQ); 
+            // Reset state UI ke standar
+            currentOpenQ = null;
+            individuQuestions.forEach((q, idx) => {
+                const btn = document.getElementById(`q-btn-${idx}`);
+                btn.classList.remove('bg-green-100', 'text-green-800');
+                btn.classList.add('bg-slate-50', 'text-slate-700', 'rounded');
+                btn.classList.remove('rounded-t');
+                
+                document.getElementById(`q-body-${idx}`).classList.add('hidden');
+                document.getElementById(`q-icon-${idx}`).classList.remove('rotate-180');
+                document.getElementById(`q-container-${idx}`).classList.remove('ring-2', 'ring-indigo-400');
+            });
 
             document.getElementById('modalIndividu').classList.remove('hidden');
             document.getElementById('modalIndividu').classList.add('flex');
             
             // Buka pertanyaan No. 1 otomatis saat modal tampil
-            setTimeout(() => { toggleQuestion(0); }, 150);
+            setTimeout(() => { toggleQuestion(0); }, 50);
         }
 
         function closeIndividuModal() {
