@@ -17,8 +17,9 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.1rem; height: 1.1rem; }
         .section-card { transition: all 0.3s ease; }
-        /* Efek modal overlay */
         .modal-overlay { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
+        /* Efek transisi halus untuk Akordeon */
+        .accordion-content { transition: max-height 0.3s ease-out; overflow: hidden; }
     </style>
     
     <meta name="theme-color" content="#1d4ed8">
@@ -327,143 +328,61 @@
     </div>
 
     <!-- ==========================================
-         MODAL FORM DATA INDIVIDU (Q1 - Q37)
+         MODAL FORM DATA INDIVIDU (AKORDEON/WIZARD)
     =========================================== -->
     <div id="modalIndividu" class="fixed inset-0 modal-overlay z-[150] hidden items-center justify-center p-2 sm:p-4">
-        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl flex flex-col h-[95vh] sm:h-[85vh]">
+        <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl flex flex-col h-[95vh] sm:h-[85vh]">
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-indigo-600 text-white rounded-t-xl">
-                <h2 class="font-bold text-sm sm:text-base"><i class="fas fa-user-plus mr-2"></i>Formulir Data Individu</h2>
+                <h2 class="font-bold text-sm sm:text-base"><i class="fas fa-user-plus mr-2"></i>Data Individu (Q1-Q37)</h2>
                 <button type="button" onclick="closeIndividuModal()" class="w-8 h-8 rounded-full bg-indigo-500 hover:bg-indigo-400"><i class="fas fa-times"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-4 bg-slate-50">
-                <form id="formIndividuSingle" class="space-y-4">
-                    <!-- Q1 - Q7: Identitas -->
-                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">IDENTITAS INDIVIDU</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">1. NIK</label><input type="number" id="ind_nik" class="w-full border rounded px-2 py-1 text-xs"></div>
-                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">2. Nama Lengkap</label><input type="text" id="ind_nama" class="w-full border rounded px-2 py-1 text-xs uppercase"></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">3. Jenis Kelamin</label><select id="ind_jk" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="LAKI-LAKI">LAKI-LAKI</option><option value="PEREMPUAN">PEREMPUAN</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">4. Keberadaan</label><select id="ind_keberadaan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="DITEMUKAN">DITEMUKAN</option><option value="PINDAH/TIDAK DITEMUKAN">PINDAH/TDK DITEMUKAN</option><option value="MENINGGAL">MENINGGAL</option><option value="MENOLAK SURVEY">MENOLAK SURVEY</option><option value="DALAM LEMBAGA">DALAM LEMBAGA</option><option value="TIDAK ELIGIBLE">TIDAK ELIGIBLE</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">5. Hubungan Keluarga</label><select id="ind_hubungan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="KEPALA KELUARGA">KEPALA KELUARGA</option><option value="ISTRI">ISTRI</option><option value="SUAMI">SUAMI</option><option value="ANAK">ANAK</option><option value="MENANTU">MENANTU</option><option value="CUCU">CUCU</option><option value="ORANG TUA">ORANG TUA</option><option value="MERTUA">MERTUA</option><option value="FAMILI LAIN">FAMILI LAIN</option><option value="PEMBANTU">PEMBANTU</option><option value="LAINNYA">LAINNYA</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">6. Tanggal Lahir</label><input type="date" id="ind_tglLahir" class="w-full border rounded px-2 py-1 text-xs"></div>
-                            <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">7. Status Kawin</label><select id="ind_statusKawin" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="BELUM KAWIN">BELUM KAWIN</option><option value="KAWIN">KAWIN</option><option value="CERAI HIDUP">CERAI HIDUP</option><option value="CERAI MATI">CERAI MATI</option></select></div>
-                        </div>
-                    </div>
-
-                    <!-- Q8 - Q12: Pendidikan -->
-                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">PENDIDIKAN</h3>
-                        <div class="space-y-2">
-                            <div><label class="text-[10px] font-semibold text-slate-600">8. Partisipasi Sekolah</label><select id="ind_sekolah" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="TIDAK/BELUM PERNAH SEKOLAH">TIDAK/BELUM PERNAH SEKOLAH</option><option value="MASIH SEKOLAH">MASIH SEKOLAH</option><option value="TIDAK BERSEKOLAH LAGI">TIDAK BERSEKOLAH LAGI</option></select></div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><label class="text-[10px] font-semibold text-slate-600">9. Jenjang Tertinggi</label><select id="ind_jenjang" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="SD/MI/PAKET A/SDLB">SD/Sederajat</option><option value="SMP/MTS/PAKET B/SMPLB">SMP/Sederajat</option><option value="SMA/SMK/MA/PAKET C/SMLB">SMA/SMK/Sederajat</option><option value="D1/D2/D3">D1/D2/D3</option><option value="D4/S1">D4/S1</option><option value="S2/S3">S2/S3</option><option value="PROFESI">PROFESI</option></select></div>
-                                <div><label class="text-[10px] font-semibold text-slate-600">10. Kelas Tertinggi</label><input type="number" id="ind_kelas" class="w-full border rounded px-2 py-1 text-xs" placeholder="Kelas (1-8)"></div>
-                            </div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">11. Ijazah Tertinggi</label><input type="text" id="ind_ijazah" class="w-full border rounded px-2 py-1 text-xs" placeholder="Cth: SMA, S1"></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">12. Sedang di Pesantren?</label><select id="ind_pesantren" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
-                        </div>
-                    </div>
-
-                    <!-- Q13 - Q24: Pekerjaan -->
-                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">PEKERJAAN & USAHA</h3>
-                        <div class="space-y-2">
-                            <div><label class="text-[10px] font-semibold text-slate-600">13. Bekerja/Membantu Bekerja?</label><select id="ind_kerja" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">14. Lapangan Usaha (Utama)</label><select id="ind_lapUsaha" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="PERTANIAN/PERKEBUNAN/PETERNAKAN/PERIKANAN">PERTANIAN/PERKEBUNAN/PETERNAKAN/PERIKANAN</option><option value="PERTAMBANGAN/PENGGALIAN">PERTAMBANGAN/PENGGALIAN</option><option value="INDUSTRI PENGOLAHAN">INDUSTRI PENGOLAHAN</option><option value="KONSTRUKSI">KONSTRUKSI</option><option value="PERDAGANGAN/REPARASI">PERDAGANGAN/REPARASI</option><option value="PENGANGKUTAN/PERGUDANGAN">PENGANGKUTAN/PERGUDANGAN</option><option value="PENYEDIAAN AKOMODASI/MAKAN MINUM">PENYEDIAAN AKOMODASI/MAKAN MINUM</option><option value="PENDIDIKAN/KESEHATAN">PENDIDIKAN/KESEHATAN</option><option value="JASA LAINNYA">JASA LAINNYA</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">15. Status Pekerjaan</label><select id="ind_statusKerja" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="BERUSAHA SENDIRI">BERUSAHA SENDIRI</option><option value="BERUSAHA DIBANTU BURUH">BERUSAHA DIBANTU BURUH</option><option value="BURUH/KARYAWAN/SWASTA">BURUH/KARYAWAN/SWASTA</option><option value="ASN/TNI/POLRI/BUMN">ASN/TNI/POLRI/BUMN</option><option value="PEKERJA BEBAS">PEKERJA BEBAS</option><option value="PEKERJA KELUARGA/TIDAK DIBAYAR">PEKERJA KELUARGA/TIDAK DIBAYAR</option></select></div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><label class="text-[10px] font-semibold text-slate-600">16. Punya Usaha?</label><select id="ind_punyaUsaha" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
-                                <div><label class="text-[10px] font-semibold text-slate-600">17. Jml Usaha Dimiliki</label><input type="number" id="ind_jmlUsaha" class="w-full border rounded px-2 py-1 text-xs"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">21. Omzet Usaha Utama</label><select id="ind_omzet" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="<5 JUTA (ULTRA MIKRO)"><5 JUTA (ULTRA MIKRO)</option><option value="5 - 15 JUTA (ULTRA MIKRO)">5 - 15 JUTA (ULTRA MIKRO)</option><option value="15 - 25 JUTA (ULTRA MIKRO)">15 - 25 JUTA (ULTRA MIKRO)</option><option value="25 - 167 JUTA (MIKRO)">25 - 167 JUTA (MIKRO)</option><option value="167 - 1250 JUTA (KECIL)">167 - 1250 JUTA (KECIL)</option><option value=">1250 JUTA">> 1250 JUTA (MENENGAH/BESAR)</option></select></div>
-                                <div class="col-span-2"><label class="text-[10px] font-semibold text-slate-600">22. Pendapatan Sebulan</label><select id="ind_pendapatan" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="TIDAK ADA PENGHASILAN">TIDAK ADA PENGHASILAN</option><option value="<1 JUTA PER BULAN">< 1 JUTA PER BULAN</option><option value="UMK">UMK</option><option value=">= 1 JUTA S/D < UMK">>= 1 JUTA S/D < UMK</option><option value="> UMK S/D 10 JUTA">> UMK S/D 10 JUTA</option><option value="> 10 JUTA">> 10 JUTA</option></select></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><label class="text-[10px] font-semibold text-slate-600">23. BPJS Ketenagakerjaan/Taspen</label><select id="ind_bpjstk" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
-                                <div><label class="text-[10px] font-semibold text-slate-600">24. Sertifikat Keahlian</label><input type="text" id="ind_sertifikat" class="w-full border rounded px-2 py-1 text-xs" placeholder="Ketik jika ada"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Q25 - Q37: Kesehatan & Disabilitas -->
-                    <div class="bg-white p-3 rounded shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-xs text-indigo-700 mb-2 border-b pb-1">KESEHATAN & DISABILITAS</h3>
-                        <p class="text-[9px] text-slate-500 mb-2 font-semibold">Tingkat Kesulitan: 1=Tdk Bisa, 2=Banyak Kesulitan, 3=Sedikit Kesulitan, 4=Tdk Mengalami Kesulitan</p>
-                        <div class="grid grid-cols-2 gap-x-2 gap-y-1">
-                            <div><label class="text-[9px] text-slate-600">25. Penglihatan (1-4)</label><select id="ind_disNetra" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">26. Pendengaran (1-4)</label><select id="ind_disRungu" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">27. Berjalan (1-4)</label><select id="ind_disJalan" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">28. Tangan/Jari (1-4)</label><select id="ind_disTangan" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">29. Intelektual (1-4)</label><select id="ind_disMental" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">30. Berbicara (1-4)</label><select id="ind_disWicara" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">31. Mengurus Diri (1-4)</label><select id="ind_disUrusDiri" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                            <div><label class="text-[9px] text-slate-600">32. Mengingat (1-4)</label><select id="ind_disIngat" class="w-full border rounded px-1 py-1 text-xs"><option value="">-</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option></select></div>
-                        </div>
-                        <div class="mt-2 space-y-2">
-                            <div><label class="text-[10px] font-semibold text-slate-600">33. Ggn Sedih/Depresi</label><select id="ind_depresi" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="SANGAT SERING">SANGAT SERING</option><option value="SERING">SERING</option><option value="JARANG">JARANG</option><option value="TIDAK PERNAH">TIDAK PERNAH</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">34. Jaminan Kesehatan</label><select id="ind_bpjskes" class="w-full border rounded px-2 py-1 text-xs"><option value="">-- Pilih --</option><option value="NON PBI JK (MANDIRI/PPU)">NON PBI JK (MANDIRI/PPU)</option><option value="PBI JK/PBID">PBI JK/PBID</option><option value="ASURANSI SWASTA">ASURANSI SWASTA</option><option value="TIDAK PUNYA">TIDAK PUNYA</option></select></div>
-                            <div><label class="text-[10px] font-semibold text-slate-600">35. Penyakit Kronis</label><input type="text" id="ind_kronis" class="w-full border rounded px-2 py-1 text-xs" placeholder="Cth: Kanker, Hipertensi (Kosongkan jika tdk ada)"></div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div><label class="text-[10px] font-semibold text-slate-600">36. Gizi (Khusus Balita)</label><select id="ind_gizi" class="w-full border rounded px-2 py-1 text-xs"><option value="-">-</option><option value="NORMAL">NORMAL</option><option value="STUNTING">STUNTING</option><option value="WASTING">WASTING</option><option value="KEGEMUKAN">KEGEMUKAN</option></select></div>
-                                <div><label class="text-[10px] font-semibold text-slate-600">37. Status Hamil (Wnt >15)</label><select id="ind_hamil" class="w-full border rounded px-2 py-1 text-xs"><option value="-">-</option><option value="YA">YA</option><option value="TIDAK">TIDAK</option></select></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="flex-1 overflow-y-auto p-3 bg-slate-50 relative">
+                <form id="formIndividuSingle">
+                    <!-- Container untuk daftar pertanyaan dinamis (Akordeon) -->
+                    <div id="accordionContainer" class="space-y-2 pb-6"></div>
                 </form>
             </div>
             
             <div class="p-3 border-t border-slate-200 bg-white rounded-b-xl flex gap-2">
                 <button type="button" onclick="closeIndividuModal()" class="w-1/3 bg-slate-200 text-slate-700 py-2 rounded font-semibold text-sm">Batal</button>
-                <button type="button" onclick="simpanIndividuKeList()" class="w-2/3 bg-indigo-600 text-white py-2 rounded font-semibold text-sm shadow-sm">Simpan Anggota Keluarga</button>
+                <button type="button" onclick="simpanIndividuKeList()" class="w-2/3 bg-indigo-600 text-white py-2 rounded font-semibold text-sm shadow-sm hover:bg-indigo-700">Selesai & Simpan</button>
             </div>
         </div>
     </div>
 
-    <!-- TOMBOL MENGAMBANG -->
+    <!-- TOMBOL MENGAMBANG & MODAL ANTREAN -->
     <button id="offlinePendingIndicator" onclick="toggleQueueModal()" class="fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:scale-105 transition-all hidden">
         <div id="offlinePendingText" class="font-bold text-sm"><i class="fas fa-exclamation-triangle"></i> Tertunda</div>
         <span id="offlinePendingCount" class="bg-white text-amber-600 px-2 py-0.5 rounded-full text-xs font-black">0</span>
     </button>
 
-    <!-- Modal Antrean & Riwayat -->
     <div id="queueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-end sm:items-center justify-center transition-opacity">
         <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col transform transition-transform translate-y-full" id="queueModalContent">
-            
             <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
                 <h2 class="font-bold text-lg text-slate-800" id="modalTitle"><i class="fas fa-list-ul mr-2 text-blue-600"></i>Antrean Sinkronisasi</h2>
                 <button type="button" onclick="toggleQueueModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600"><i class="fas fa-times"></i></button>
             </div>
-            
-            <!-- Tabs -->
             <div class="flex border-b border-slate-200 text-sm font-semibold bg-white">
                 <button class="flex-1 py-3 text-blue-600 border-b-2 border-blue-600" id="tabAntrean" onclick="switchTab('antrean')">Antrean (<span id="countAntreanTab">0</span>)</button>
                 <button class="flex-1 py-3 text-slate-500 hover:text-slate-700" id="tabRiwayat" onclick="switchTab('riwayat')">Berhasil Terkirim</button>
             </div>
-
-            <!-- List Antrean -->
             <div id="queueList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100"></div>
-            <!-- List Riwayat -->
             <div id="historyList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100 hidden"></div>
-
             <div class="p-4 border-t border-slate-200 bg-white" id="syncFooter">
                 <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all mb-2">
                     <i class="fas fa-sync-alt"></i> Sinkronkan Semua Sekarang
                 </button>
             </div>
-
             <div class="p-4 border-t border-slate-200 bg-white hidden" id="historyFooter">
                 <button type="button" onclick="fetchHistoryFromServer()" class="w-full bg-blue-100 text-blue-700 py-3 rounded-xl font-bold hover:bg-blue-200 transition-all flex justify-center items-center gap-2">
                     <i class="fas fa-cloud-download-alt"></i> Tarik Riwayat dari Server
                 </button>
-                <p class="text-center text-[10px] text-slate-400 mt-2">Gunakan fitur ini jika riwayat kosong/baru pindah HP.</p>
+                <p class="text-center text-[10px] text-slate-400 mt-2">Gunakan jika riwayat kosong/baru pindah HP.</p>
             </div>
         </div>
     </div>
 
-    <!-- Banner PWA -->
     <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
         <div class="flex items-center gap-3">
             <div class="bg-white p-2 rounded-lg"><img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon"></div>
@@ -478,7 +397,6 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
     <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-[110] flex items-center gap-2">
         <i class="fas fa-info-circle"></i> <span id="toastMsg">Pesan</span>
     </div>
@@ -515,8 +433,133 @@
         let isSyncingProcess = false;
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzj9ci9NhWSRaBJS6rrYAWgapOSBbJCRGy7x7dEJZS7aJEBYXppOUvrSx4mh-sJpQ4veQ/exec';
         
-        // Data Independen: Anggota Keluarga (Array of Objects)
         let listIndividu = [];
+        let currentOpenQ = null; // Melacak pertanyaan Akordeon mana yang sedang terbuka
+
+        // --- KONFIGURASI PERTANYAAN INDIVIDU ---
+        const individuQuestions = [
+            { id: 'ind_nik', label: '1. NIK', type: 'number', placeholder: '16 Digit NIK' },
+            { id: 'ind_nama', label: '2. Nama Lengkap', type: 'text', placeholder: 'Sesuai KTP' },
+            { id: 'ind_jk', label: '3. Jenis Kelamin', type: 'select', options: ['LAKI-LAKI', 'PEREMPUAN'] },
+            { id: 'ind_keberadaan', label: '4. Keberadaan', type: 'select', options: ['DITEMUKAN', 'PINDAH/TIDAK DITEMUKAN', 'MENINGGAL', 'MENOLAK SURVEY', 'DALAM LEMBAGA', 'TIDAK ELIGIBLE'] },
+            { id: 'ind_hubungan', label: '5. Hubungan Keluarga', type: 'select', options: ['KEPALA KELUARGA', 'ISTRI', 'SUAMI', 'ANAK', 'MENANTU', 'CUCU', 'ORANG TUA', 'MERTUA', 'FAMILI LAIN', 'PEMBANTU', 'LAINNYA'] },
+            { id: 'ind_tglLahir', label: '6. Tanggal Lahir', type: 'date' },
+            { id: 'ind_statusKawin', label: '7. Status Kawin', type: 'select', options: ['BELUM KAWIN', 'KAWIN', 'CERAI HIDUP', 'CERAI MATI'] },
+            { id: 'ind_sekolah', label: '8. Partisipasi Sekolah', type: 'select', options: ['TIDAK/BELUM PERNAH SEKOLAH', 'MASIH SEKOLAH', 'TIDAK BERSEKOLAH LAGI'] },
+            { id: 'ind_jenjang', label: '9. Jenjang Tertinggi', type: 'select', options: ['SD/Sederajat', 'SMP/Sederajat', 'SMA/SMK/Sederajat', 'D1/D2/D3', 'D4/S1', 'S2/S3', 'PROFESI'] },
+            { id: 'ind_kelas', label: '10. Kelas Tertinggi', type: 'number', placeholder: 'Angka Kelas (1-8)' },
+            { id: 'ind_ijazah', label: '11. Ijazah Tertinggi', type: 'text', placeholder: 'Cth: SMA, S1' },
+            { id: 'ind_pesantren', label: '12. Sedang di Pesantren?', type: 'select', options: ['YA', 'TIDAK'] },
+            { id: 'ind_kerja', label: '13. Bekerja/Membantu Bekerja?', type: 'select', options: ['YA', 'TIDAK'] },
+            { id: 'ind_lapUsaha', label: '14. Lapangan Usaha Utama', type: 'select', options: ['PERTANIAN/PERKEBUNAN/PETERNAKAN/PERIKANAN', 'PERTAMBANGAN/PENGGALIAN', 'INDUSTRI PENGOLAHAN', 'KONSTRUKSI', 'PERDAGANGAN/REPARASI', 'PENGANGKUTAN/PERGUDANGAN', 'PENYEDIAAN AKOMODASI/MAKAN MINUM', 'PENDIDIKAN/KESEHATAN', 'JASA LAINNYA'] },
+            { id: 'ind_statusKerja', label: '15. Status Pekerjaan', type: 'select', options: ['BERUSAHA SENDIRI', 'BERUSAHA DIBANTU BURUH', 'BURUH/KARYAWAN/SWASTA', 'ASN/TNI/POLRI/BUMN', 'PEKERJA BEBAS', 'PEKERJA KELUARGA/TIDAK DIBAYAR'] },
+            { id: 'ind_punyaUsaha', label: '16. Punya Usaha?', type: 'select', options: ['YA', 'TIDAK'] },
+            { id: 'ind_jmlUsaha', label: '17. Jml Usaha Dimiliki', type: 'number' },
+            { id: 'ind_omzet', label: '21. Omzet Usaha Utama', type: 'select', options: ['<5 JUTA (ULTRA MIKRO)', '5 - 15 JUTA (ULTRA MIKRO)', '15 - 25 JUTA (ULTRA MIKRO)', '25 - 167 JUTA (MIKRO)', '167 - 1250 JUTA (KECIL)', '>1250 JUTA'] },
+            { id: 'ind_pendapatan', label: '22. Pendapatan Sebulan', type: 'select', options: ['TIDAK ADA PENGHASILAN', '<1 JUTA PER BULAN', 'UMK', '>= 1 JUTA S/D < UMK', '> UMK S/D 10 JUTA', '> 10 JUTA'] },
+            { id: 'ind_bpjstk', label: '23. BPJS Ketenagakerjaan/Taspen', type: 'select', options: ['YA', 'TIDAK'] },
+            { id: 'ind_sertifikat', label: '24. Sertifikat Keahlian', type: 'text', placeholder: 'Ketik jika ada' },
+            { id: 'ind_disNetra', label: '25. Kesulitan Penglihatan', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disRungu', label: '26. Kesulitan Pendengaran', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disJalan', label: '27. Kesulitan Berjalan', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disTangan', label: '28. Kesulitan Tangan/Jari', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disMental', label: '29. Kesulitan Intelektual', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disWicara', label: '30. Kesulitan Berbicara', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disUrusDiri', label: '31. Kesulitan Mengurus Diri', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_disIngat', label: '32. Kesulitan Mengingat', type: 'select', options: ['1. SAMA SEKALI TDK BISA', '2. BANYAK KESULITAN', '3. SEDIKIT KESULITAN', '4. TDK MENGALAMI KESULITAN'] },
+            { id: 'ind_depresi', label: '33. Ggn Sedih/Depresi', type: 'select', options: ['SANGAT SERING', 'SERING', 'JARANG', 'TIDAK PERNAH'] },
+            { id: 'ind_bpjskes', label: '34. Jaminan Kesehatan', type: 'select', options: ['NON PBI JK (MANDIRI/PPU)', 'PBI JK/PBID', 'ASURANSI SWASTA', 'TIDAK PUNYA'] },
+            { id: 'ind_kronis', label: '35. Penyakit Kronis', type: 'text', placeholder: 'Cth: Kanker, Hipertensi' },
+            { id: 'ind_gizi', label: '36. Gizi (Khusus Balita)', type: 'select', options: ['NORMAL', 'STUNTING', 'WASTING', 'KEGEMUKAN'] },
+            { id: 'ind_hamil', label: '37. Status Hamil (Wnt >15)', type: 'select', options: ['YA', 'TIDAK'] }
+        ];
+
+        // --- RENDER FORM INDIVIDU (AKORDEON) ---
+        function renderIndividuForm() {
+            const container = document.getElementById('accordionContainer');
+            container.innerHTML = '';
+            
+            individuQuestions.forEach((q, index) => {
+                const nextIndex = index + 1;
+                let inputHtml = '';
+                
+                if (q.type === 'select') {
+                    const optionsHtml = q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+                    inputHtml = `<select id="${q.id}" class="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow" onchange="checkAnswered(${index})"><option value="">-- Pilih Jawaban --</option>${optionsHtml}</select>`;
+                } else {
+                    inputHtml = `<input type="${q.type}" id="${q.id}" placeholder="${q.placeholder || ''}" class="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow" oninput="checkAnswered(${index})">`;
+                }
+                
+                const nextBtn = nextIndex < individuQuestions.length 
+                    ? `<button type="button" class="bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded text-[10px] font-bold shadow-sm hover:bg-indigo-200 transition-colors" onclick="toggleQuestion(${nextIndex})">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button>` 
+                    : `<button type="button" class="bg-green-500 text-white px-3 py-1.5 rounded text-[10px] font-bold shadow-sm hover:bg-green-600 transition-colors" onclick="simpanIndividuKeList()">Simpan Anggota <i class="fas fa-check ml-1"></i></button>`;
+
+                container.innerHTML += `
+                    <div class="border border-slate-200 rounded mb-2 overflow-hidden bg-white shadow-sm">
+                        <button type="button" id="q-btn-${index}" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center transition-colors" onclick="toggleQuestion(${index})">
+                            <span>${q.label}</span>
+                            <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 transform" id="q-icon-${index}"></i>
+                        </button>
+                        <div class="accordion-content max-h-0 bg-white border-t border-transparent" id="q-body-${index}">
+                            <div class="p-4">
+                                ${inputHtml}
+                                <div class="mt-3 text-right">
+                                    ${nextBtn}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- LOGIKA INTERAKSI AKORDEON ---
+        function toggleQuestion(index) {
+            // Tutup yang sedang terbuka
+            if (currentOpenQ !== null && currentOpenQ !== index) {
+                const oldBody = document.getElementById(`q-body-${currentOpenQ}`);
+                oldBody.style.maxHeight = null;
+                oldBody.classList.replace('border-slate-100', 'border-transparent');
+                document.getElementById(`q-icon-${currentOpenQ}`).classList.remove('rotate-180');
+            }
+            
+            const targetBody = document.getElementById(`q-body-${index}`);
+            const targetIcon = document.getElementById(`q-icon-${index}`);
+            
+            // Toggle yang diklik
+            if (targetBody.style.maxHeight) {
+                targetBody.style.maxHeight = null;
+                targetBody.classList.replace('border-slate-100', 'border-transparent');
+                targetIcon.classList.remove('rotate-180');
+                currentOpenQ = null;
+            } else {
+                targetBody.style.maxHeight = targetBody.scrollHeight + "px";
+                targetBody.classList.replace('border-transparent', 'border-slate-100');
+                targetIcon.classList.add('rotate-180');
+                currentOpenQ = index;
+                
+                // Gulir otomatis sedikit ke bawah agar fokus
+                setTimeout(() => {
+                    document.getElementById(`q-btn-${index}`).scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 150);
+            }
+        }
+
+        function checkAnswered(index) {
+            const id = individuQuestions[index].id;
+            const val = document.getElementById(id).value;
+            const btn = document.getElementById(`q-btn-${index}`);
+            
+            if (val && val.trim() !== '') {
+                // Beri warna Hijau Muda jika sudah diisi
+                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.remove('bg-slate-50', 'text-slate-700');
+            } else {
+                // Kembalikan ke warna asli
+                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.add('bg-slate-50', 'text-slate-700');
+            }
+        }
 
         // --- LOGIN & SESSION ---
         function handleCredentialResponse(response) {
@@ -582,11 +625,21 @@
             cb.checked ? box.classList.add('hidden') : box.classList.remove('hidden');
         }
 
-        // --- DATA INDIVIDU (MODAL & RENDER) ---
+        // --- DATA INDIVIDU (OPERASI MODAL) ---
         function openIndividuModal() {
             document.getElementById('formIndividuSingle').reset();
+            
+            // Reset semua warna hijau menjadi standar
+            individuQuestions.forEach((q, idx) => checkAnswered(idx));
+            
+            // Tutup semua akordeon secara default
+            if(currentOpenQ !== null) toggleQuestion(currentOpenQ); 
+
             document.getElementById('modalIndividu').classList.remove('hidden');
             document.getElementById('modalIndividu').classList.add('flex');
+            
+            // Buka pertanyaan No. 1 otomatis saat modal tampil
+            setTimeout(() => { toggleQuestion(0); }, 150);
         }
 
         function closeIndividuModal() {
@@ -596,44 +649,13 @@
 
         function simpanIndividuKeList() {
             const nama = document.getElementById('ind_nama').value;
-            if(!nama) return Swal.fire('Oops', 'Nama Lengkap wajib diisi', 'warning');
+            if(!nama) return Swal.fire('Oops', 'Nama Lengkap (Pertanyaan 2) wajib diisi', 'warning');
             
-            const individu = {
-                nik: document.getElementById('ind_nik').value,
-                nama: nama,
-                jk: document.getElementById('ind_jk').value,
-                keberadaan: document.getElementById('ind_keberadaan').value,
-                hubungan: document.getElementById('ind_hubungan').value,
-                tglLahir: document.getElementById('ind_tglLahir').value,
-                statusKawin: document.getElementById('ind_statusKawin').value,
-                sekolah: document.getElementById('ind_sekolah').value,
-                jenjang: document.getElementById('ind_jenjang').value,
-                kelas: document.getElementById('ind_kelas').value,
-                ijazah: document.getElementById('ind_ijazah').value,
-                pesantren: document.getElementById('ind_pesantren').value,
-                kerja: document.getElementById('ind_kerja').value,
-                lapUsaha: document.getElementById('ind_lapUsaha').value,
-                statusKerja: document.getElementById('ind_statusKerja').value,
-                punyaUsaha: document.getElementById('ind_punyaUsaha').value,
-                jmlUsaha: document.getElementById('ind_jmlUsaha').value,
-                omzet: document.getElementById('ind_omzet').value,
-                pendapatan: document.getElementById('ind_pendapatan').value,
-                bpjstk: document.getElementById('ind_bpjstk').value,
-                sertifikat: document.getElementById('ind_sertifikat').value,
-                disNetra: document.getElementById('ind_disNetra').value,
-                disRungu: document.getElementById('ind_disRungu').value,
-                disJalan: document.getElementById('ind_disJalan').value,
-                disTangan: document.getElementById('ind_disTangan').value,
-                disMental: document.getElementById('ind_disMental').value,
-                disWicara: document.getElementById('ind_disWicara').value,
-                disUrusDiri: document.getElementById('ind_disUrusDiri').value,
-                disIngat: document.getElementById('ind_disIngat').value,
-                depresi: document.getElementById('ind_depresi').value,
-                bpjskes: document.getElementById('ind_bpjskes').value,
-                kronis: document.getElementById('ind_kronis').value,
-                gizi: document.getElementById('ind_gizi').value,
-                hamil: document.getElementById('ind_hamil').value
-            };
+            let individu = {};
+            individuQuestions.forEach(q => {
+                let key = q.id.replace('ind_', '');
+                individu[key] = document.getElementById(q.id).value;
+            });
 
             listIndividu.push(individu);
             renderListIndividu();
@@ -653,7 +675,7 @@
                 container.innerHTML += `
                     <div class="bg-white p-3 rounded shadow-sm border border-indigo-100 flex justify-between items-center">
                         <div>
-                            <p class="font-bold text-xs text-indigo-900">${ind.nama.toUpperCase()} <span class="bg-indigo-100 text-indigo-700 font-normal px-1 rounded text-[9px] ml-1">${ind.hubungan}</span></p>
+                            <p class="font-bold text-xs text-indigo-900">${ind.nama.toUpperCase()} <span class="bg-indigo-100 text-indigo-700 font-normal px-1 rounded text-[9px] ml-1">${ind.hubungan || '-'}</span></p>
                             <p class="text-[10px] text-slate-500">NIK: ${ind.nik || '-'} | L/P: ${ind.jk || '-'}</p>
                         </div>
                         <button type="button" onclick="hapusIndividu(${idx})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded"><i class="fas fa-trash text-xs"></i></button>
@@ -667,7 +689,6 @@
             renderListIndividu();
             saveDraft();
         }
-
 
         // --- OFFLINE & AUTO-SYNC ---
         function updateConnectionStatus() {
@@ -705,7 +726,7 @@
             if(!currentUser) return;
             const formData = new FormData(form); const dataObj = Object.fromEntries(formData.entries());
             dataObj['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
-            dataObj['dataIndividu'] = listIndividu; // Simpan array individu ke draft
+            dataObj['dataIndividu'] = listIndividu; 
             localStorage.setItem(DRAFT_KEY, JSON.stringify(dataObj));
         }
 
@@ -717,7 +738,7 @@
                 if(dataObj.kecamatanDom) { document.getElementById('kecamatanDomisili').value = dataObj.kecamatanDom; updateDesa('kecamatanDomisili', 'desaDomisili'); }
 
                 for (let key in dataObj) {
-                    if(key === 'dataIndividu') continue; // Handle terpisah
+                    if(key === 'dataIndividu') continue;
                     const inputs = form.elements[key];
                     if (inputs) {
                         if (inputs instanceof NodeList) { const radio = Array.from(inputs).find(r => r.value === dataObj[key]); if(radio) radio.checked = true; } 
@@ -727,7 +748,6 @@
                 }
                 toggleDomisili(); 
                 
-                // Load Individu
                 if(dataObj.dataIndividu && Array.isArray(dataObj.dataIndividu)) {
                     listIndividu = dataObj.dataIndividu;
                     renderListIndividu();
@@ -755,7 +775,7 @@
                 gpsInput.value = "Mencari lokasi...";
                 navigator.geolocation.getCurrentPosition(
                     (pos) => { gpsInput.value = `${pos.coords.latitude}, ${pos.coords.longitude}`; saveDraft(); },
-                    (err) => { gpsInput.value = ""; Swal.fire('Error', 'Gagal mengambil GPS. Pastikan Izin Lokasi aktif.', 'error'); },
+                    (err) => { gpsInput.value = ""; Swal.fire('Error', 'Gagal mengambil GPS.', 'error'); },
                     { enableHighAccuracy: true, timeout: 10000 }
                 );
             }
@@ -771,7 +791,7 @@
             dataToSave['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
             dataToSave['petugasEmail'] = currentUser.email;
             dataToSave['petugasName'] = currentUser.name;
-            dataToSave['dataIndividu'] = listIndividu; // Tempelkan JSON Individu
+            dataToSave['dataIndividu'] = listIndividu; 
 
             sensusQueue.unshift({ id: 'SENSUS-' + Date.now(), timestamp: new Date().toLocaleString('id-ID'), data: dataToSave });
             localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
@@ -941,7 +961,6 @@
                 return `<div style="width:100px;height:100px;border:1px solid #ccc;background:#f1f5f9;font-size:9px;text-align:center;padding-top:40px;">[Cek Drive]</div>`;
             };
 
-            // Loop tabel Individu
             let tbodyIndividu = '';
             if(d.dataIndividu && d.dataIndividu.length > 0) {
                 d.dataIndividu.forEach((ind, i) => {
@@ -1002,7 +1021,7 @@
             toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        // --- PWA INIT ---
+        // --- PWA INIT Tanpa Blob Protocol ---
         let deferredPrompt;
         function initPWA() {
             const manifest = {
@@ -1012,18 +1031,8 @@
             const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
             document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
 
-            // CATATAN PENTING: Browser modern (terutama Chrome) tidak mengizinkan pendaftaran
-            // Service Worker dari URL dengan protokol 'blob:' atau 'data:' demi alasan keamanan.
-            // Untuk mencegah error "Unhandled Rejection (TypeError): The URL protocol of the script... is not supported",
-            // kita menonaktifkan kode pendaftaran Service Worker berbasis 'blob:'.
-            // Mode offline data (localStorage) tetap berfungsi. Untuk offline cache UI, mohon hosting file 'sw.js' terpisah.
-            if ('serviceWorker' in navigator) {
-                if (window.location.protocol.startsWith('http')) {
-                    // navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW err:', err));
-                    console.log('Mode PWA Single-File: Service worker dilewati untuk menghindari error protocol blob.');
-                } else {
-                    console.warn('PWA Service Worker dinonaktifkan pada lingkungan ini (' + window.location.protocol + ').');
-                }
+            if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+                console.log('Mode PWA Single-File: Pekerja Layanan (Service worker) ditiadakan untuk menghindari error protocol blob.');
             }
 
             window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; document.getElementById('installBanner').classList.replace('hidden', 'flex'); });
@@ -1052,6 +1061,7 @@
             if (savedUser) { currentUser = JSON.parse(savedUser); initAppSession(); } 
             else { document.getElementById('login-page').classList.remove('hidden'); document.getElementById('app-container').classList.add('hidden'); }
             initPWA();
+            renderIndividuForm(); // Memuat format Akordeon pada saat pertama kali halaman terbuka
         };
     </script>
 </body>
