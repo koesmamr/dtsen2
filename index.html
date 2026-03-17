@@ -696,10 +696,10 @@
 
             const btn = document.getElementById(`mq-btn-${idx}`);
             if (isFilled) {
-                btn.classList.add('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.add('bg-green-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
                 btn.classList.remove('bg-white/40', 'text-slate-800');
             } else {
-                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.remove('bg-green-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
                 btn.classList.add('bg-white/40', 'text-slate-800');
             }
         }
@@ -831,10 +831,10 @@
             const btn = document.getElementById(`q-btn-${index}`);
             
             if (val && val.trim() !== '') {
-                btn.classList.add('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.add('bg-green-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
                 btn.classList.remove('bg-white/40', 'text-slate-800');
             } else {
-                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.remove('bg-green-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
                 btn.classList.add('bg-white/40', 'text-slate-800');
             }
         }
@@ -913,7 +913,7 @@
             currentOpenQ = null;
             individuQuestions.forEach((q, idx) => {
                 const btn = document.getElementById(`q-btn-${idx}`);
-                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.remove('bg-green-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
                 btn.classList.add('bg-white/40', 'text-slate-800', 'rounded-xl');
                 btn.classList.remove('rounded-t-xl');
                 
@@ -1311,7 +1311,7 @@
             toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        // --- PWA INIT ---
+        // --- PWA INIT Tanpa Blob Protocol ---
         let deferredPrompt;
         function initPWA() {
             const manifest = {
