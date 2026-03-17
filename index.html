@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <!-- APP CONTAINER (Ditampilkan setelah login) -->
+    <!-- APP CONTAINER -->
     <div id="app-container" class="hidden">
         <!-- Navbar Sticky -->
         <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50">
@@ -98,7 +98,6 @@
                         DATA DASAR (Keluarga)
                     </div>
                     <div class="p-5 space-y-5">
-                        <!-- GPS -->
                         <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">Titik Koordinat Lokasi Sensus</label>
                             <div class="flex gap-2">
@@ -110,30 +109,21 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">1. Nomor KK</label>
-                                <input type="number" name="nomorKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300" required>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label>
-                                <input type="text" name="namaKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 uppercase" required>
-                            </div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">1. Nomor KK</label><input type="number" name="nomorKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300" required></div>
+                            <div><label class="block text-sm font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label><input type="text" name="namaKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 uppercase" required></div>
                         </div>
 
-                        <!-- Alamat KTP -->
                         <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
                             <label class="block text-sm font-semibold text-slate-700 mb-2">3. Alamat KTP Lengkap</label>
                             <textarea name="alamatKTP" rows="2" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 text-sm" placeholder="Nama Jalan/Gang/Blok..."></textarea>
-                            
                             <div class="grid grid-cols-2 gap-2 mt-2">
                                 <div><label class="text-xs text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
                                 <div><label class="text-xs text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
-                                <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option></select></div>
-                                <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option></select></div>
+                                <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
+                                <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
                             </div>
                         </div>
 
-                        <!-- Status & Domisili -->
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-2">4. Status Keberadaan Keluarga</label>
                             <div class="space-y-2">
@@ -158,7 +148,6 @@
                     </div>
                 </section>
 
-                <!-- SECTION 2 & 3 (Aset & Rumah) -->
                 <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
                         <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">2</div>
@@ -174,7 +163,6 @@
                     </div>
                 </section>
 
-                <!-- SECTION 4: FOTO -->
                 <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
                         <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">3</div>
@@ -198,11 +186,9 @@
         </main>
     </div>
 
-    <!-- TOMBOL MENGAMBANG (Hanya Muncul Jika Ada Data Pending & Offline) -->
+    <!-- TOMBOL MENGAMBANG -->
     <button id="offlinePendingIndicator" onclick="toggleQueueModal()" class="fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:scale-105 transition-all hidden">
-        <div id="offlinePendingText" class="font-bold text-sm">
-            <i class="fas fa-exclamation-triangle"></i> Tertunda
-        </div>
+        <div id="offlinePendingText" class="font-bold text-sm"><i class="fas fa-exclamation-triangle"></i> Tertunda</div>
         <span id="offlinePendingCount" class="bg-white text-amber-600 px-2 py-0.5 rounded-full text-xs font-black">0</span>
     </button>
 
@@ -227,9 +213,16 @@
             <div id="historyList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100 hidden"></div>
 
             <div class="p-4 border-t border-slate-200 bg-white" id="syncFooter">
-                <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all">
+                <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all mb-2">
                     <i class="fas fa-sync-alt"></i> Sinkronkan Semua Sekarang
                 </button>
+            </div>
+
+            <div class="p-4 border-t border-slate-200 bg-white hidden" id="historyFooter">
+                <button type="button" onclick="fetchHistoryFromServer()" class="w-full bg-blue-100 text-blue-700 py-3 rounded-xl font-bold hover:bg-blue-200 transition-all flex justify-center items-center gap-2">
+                    <i class="fas fa-cloud-download-alt"></i> Tarik Riwayat dari Server
+                </button>
+                <p class="text-center text-[10px] text-slate-400 mt-2">Gunakan fitur ini jika riwayat kosong/baru pindah HP.</p>
             </div>
         </div>
     </div>
@@ -237,9 +230,7 @@
     <!-- Banner PWA -->
     <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
         <div class="flex items-center gap-3">
-            <div class="bg-white p-2 rounded-lg">
-                <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon">
-            </div>
+            <div class="bg-white p-2 rounded-lg"><img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon"></div>
             <div>
                 <p class="font-bold">Install Aplikasi DTSEN</p>
                 <p class="text-xs text-blue-200">Akses lebih cepat & lancar saat offline.</p>
@@ -289,6 +280,7 @@
         let sensusQueue = [];
         let sensusHistory = [];
         let isSyncingProcess = false;
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzj9ci9NhWSRaBJS6rrYAWgapOSBbJCRGy7x7dEJZS7aJEBYXppOUvrSx4mh-sJpQ4veQ/exec';
 
         function handleCredentialResponse(response) {
             try {
@@ -306,7 +298,6 @@
         function initAppSession() {
             document.getElementById('login-page').classList.add('hidden');
             document.getElementById('app-container').classList.remove('hidden');
-
             document.getElementById('userNameHeader').innerText = currentUser.name;
             document.getElementById('userAvatar').src = currentUser.picture || 'https://via.placeholder.com/40';
 
@@ -352,13 +343,9 @@
                 if(el) {
                     el.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                     kecOptions.forEach(kec => el.innerHTML += `<option value="${kec}">${kec}</option>`);
-                    
-                    // Set default otomatis ke Semanding
-                    el.value = "Semanding";
+                    el.value = "Semanding"; // Default
                 }
             });
-            
-            // Isi daftar desa sesuai default kecamatan
             updateDesa('kecamatanKTP', 'desaKTP');
             updateDesa('kecamatanDomisili', 'desaDomisili');
         }
@@ -458,13 +445,10 @@
         function clearDraft() {
             localStorage.removeItem(DRAFT_KEY); form.reset();
             document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
-            
-            // Reset Dropdown ke Default Semanding
             document.getElementById('kecamatanKTP').value = 'Semanding';
             document.getElementById('kecamatanDomisili').value = 'Semanding';
             updateDesa('kecamatanKTP', 'desaKTP');
             updateDesa('kecamatanDomisili', 'desaDomisili');
-            
             document.getElementById('draftNotice').classList.add('hidden');
         }
 
@@ -526,17 +510,20 @@
         function switchTab(tab) {
             const tabA = document.getElementById('tabAntrean'); const tabR = document.getElementById('tabRiwayat');
             const listA = document.getElementById('queueList'); const listR = document.getElementById('historyList');
-            const footer = document.getElementById('syncFooter');
+            const syncFooter = document.getElementById('syncFooter');
+            const histFooter = document.getElementById('historyFooter');
 
             if(tab === 'antrean') {
                 tabA.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
                 tabR.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
-                listA.classList.remove('hidden'); listR.classList.add('hidden'); footer.classList.remove('hidden');
+                listA.classList.remove('hidden'); listR.classList.add('hidden'); 
+                syncFooter.classList.remove('hidden'); histFooter.classList.add('hidden');
                 renderQueueList();
             } else {
                 tabR.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
                 tabA.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
-                listR.classList.remove('hidden'); listA.classList.add('hidden'); footer.classList.add('hidden');
+                listR.classList.remove('hidden'); listA.classList.add('hidden'); 
+                syncFooter.classList.add('hidden'); histFooter.classList.remove('hidden');
                 renderHistoryList();
             }
         }
@@ -564,7 +551,7 @@
                             <p class="text-[10px] text-amber-600 mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
                         </div>
                         <div class="flex gap-1">
-                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 hover:text-blue-700 p-2" title="Cetak PDF/Struk"><i class="fas fa-file-pdf text-lg"></i></button>
+                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded shadow-sm" title="Lihat/Cetak PDF"><i class="fas fa-file-pdf text-lg"></i></button>
                             <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:text-red-600 p-2" title="Hapus"><i class="fas fa-trash-alt text-lg"></i></button>
                         </div>
                     </div>`;
@@ -579,11 +566,11 @@
             sensusHistory.forEach((item, index) => {
                 const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80">
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80 hover:opacity-100 transition-opacity">
                         <div class="flex-1">
                             <p class="font-bold text-slate-800 text-sm">${nama}</p>
                             <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
-                            <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime}</p>
+                            <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime || item.timestamp}</p>
                         </div>
                         <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded shadow-sm" title="Lihat/Cetak PDF"><i class="fas fa-file-pdf text-lg"></i></button>
                     </div>`;
@@ -600,9 +587,7 @@
             });
         }
 
-        // --- SINKRONISASI PINTAR KE SERVER ---
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbzj9ci9NhWSRaBJS6rrYAWgapOSBbJCRGy7x7dEJZS7aJEBYXppOUvrSx4mh-sJpQ4veQ/exec';
-
+        // --- SINKRONISASI PINTAR & CLOUD FETCH ---
         function compressImage(fileInput, hiddenInputId) {
             const file = fileInput.files[0]; if (!file) return;
             const reader = new FileReader(); reader.readAsDataURL(file);
@@ -624,10 +609,6 @@
                 return;
             }
             if (sensusQueue.length === 0 || isSyncingProcess) return;
-            if (GAS_URL.includes('GANTI_DENGAN_ID_ANDA')) {
-                if(!isAutoMode) Swal.fire('Setup Error', 'URL Google Apps Script belum disetting pada file HTML.', 'error');
-                return;
-            }
 
             isSyncingProcess = true;
             const btnSync = document.getElementById('btnSyncNow'); 
@@ -640,7 +621,9 @@
 
             for(let i = sensusQueue.length - 1; i >= 0; i--) {
                 try {
-                    const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sensusQueue[i].data) });
+                    // Update payload dengan Format Action Insert
+                    const payload = { action: 'insert', data: sensusQueue[i].data };
+                    const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                     const result = await response.json();
                     
                     if(result.status === "success") {
@@ -674,23 +657,53 @@
             }
         }
 
+        async function fetchHistoryFromServer() {
+            if (!navigator.onLine) {
+                Swal.fire('Offline', 'Koneksi internet diperlukan untuk menarik data dari server.', 'error'); return;
+            }
+            Swal.fire({ title: 'Menarik Riwayat...', text: 'Mengambil data dari server Google Sheets.', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); }});
+
+            try {
+                const payload = { action: 'getHistory', email: currentUser.email };
+                const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    sensusHistory = result.history || [];
+                    localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
+                    renderHistoryList();
+                    Swal.fire('Berhasil', `Ditemukan ${sensusHistory.length} data riwayat di server.`, 'success');
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                Swal.fire('Gagal', 'Terjadi kesalahan saat menghubungi server.', 'error');
+            }
+        }
+
         // --- FUNGSI CETAK PDF (html2pdf) ---
         function cetakPDF(index, listType) {
             const item = listType === 'queue' ? sensusQueue[index] : sensusHistory[index];
             if (!item) return;
             const d = item.data;
 
-            // Persiapan HTML Template untuk PDF
             const pdfContainer = document.createElement('div');
             pdfContainer.style.padding = '20px';
             pdfContainer.style.fontFamily = 'Arial, sans-serif';
             pdfContainer.style.fontSize = '12px';
             pdfContainer.style.color = '#000';
+            pdfContainer.style.backgroundColor = '#fff';
 
             const alamatKtpLengkap = `${d.alamatKTP || '-'} RT ${d.rtKTP || '-'}/RW ${d.rwKTP || '-'}, Kec. ${d.kecamatan || '-'}, Desa ${d.desa || '-'}`;
             const alamatDomLengkap = d.samaDenganKtp ? "Sama dengan KTP" : `${d.alamatDom || '-'} RT ${d.rtDom || '-'}/RW ${d.rwDom || '-'}, Kec. ${d.kecamatanDom || '-'}, Desa ${d.desaDom || '-'}`;
             
-            const imgHtml = (src) => src ? `<img src="${src}" style="width: 120px; height: 120px; object-fit: cover; border: 1px solid #ccc; border-radius:4px;">` : `<div style="width: 120px; height: 120px; border: 1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#999; font-size:10px; margin:auto;">TIDAK ADA</div>`;
+            // Karena gambar dari history server bentuknya link Google Drive, kita tidak menampilkannya di PDF karena kendala CORS browser. 
+            // Jika gambar berwujud base64 (lokal/queue), kita tampilkan utuh.
+            const renderImage = (imgSrc, title) => {
+                if(!imgSrc || imgSrc === "") return `<div style="width:120px;height:120px;border:1px dashed #ccc;display:flex;align-items:center;justify-content:center;color:#999;font-size:10px;margin:auto;">TIDAK ADA</div>`;
+                if(imgSrc.startsWith("data:image")) return `<img src="${imgSrc}" style="width:120px;height:120px;object-fit:cover;border:1px solid #ccc;border-radius:4px;">`;
+                return `<div style="width:120px;height:120px;border:1px solid #ccc;background-color:#f1f5f9;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:9px;padding:5px;"><a href="${imgSrc}" target="_blank" style="color:#2563eb;text-decoration:none;">[Lihat Link Foto]</a></div>`;
+            };
 
             pdfContainer.innerHTML = `
                 <div style="text-align:center; margin-bottom: 15px;">
@@ -700,7 +713,7 @@
                 </div>
                 
                 <div style="text-align:right; font-size:10px; margin-bottom:10px; color:#555;">
-                    Dicatat oleh: ${d.petugasName || '-'} | Waktu Pengisian: ${item.timestamp}
+                    Dicatat oleh: ${d.petugasName || '-'} | Waktu Pengisian: ${item.timestamp || item.syncTime}
                 </div>
 
                 <h4 style="background-color:#e2e8f0; padding:6px; margin:10px 0 5px 0; border:1px solid #cbd5e1;">I. DATA DASAR</h4>
@@ -724,10 +737,10 @@
                 <h4 style="background-color:#e2e8f0; padding:6px; margin:15px 0 5px 0; border:1px solid #cbd5e1;">III. FOTO DOKUMENTASI</h4>
                 <table style="width:100%; border-collapse:collapse; text-align:center; font-size:11px; margin-top:10px;">
                     <tr>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Selfie GPS</b><br><br>${imgHtml(d.fotoSelfie)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Depan Rumah</b><br><br>${imgHtml(d.fotoRumahDepan)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Ruang Tamu</b><br><br>${imgHtml(d.fotoRuangTamu)}</td>
-                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Kamar Mandi</b><br><br>${imgHtml(d.fotoKamarMandi)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Selfie GPS</b><br><br>${renderImage(d.fotoSelfie)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Depan Rumah</b><br><br>${renderImage(d.fotoRumahDepan)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Ruang Tamu</b><br><br>${renderImage(d.fotoRuangTamu)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Kamar Mandi</b><br><br>${renderImage(d.fotoKamarMandi)}</td>
                     </tr>
                 </table>
             `;
@@ -783,7 +796,7 @@
             document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
 
             const swCode = `
-                const CACHE_NAME = 'dtsen-offline-v3';
+                const CACHE_NAME = 'dtsen-offline-v4';
                 const PAGE_URL = "${window.location.href.split('?')[0]}";
                 
                 self.addEventListener('install', (e) => { 
