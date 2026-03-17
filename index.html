@@ -16,7 +16,6 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.1rem; height: 1.1rem; }
-        .section-card { transition: all 0.3s ease; }
         .modal-overlay { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
     </style>
     
@@ -70,251 +69,413 @@
                 <button type="button" onclick="clearDraft()" class="text-amber-600 hover:text-amber-800 font-semibold underline">Hapus Draf</button>
             </div>
 
-            <form id="sensusForm" class="space-y-6">
-                <!-- ============================
-                     BAGIAN I: DATA DASAR
-                ============================= -->
-                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
-                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">1</div>
-                        DATA DASAR (Keluarga)
+            <form id="sensusForm">
+                
+                <!-- BAGIAN 1: DATA DASAR -->
+                <div class="mb-6">
+                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span> DATA DASAR (Keluarga)</h2>
+                    
+                    <!-- 0. GPS -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-0">
+                        <button type="button" id="mq-btn-0" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(0)">
+                            <span>0. Titik Koordinat Lokasi Sensus</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-0"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-0">
+                            <div class="p-4 bg-white rounded-b">
+                                <div class="flex gap-2">
+                                    <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded bg-slate-50 px-2 py-1.5 text-xs text-slate-500 border focus:outline-none">
+                                    <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm"><i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS</button>
+                                </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(0)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-4 space-y-4">
-                        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Titik Koordinat Lokasi Sensus</label>
-                            <div class="flex gap-2">
-                                <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded bg-white px-2 py-1.5 text-xs text-slate-500 border focus:outline-none">
-                                <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm"><i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS</button>
+
+                    <!-- 1. Nomor KK -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-1">
+                        <button type="button" id="mq-btn-1" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(1)">
+                            <span>1. Nomor KK</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-1"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-1">
+                            <div class="p-4 bg-white rounded-b">
+                                <input type="number" name="nomorKK" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="16 Digit Nomor KK" required>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(1)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <div><label class="block text-xs font-semibold text-slate-700 mb-1">1. Nomor KK</label><input type="number" name="nomorKK" class="w-full border rounded px-3 py-1.5 text-sm border-slate-300" required></div>
-                            <div><label class="block text-xs font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label><input type="text" name="namaKK" class="w-full border rounded px-3 py-1.5 text-sm border-slate-300 uppercase" required></div>
-                        </div>
-
-                        <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                            <label class="block text-xs font-semibold text-slate-700 mb-2">3. Alamat KTP Lengkap</label>
-                            <textarea name="alamatKTP" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs" placeholder="Nama Jalan/Gang/Blok..."></textarea>
-                            <div class="grid grid-cols-2 gap-2 mt-2">
-                                <div><label class="text-[10px] text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
-                                <div><label class="text-[10px] text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
-                                <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
-                                <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                    <!-- 2. Nama KK -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-2">
+                        <button type="button" id="mq-btn-2" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(2)">
+                            <span>2. Nama Kepala Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-2"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-2">
+                            <div class="p-4 bg-white rounded-b">
+                                <input type="text" name="namaKK" class="w-full border rounded px-3 py-2 text-xs border-slate-300 uppercase outline-none focus:ring-2 focus:ring-blue-500" placeholder="Sesuai KTP" required>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(2)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">4. Status Keberadaan Keluarga</label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
-                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="TIDAK ELIGIBLE" class="form-radio"> TIDAK ELIGIBLE</label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between items-center mb-1">
-                                <label class="block text-xs font-semibold text-slate-700">5. Alamat Domisili</label>
-                                <label class="flex items-center gap-1 text-xs text-blue-600 font-medium cursor-pointer"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox w-3 h-3" onchange="toggleDomisili()"> Sama dgn KTP</label>
-                            </div>
-                            <div id="boxDomisili" class="bg-gray-50 p-3 rounded-lg border border-gray-200 transition-all">
-                                <textarea name="alamatDom" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs" placeholder="Nama Jalan Domisili..."></textarea>
+                    <!-- 3. Alamat KTP -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-3">
+                        <button type="button" id="mq-btn-3" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(3)">
+                            <span>3. Alamat KTP Lengkap</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-3"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-3">
+                            <div class="p-4 bg-white rounded-b">
+                                <textarea name="alamatKTP" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama Jalan/Gang/Blok..."></textarea>
                                 <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
-                                    <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
                                 </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(3)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
-                </section>
 
-                <!-- ============================
-                     BAGIAN II: DATA RUMAH
-                ============================= -->
-                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
-                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">2</div>
-                        DATA RUMAH & FASILITAS
-                    </div>
-                    <div class="p-4 space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">6. Jml Anggota</label><input type="number" name="jmlAnggota" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" required></div>
-                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">7. Jml KK dlm Rumah</label><input type="number" name="jmlKkDalamRumah" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Berapa KK?"></div>
-                        </div>
-                        <div><label class="block text-[10px] font-bold text-slate-700 uppercase">List NIK/KK Lain dlm Rumah</label><input type="text" name="listNikKkLain" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Pisahkan dengan koma jika ada"></div>
-
-                        <div class="grid grid-cols-2 gap-3 pt-2 border-t border-dashed">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">8. Kepemilikan Rumah</label>
-                                <select name="statusRumah" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="MILIK SENDIRI">MILIK SENDIRI</option><option value="KONTRAK/SEWA">KONTRAK/SEWA</option><option value="BEBAS SEWA">BEBAS SEWA</option><option value="DINAS">DINAS</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                            <div><label class="block text-[10px] font-bold text-slate-700 uppercase">9. Luas Lantai (m2)</label><input type="number" name="luasLantai" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"></div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">10. Lantai Terluas</label>
-                                <select name="jenisLantai" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="MARMER/GRANIT">MARMER/GRANIT</option><option value="KERAMIK">KERAMIK</option><option value="PARKET/VINIL/KARPET">PARKET/VINIL/KARPET</option><option value="UBIN/TEGEL/TERASO">UBIN/TEGEL/TERASO</option><option value="KAYU/PAPAN">KAYU/PAPAN</option><option value="SEMEN/BATA MERAH">SEMEN/BATA MERAH</option><option value="BAMBU">BAMBU</option><option value="TANAH">TANAH</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">11. Dinding Terluas</label>
-                                <select name="jenisDinding" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="TEMBOK">TEMBOK</option><option value="PLESTERAN/ANYAMAN BAMBU/KAWAT">PLESTERAN/ANYAMAN BAMBU/KAWAT</option><option value="KAYU/PAPAN/GYPSUM">KAYU/PAPAN/GYPSUM</option><option value="ANYAMAN BAMBU">ANYAMAN BAMBU</option><option value="BATANG KAYU">BATANG KAYU</option><option value="BAMBU">BAMBU</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">12. Atap Terluas</label>
-                                <select name="jenisAtap" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="BETON">BETON</option><option value="GENTENG">GENTENG</option><option value="SENG">SENG</option><option value="ASBES">ASBES</option><option value="BAMBU">BAMBU</option><option value="KAYU/SIRAP">KAYU/SIRAP</option><option value="JERAMI/IJUK/RUMBIA">JERAMI/IJUK/RUMBIA</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-dashed">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">13. Sumber Air Utama</label>
-                                <select name="sumberAir" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="AIR KEMASAN BERMERK">AIR KEMASAN BERMERK</option><option value="AIR ISI ULANG">AIR ISI ULANG</option><option value="LEDING/PDAM">LEDING/PDAM</option><option value="SUMUR BOR/POMPA">SUMUR BOR/POMPA</option><option value="SUMUR TERLINDUNG">SUMUR TERLINDUNG</option><option value="SUMUR TAK TERLINDUNG">SUMUR TAK TERLINDUNG</option><option value="MATA AIR TERLINDUNG">MATA AIR TERLINDUNG</option><option value="MATA AIR TAK TERLINDUNG">MATA AIR TAK TERLINDUNG</option><option value="AIR PERMUKAAN">AIR PERMUKAAN (SUNGAI/DANAU)</option><option value="AIR HUJAN">AIR HUJAN</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">14. Bahan Bakar Memasak</label>
-                                <select name="bahanBakar" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1">
-                                    <option value="">-- Pilih --</option><option value="TIDAK MEMASAK DI RUMAH">TIDAK MEMASAK DI RUMAH</option><option value="LISTRIK">LISTRIK</option><option value="GAS ELPIJI 5,5 KG/BLUE GAZ">GAS ELPIJI 5,5 KG/BLUE GAZ</option><option value="GAS ELPIJI 12 KG">GAS ELPIJI 12 KG</option><option value="GAS ELPIJI 3 KG">GAS ELPIJI 3 KG</option><option value="GAS KOTA/METERAN PGN">GAS KOTA/METERAN PGN</option><option value="BIOGAS">BIOGAS</option><option value="MINYAK TANAH">MINYAK TANAH</option><option value="BRIKET">BRIKET</option><option value="ARANG">ARANG</option><option value="KAYU BAKAR">KAYU BAKAR</option><option value="LAINNYA">LAINNYA</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-dashed">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">15. Akses Sinyal Internet</label>
-                                <select name="aksesTelkom" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"><option value="">-- Pilih --</option><option value="ADA">ADA</option><option value="TIDAK ADA">TIDAK ADA</option></select>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase">16. Sumber Penerangan</label>
-                                <select name="sumberPenerangan" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1"><option value="">-- Pilih --</option><option value="LISTRIK PLN DENGAN METERAN">LISTRIK PLN DENGAN METERAN</option><option value="LISTRIK PLN TANPA METERAN">LISTRIK PLN TANPA METERAN</option><option value="LISTRIK NON-PLN">LISTRIK NON-PLN</option><option value="BUKAN LISTRIK">BUKAN LISTRIK</option></select>
-                            </div>
-                        </div>
-                        <div><label class="block text-[10px] font-bold text-slate-700 uppercase">ID Pelanggan PLN & Daya (Khusus PLN Meteran)</label><input type="text" name="idPln" class="w-full border rounded px-2 py-1 text-xs border-slate-300 mt-1" placeholder="Contoh: 123456789 - 900W"></div>
-
-                        <div class="pt-3 border-t border-dashed">
-                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-2">FASILITAS SANITASI (17, 18, 19)</label>
-                            <div class="space-y-3">
-                                <div>
-                                    <label class="text-[10px] text-slate-500">17. Fasilitas BAB</label>
-                                    <select name="fasilitasBAB" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI">ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI</option><option value="ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU">ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU</option><option value="ADA, DI MCK KOMUNAL">ADA, DI MCK KOMUNAL</option><option value="ADA, DI MCK UMUM">ADA, DI MCK UMUM</option><option value="ADA, TAPI TIDAK MENGGUNAKAN">ADA, TAPI TIDAK MENGGUNAKAN</option><option value="TIDAK ADA FASILITAS">TIDAK ADA FASILITAS</option></select>
+                    <!-- 4. Keberadaan -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-4">
+                        <button type="button" id="mq-btn-4" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(4)">
+                            <span>4. Status Keberadaan Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-4"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-4">
+                            <div class="p-4 bg-white rounded-b">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
+                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
+                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
+                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
+                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="TIDAK ELIGIBLE" class="form-radio"> TIDAK ELIGIBLE</label>
                                 </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(4)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Domisili -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-5">
+                        <button type="button" id="mq-btn-5" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(5)">
+                            <span>5. Alamat Domisili</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-5"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-5">
+                            <div class="p-4 bg-white rounded-b">
+                                <label class="flex items-center gap-1 text-xs text-blue-600 font-medium cursor-pointer mb-2"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox w-3 h-3" onchange="toggleDomisili()"> Sama dgn KTP</label>
+                                <div id="boxDomisili" class="bg-gray-50 p-3 rounded border border-gray-200 transition-all">
+                                    <textarea name="alamatDom" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama Jalan Domisili..."></textarea>
+                                    <div class="grid grid-cols-2 gap-2 mt-2">
+                                        <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                        <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(5)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN 2: DATA RUMAH -->
+                <div class="mb-6">
+                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span> DATA RUMAH & FASILITAS</h2>
+                    
+                    <!-- 6. Jml Anggota -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-6">
+                        <button type="button" id="mq-btn-6" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(6)">
+                            <span>6. Jumlah Anggota Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-6"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-6">
+                            <div class="p-4 bg-white rounded-b">
+                                <input type="number" name="jmlAnggota" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Jumlah Orang">
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(6)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 7. Jml KK -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-7">
+                        <button type="button" id="mq-btn-7" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(7)">
+                            <span>7. Jumlah KK Dalam Rumah & List NIK</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-7"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-7">
+                            <div class="p-4 bg-white rounded-b">
+                                <div><label class="text-[10px] text-slate-500 font-medium">Berapa KK dalam rumah?</label><input type="number" name="jmlKkDalamRumah" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
+                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">List NIK/KK Lain (Pisahkan dengan koma jika ada)</label><input type="text" name="listNikKkLain" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(7)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 8. Kepemilikan Rumah -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-8">
+                        <button type="button" id="mq-btn-8" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(8)">
+                            <span>8. Kepemilikan Rumah</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-8"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-8">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="statusRumah" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="MILIK SENDIRI">MILIK SENDIRI</option><option value="KONTRAK/SEWA">KONTRAK/SEWA</option><option value="BEBAS SEWA">BEBAS SEWA</option><option value="DINAS">DINAS</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(8)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 9. Luas Lantai -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-9">
+                        <button type="button" id="mq-btn-9" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(9)">
+                            <span>9. Luas Lantai Bangunan (m2)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-9"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-9">
+                            <div class="p-4 bg-white rounded-b">
+                                <input type="number" name="luasLantai" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Dalam meter persegi">
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(9)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 10. Lantai -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-10">
+                        <button type="button" id="mq-btn-10" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(10)">
+                            <span>10. Jenis Lantai Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-10"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-10">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="jenisLantai" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="MARMER/GRANIT">MARMER/GRANIT</option><option value="KERAMIK">KERAMIK</option><option value="PARKET/VINIL/KARPET">PARKET/VINIL/KARPET</option><option value="UBIN/TEGEL/TERASO">UBIN/TEGEL/TERASO</option><option value="KAYU/PAPAN">KAYU/PAPAN</option><option value="SEMEN/BATA MERAH">SEMEN/BATA MERAH</option><option value="BAMBU">BAMBU</option><option value="TANAH">TANAH</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(10)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 11. Dinding -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-11">
+                        <button type="button" id="mq-btn-11" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(11)">
+                            <span>11. Jenis Dinding Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-11"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-11">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="jenisDinding" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TEMBOK">TEMBOK</option><option value="PLESTERAN/ANYAMAN BAMBU/KAWAT">PLESTERAN/ANYAMAN BAMBU/KAWAT</option><option value="KAYU/PAPAN/GYPSUM">KAYU/PAPAN/GYPSUM</option><option value="ANYAMAN BAMBU">ANYAMAN BAMBU</option><option value="BATANG KAYU">BATANG KAYU</option><option value="BAMBU">BAMBU</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(11)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 12. Atap -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-12">
+                        <button type="button" id="mq-btn-12" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(12)">
+                            <span>12. Jenis Atap Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-12"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-12">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="jenisAtap" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="BETON">BETON</option><option value="GENTENG">GENTENG</option><option value="SENG">SENG</option><option value="ASBES">ASBES</option><option value="BAMBU">BAMBU</option><option value="KAYU/SIRAP">KAYU/SIRAP</option><option value="JERAMI/IJUK/RUMBIA">JERAMI/IJUK/RUMBIA</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(12)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 13. Sumber Air -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-13">
+                        <button type="button" id="mq-btn-13" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(13)">
+                            <span>13. Sumber Air Utama</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-13"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-13">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="sumberAir" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="AIR KEMASAN BERMERK">AIR KEMASAN BERMERK</option><option value="AIR ISI ULANG">AIR ISI ULANG</option><option value="LEDING/PDAM">LEDING/PDAM</option><option value="SUMUR BOR/POMPA">SUMUR BOR/POMPA</option><option value="SUMUR TERLINDUNG">SUMUR TERLINDUNG</option><option value="SUMUR TAK TERLINDUNG">SUMUR TAK TERLINDUNG</option><option value="MATA AIR TERLINDUNG">MATA AIR TERLINDUNG</option><option value="MATA AIR TAK TERLINDUNG">MATA AIR TAK TERLINDUNG</option><option value="AIR PERMUKAAN">AIR PERMUKAAN (SUNGAI/DANAU)</option><option value="AIR HUJAN">AIR HUJAN</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(13)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 14. Bahan Bakar -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-14">
+                        <button type="button" id="mq-btn-14" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(14)">
+                            <span>14. Bahan Bakar Memasak</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-14"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-14">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="bahanBakar" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TIDAK MEMASAK DI RUMAH">TIDAK MEMASAK DI RUMAH</option><option value="LISTRIK">LISTRIK</option><option value="GAS ELPIJI 5,5 KG/BLUE GAZ">GAS ELPIJI 5,5 KG/BLUE GAZ</option><option value="GAS ELPIJI 12 KG">GAS ELPIJI 12 KG</option><option value="GAS ELPIJI 3 KG">GAS ELPIJI 3 KG</option><option value="GAS KOTA/METERAN PGN">GAS KOTA/METERAN PGN</option><option value="BIOGAS">BIOGAS</option><option value="MINYAK TANAH">MINYAK TANAH</option><option value="BRIKET">BRIKET</option><option value="ARANG">ARANG</option><option value="KAYU BAKAR">KAYU BAKAR</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(14)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 15. Akses Sinyal -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-15">
+                        <button type="button" id="mq-btn-15" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(15)">
+                            <span>15. Akses Sinyal Internet</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-15"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-15">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="aksesTelkom" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="ADA">ADA</option><option value="TIDAK ADA">TIDAK ADA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(15)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 16. Penerangan -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-16">
+                        <button type="button" id="mq-btn-16" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(16)">
+                            <span>16. Sumber Penerangan & ID PLN</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-16"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-16">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="sumberPenerangan" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="LISTRIK PLN DENGAN METERAN">LISTRIK PLN DENGAN METERAN</option><option value="LISTRIK PLN TANPA METERAN">LISTRIK PLN TANPA METERAN</option><option value="LISTRIK NON-PLN">LISTRIK NON-PLN</option><option value="BUKAN LISTRIK">BUKAN LISTRIK</option></select>
+                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">ID Pelanggan PLN & Daya (Khusus Meteran)</label><input type="text" name="idPln" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1" placeholder="Contoh: 123456789 - 900W"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(17)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 17. Fasilitas BAB -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-17">
+                        <button type="button" id="mq-btn-17" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(17)">
+                            <span>17. Kepemilikan Fasilitas BAB</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-17"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-17">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="fasilitasBAB" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI">ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI</option><option value="ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU">ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU</option><option value="ADA, DI MCK KOMUNAL">ADA, DI MCK KOMUNAL</option><option value="ADA, DI MCK UMUM">ADA, DI MCK UMUM</option><option value="ADA, TAPI TIDAK MENGGUNAKAN">ADA, TAPI TIDAK MENGGUNAKAN</option><option value="TIDAK ADA FASILITAS">TIDAK ADA FASILITAS</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(17)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 18. Jenis Kloset -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-18">
+                        <button type="button" id="mq-btn-18" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(18)">
+                            <span>18. Jenis Kloset</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-18"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-18">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="jenisKloset" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="LEHER ANGSA">LEHER ANGSA</option><option value="PLENGSENGAN DENGAN TUTUP">PLENGSENGAN DGN TUTUP</option><option value="PLENGSENGAN TANPA TUTUP">PLENGSENGAN TANPA TUTUP</option><option value="CEMPLUNG/CUBLUK">CEMPLUNG/CUBLUK</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(18)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 19. Buang Akhir Tinja -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-19">
+                        <button type="button" id="mq-btn-19" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(19)">
+                            <span>19. Tempat Buang Akhir Tinja</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-19"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-19">
+                            <div class="p-4 bg-white rounded-b">
+                                <select name="pembuanganTinja" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TANGKI SEPTIK">TANGKI SEPTIK</option><option value="IPAL">IPAL</option><option value="KOLAM/SAWAH/SUNGAI/DANAU/LAUT">KOLAM/SAWAH/SUNGAI</option><option value="LUBANG TANAH">LUBANG TANAH</option><option value="PANTAI/TANAH LAPANG/KEBUN">PANTAI/TANAH LAPANG</option><option value="TANPA TANGKI SEPTIK">TANPA TANGKI SEPTIK</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(19)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BAGIAN 3: ASET -->
+                <div class="mb-6">
+                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">3</span> KEPEMILIKAN ASET</h2>
+                    
+                    <!-- 20. Aset Bergerak -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-20">
+                        <button type="button" id="mq-btn-20" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(20)">
+                            <span>20. Aset Bergerak (Unit)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-20"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-20">
+                            <div class="p-4 bg-white rounded-b">
+                                <p class="text-[10px] text-slate-500 italic mb-2">Isi angka (kosongkan jika tidak punya).</p>
+                                <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                    <div><label class="text-[9px] text-slate-500">Gas >=5.5kg</label><input type="number" name="asetGas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kulkas</label><input type="number" name="asetKulkas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">AC</label><input type="number" name="asetAC" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Pemanas Air</label><input type="number" name="asetPemanas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Telp Rumah</label><input type="number" name="asetTelp" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">TV >=30"</label><input type="number" name="asetTV" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Emas (Gram)</label><input type="number" name="asetEmas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Komputer/Lap</label><input type="number" name="asetKomputer" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Sepeda</label><input type="number" name="asetSepeda" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Motor</label><input type="number" name="asetMotor" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Mobil</label><input type="number" name="asetMobil" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Smartphone</label><input type="number" name="asetHP" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Perahu</label><input type="number" name="asetPerahu" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kapal</label><input type="number" name="asetKapal" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Alat Berat</label><input type="number" name="asetAlatBerat" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div><label class="text-[9px] text-slate-500">Total Harga Jual Motor (Rp)</label><input type="number" name="hargaMotor" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Total Harga Jual Mobil (Rp)</label><input type="number" name="hargaMobil" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(20)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 21. Aset Tak Bergerak -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-21">
+                        <button type="button" id="mq-btn-21" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(21)">
+                            <span>21. Aset Tak Bergerak</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-21"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-21">
+                            <div class="p-4 bg-white rounded-b">
+                                <div><label class="text-[10px] text-slate-500 font-medium">Luas Lahan Lain (m2)</label><input type="number" name="luasLahan" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
+                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">Jumlah Rumah/Bangunan Lain</label><input type="number" name="jmlBangunanLain" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(21)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 22. Ternak -->
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-22">
+                        <button type="button" id="mq-btn-22" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(22)">
+                            <span>22. Ternak (Ekor)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-22"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-22">
+                            <div class="p-4 bg-white rounded-b">
                                 <div class="grid grid-cols-2 gap-2">
-                                    <div>
-                                        <label class="text-[10px] text-slate-500">18. Jenis Kloset</label>
-                                        <select name="jenisKloset" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="LEHER ANGSA">LEHER ANGSA</option><option value="PLENGSENGAN DENGAN TUTUP">PLENGSENGAN DGN TUTUP</option><option value="PLENGSENGAN TANPA TUTUP">PLENGSENGAN TANPA TUTUP</option><option value="CEMPLUNG/CUBLUK">CEMPLUNG/CUBLUK</option></select>
-                                    </div>
-                                    <div>
-                                        <label class="text-[10px] text-slate-500">19. Buang Akhir Tinja</label>
-                                        <select name="pembuanganTinja" class="w-full border rounded px-2 py-1 text-xs border-slate-300"><option value="">-- Pilih --</option><option value="TANGKI SEPTIK">TANGKI SEPTIK</option><option value="IPAL">IPAL</option><option value="KOLAM/SAWAH/SUNGAI/DANAU/LAUT">KOLAM/SAWAH/SUNGAI</option><option value="LUBANG TANAH">LUBANG TANAH</option><option value="PANTAI/TANAH LAPANG/KEBUN">PANTAI/TANAH LAPANG</option><option value="TANPA TANGKI SEPTIK">TANPA TANGKI SEPTIK</option><option value="LAINNYA">LAINNYA</option></select>
-                                    </div>
+                                    <div><label class="text-[9px] text-slate-500">Sapi</label><input type="number" name="asetSapi" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kerbau</label><input type="number" name="asetKerbau" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Kuda</label><input type="number" name="asetKuda" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-500">Babi</label><input type="number" name="asetBabi" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div class="col-span-2"><label class="text-[9px] text-slate-500">Kambing/Domba</label><input type="number" name="asetKambing" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
                                 </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(22)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- ============================
-                     BAGIAN III: ASET 
-                ============================= -->
-                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
-                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">3</div>
-                        KEPEMILIKAN ASET
-                    </div>
-                    <div class="p-4 space-y-4">
-                        <p class="text-[10px] text-slate-500 italic">Isi dengan angka (0 jika tidak punya).</p>
-                        
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">20. ASET BERGERAK (UNIT)</label>
-                            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                <div><label class="text-[9px] text-slate-500">Gas >=5.5kg</label><input type="number" name="asetGas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Kulkas</label><input type="number" name="asetKulkas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">AC</label><input type="number" name="asetAC" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Pemanas Air</label><input type="number" name="asetPemanas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Telp Rumah</label><input type="number" name="asetTelp" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">TV >=30"</label><input type="number" name="asetTV" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Emas (Gram)</label><input type="number" name="asetEmas" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Komputer/Lap</label><input type="number" name="asetKomputer" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Sepeda</label><input type="number" name="asetSepeda" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Motor</label><input type="number" name="asetMotor" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Mobil</label><input type="number" name="asetMobil" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Smartphone</label><input type="number" name="asetHP" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Perahu</label><input type="number" name="asetPerahu" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Kapal</label><input type="number" name="asetKapal" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Alat Berat</label><input type="number" name="asetAlatBerat" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2 mt-2">
-                                <div><label class="text-[9px] text-slate-500">Total Harga Jual Motor (Rp)</label><input type="number" name="hargaMotor" class="w-full border rounded px-2 py-1 text-xs mt-1"></div>
-                                <div><label class="text-[9px] text-slate-500">Total Harga Jual Mobil (Rp)</label><input type="number" name="hargaMobil" class="w-full border rounded px-2 py-1 text-xs mt-1"></div>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-dashed">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">21. ASET TAK BERGERAK</label>
-                                <div><label class="text-[9px] text-slate-500">Luas Lahan Lain (m2)</label><input type="number" name="luasLahan" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                <div class="mt-1"><label class="text-[9px] text-slate-500">Jml Rumah/Bangunan Lain</label><input type="number" name="jmlBangunanLain" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                            </div>
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-700 uppercase mb-1">22. TERNAK (EKOR)</label>
-                                <div class="grid grid-cols-2 gap-1">
-                                    <div><label class="text-[9px] text-slate-500">Sapi</label><input type="number" name="asetSapi" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kerbau</label><input type="number" name="asetKerbau" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kuda</label><input type="number" name="asetKuda" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                    <div><label class="text-[9px] text-slate-500">Babi</label><input type="number" name="asetBabi" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
-                                    <div class="col-span-2"><label class="text-[9px] text-slate-500">Kambing/Domba</label><input type="number" name="asetKambing" class="w-full border rounded px-1 py-1 text-xs mt-1"></div>
+                <!-- BAGIAN 4: DATA INDIVIDU -->
+                <div class="mb-6">
+                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">4</span> ANGGOTA KELUARGA</h2>
+                    
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-23">
+                        <button type="button" id="mq-btn-23" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(23)">
+                            <span>23. Data Individu (Q1 - Q37)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-23"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-23">
+                            <div class="p-4 bg-white rounded-b">
+                                <button type="button" onclick="openIndividuModal()" class="w-full bg-indigo-600 text-white px-3 py-2 rounded text-xs hover:bg-indigo-700 shadow-sm mb-3"><i class="fas fa-user-plus mr-1"></i> Tambah Anggota Keluarga Baru</button>
+                                <div id="individuListContainer" class="space-y-3 bg-indigo-50/50 p-3 rounded border border-indigo-100 min-h-[60px]">
+                                    <p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-2">Belum ada data anggota keluarga dicatat.</p>
                                 </div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(23)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
-                </section>
+                </div>
 
-                <!-- ============================
-                     BAGIAN IV: DATA INDIVIDU
-                ============================= -->
-                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-indigo-50 border-b border-indigo-200 px-4 py-3 font-bold text-indigo-800 flex justify-between items-center text-sm sm:text-base">
-                        <div class="flex items-center">
-                            <div class="bg-indigo-200 text-indigo-800 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">4</div>
-                            DATA INDIVIDU (ANGGOTA KELUARGA)
+                <!-- BAGIAN 5: FOTO DOKUMENTASI -->
+                <div class="mb-6">
+                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">5</span> FOTO DOKUMENTASI</h2>
+                    
+                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-24">
+                        <button type="button" id="mq-btn-24" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(24)">
+                            <span>24. Foto Survey Lapangan</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-24"></i>
+                        </button>
+                        <div class="hidden border-t border-slate-100" id="mq-body-24">
+                            <div class="p-4 bg-white rounded-b grid grid-cols-2 gap-4">
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
+                                <div class="col-span-2 mt-3 text-right"><button type="button" class="bg-green-500 text-white px-4 py-2 rounded text-[10px] font-bold hover:bg-green-600 shadow-sm" onclick="nextMainQuestion(24)">Selesai & Tutup <i class="fas fa-check ml-1"></i></button></div>
+                            </div>
                         </div>
-                        <button type="button" onclick="openIndividuModal()" class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs hover:bg-indigo-700 shadow-sm"><i class="fas fa-plus mr-1"></i> Tambah</button>
                     </div>
-                    <div class="p-4 bg-indigo-50/30 min-h-[100px]">
-                        <div id="individuListContainer" class="space-y-3">
-                            <p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-4">Belum ada data anggota keluarga. Klik 'Tambah' untuk mengisi detail (Q1-Q37).</p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ============================
-                     BAGIAN V: FOTO DOKUMENTASI
-                ============================= -->
-                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 font-bold text-slate-700 flex items-center text-sm sm:text-base">
-                        <div class="bg-blue-100 text-blue-700 w-7 h-7 rounded-full flex items-center justify-center mr-3 text-sm">5</div>
-                        FOTO DOKUMENTASI
-                    </div>
-                    <div class="p-4 grid grid-cols-2 gap-4">
-                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
-                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
-                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
-                        <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
-                    </div>
-                </section>
+                </div>
 
                 <div class="pt-2 pb-10">
                     <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 active:scale-95 transition-transform flex justify-center items-center gap-2">
@@ -337,7 +498,6 @@
             
             <div class="flex-1 overflow-y-auto p-3 bg-slate-50 relative">
                 <form id="formIndividuSingle">
-                    <!-- Container untuk daftar pertanyaan dinamis (Akordeon) -->
                     <div id="accordionContainer" class="space-y-2 pb-6"></div>
                 </form>
             </div>
@@ -432,7 +592,109 @@
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbzj9ci9NhWSRaBJS6rrYAWgapOSBbJCRGy7x7dEJZS7aJEBYXppOUvrSx4mh-sJpQ4veQ/exec';
         
         let listIndividu = [];
-        let currentOpenQ = null; // Melacak pertanyaan Akordeon mana yang sedang terbuka
+        let currentOpenQ = null; 
+        let currentMainOpenQ = null; // Melacak Akordeon Utama
+
+        // --- LOGIKA AKORDEON FORM UTAMA ---
+        function toggleMainQuestion(index) {
+            if (currentMainOpenQ !== null && currentMainOpenQ !== index) {
+                const oldBody = document.getElementById(`mq-body-${currentMainOpenQ}`);
+                if (oldBody) {
+                    oldBody.classList.add('hidden');
+                    document.getElementById(`mq-icon-${currentMainOpenQ}`).classList.remove('rotate-180');
+                    document.getElementById(`mq-container-${currentMainOpenQ}`).classList.remove('ring-2', 'ring-blue-400');
+                    const oldBtn = document.getElementById(`mq-btn-${currentMainOpenQ}`);
+                    oldBtn.classList.remove('rounded-t');
+                    oldBtn.classList.add('rounded');
+                    checkMainAnswered(currentMainOpenQ);
+                }
+            }
+            
+            const targetBody = document.getElementById(`mq-body-${index}`);
+            const targetIcon = document.getElementById(`mq-icon-${index}`);
+            const targetContainer = document.getElementById(`mq-container-${index}`);
+            const targetBtn = document.getElementById(`mq-btn-${index}`);
+            
+            if (!targetBody) return;
+
+            if (!targetBody.classList.contains('hidden')) {
+                targetBody.classList.add('hidden');
+                targetIcon.classList.remove('rotate-180');
+                targetContainer.classList.remove('ring-2', 'ring-blue-400');
+                targetBtn.classList.remove('rounded-t');
+                targetBtn.classList.add('rounded');
+                currentMainOpenQ = null;
+                checkMainAnswered(index);
+            } else {
+                targetBody.classList.remove('hidden');
+                targetIcon.classList.add('rotate-180');
+                targetContainer.classList.add('ring-2', 'ring-blue-400');
+                targetBtn.classList.remove('rounded');
+                targetBtn.classList.add('rounded-t');
+                currentMainOpenQ = index;
+                
+                setTimeout(() => {
+                    targetContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // Coba fokus otomatis pada input pertama yang bukan hidden
+                    const firstInput = targetBody.querySelector('input:not([type="hidden"]), select, textarea');
+                    if(firstInput) firstInput.focus();
+                }, 50);
+            }
+        }
+
+        function nextMainQuestion(currentIndex) {
+            checkMainAnswered(currentIndex);
+            if(currentIndex + 1 <= 24) {
+                toggleMainQuestion(currentIndex + 1);
+            } else {
+                toggleMainQuestion(currentIndex); 
+                document.querySelector('button[type="submit"]').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function checkMainAnswered(idx) {
+            const body = document.getElementById(`mq-body-${idx}`);
+            if(!body) return;
+            const inputs = body.querySelectorAll('input:not([type="hidden"]), select, textarea');
+            const hiddenInputs = body.querySelectorAll('input[type="hidden"]');
+            let isFilled = false;
+
+            // Logika spesifik
+            if (idx === 5) { // Domisili
+                if (document.getElementById('samaDenganKtp').checked) isFilled = true;
+            }
+            if (idx === 23) { // Individu
+                if (listIndividu.length > 0) isFilled = true;
+            }
+
+            if(!isFilled) {
+                inputs.forEach(el => {
+                    if (el.type === 'radio' || el.type === 'checkbox') {
+                        if (el.checked) isFilled = true;
+                    } else if (el.type === 'file') {
+                        if (el.files && el.files.length > 0) isFilled = true;
+                    } else {
+                        if (el.value.trim() !== '') isFilled = true;
+                    }
+                });
+                hiddenInputs.forEach(el => {
+                    if (el.value.trim() !== '') isFilled = true;
+                });
+            }
+
+            const btn = document.getElementById(`mq-btn-${idx}`);
+            if (isFilled) {
+                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.remove('bg-slate-50', 'text-slate-700');
+            } else {
+                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
+                btn.classList.add('bg-slate-50', 'text-slate-700');
+            }
+        }
+
+        // Listener global untuk validasi real-time form utama
+        document.getElementById('sensusForm').addEventListener('input', () => { if(currentMainOpenQ !== null) checkMainAnswered(currentMainOpenQ); saveDraft(); });
+        document.getElementById('sensusForm').addEventListener('change', () => { if(currentMainOpenQ !== null) checkMainAnswered(currentMainOpenQ); saveDraft(); });
 
         // --- KONFIGURASI PERTANYAAN INDIVIDU ---
         const individuQuestions = [
@@ -472,7 +734,6 @@
             { id: 'ind_hamil', label: '37. Status Hamil (Wnt >15)', type: 'select', options: ['YA', 'TIDAK'] }
         ];
 
-        // --- RENDER FORM INDIVIDU (AKORDEON HIDDEN) ---
         function renderIndividuForm() {
             const container = document.getElementById('accordionContainer');
             container.innerHTML = '';
@@ -511,9 +772,7 @@
             });
         }
 
-        // --- LOGIKA INTERAKSI AKORDEON (MENGGUNAKAN HIDDEN) ---
         function toggleQuestion(index) {
-            // Tutup yang sedang terbuka
             if (currentOpenQ !== null && currentOpenQ !== index) {
                 const oldBody = document.getElementById(`q-body-${currentOpenQ}`);
                 if (oldBody) {
@@ -530,7 +789,6 @@
             const targetContainer = document.getElementById(`q-container-${index}`);
             const targetBtn = document.getElementById(`q-btn-${index}`);
             
-            // Toggle yang diklik
             if (!targetBody.classList.contains('hidden')) {
                 targetBody.classList.add('hidden');
                 targetIcon.classList.remove('rotate-180');
@@ -546,7 +804,6 @@
                 targetBtn.classList.add('rounded-t');
                 currentOpenQ = index;
                 
-                // Fokus otomatis ke input & gulir
                 setTimeout(() => {
                     targetContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     const inputEl = document.getElementById(individuQuestions[index].id);
@@ -561,10 +818,10 @@
             const btn = document.getElementById(`q-btn-${index}`);
             
             if (val && val.trim() !== '') {
-                btn.classList.add('bg-green-100', 'text-green-800');
+                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
                 btn.classList.remove('bg-slate-50', 'text-slate-700');
             } else {
-                btn.classList.remove('bg-green-100', 'text-green-800');
+                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
                 btn.classList.add('bg-slate-50', 'text-slate-700');
             }
         }
@@ -593,6 +850,9 @@
             sensusHistory = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
             
             initWilayah(); updateConnectionStatus(); updateQueueBadge(); loadDraft();
+
+            // Tampilkan pertanyaan pertama otomatis (Titik Koordinat GPS)
+            setTimeout(() => { toggleMainQuestion(0); }, 300);
         }
 
         function confirmLogout() {
@@ -631,17 +891,17 @@
         function toggleDomisili() {
             const cb = document.getElementById('samaDenganKtp'); const box = document.getElementById('boxDomisili');
             cb.checked ? box.classList.add('hidden') : box.classList.remove('hidden');
+            checkMainAnswered(5); // update warna
         }
 
         // --- DATA INDIVIDU (OPERASI MODAL) ---
         function openIndividuModal() {
             document.getElementById('formIndividuSingle').reset();
             
-            // Reset state UI ke standar
             currentOpenQ = null;
             individuQuestions.forEach((q, idx) => {
                 const btn = document.getElementById(`q-btn-${idx}`);
-                btn.classList.remove('bg-green-100', 'text-green-800');
+                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
                 btn.classList.add('bg-slate-50', 'text-slate-700', 'rounded');
                 btn.classList.remove('rounded-t');
                 
@@ -653,7 +913,6 @@
             document.getElementById('modalIndividu').classList.remove('hidden');
             document.getElementById('modalIndividu').classList.add('flex');
             
-            // Buka pertanyaan No. 1 otomatis saat modal tampil
             setTimeout(() => { toggleQuestion(0); }, 50);
         }
 
@@ -674,6 +933,7 @@
 
             listIndividu.push(individu);
             renderListIndividu();
+            checkMainAnswered(23); // update indikator akordeon utama
             saveDraft();
             closeIndividuModal();
         }
@@ -681,7 +941,7 @@
         function renderListIndividu() {
             const container = document.getElementById('individuListContainer');
             if (listIndividu.length === 0) {
-                container.innerHTML = `<p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-4">Belum ada data anggota keluarga. Klik 'Tambah'.</p>`;
+                container.innerHTML = `<p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-2">Belum ada data anggota keluarga dicatat.</p>`;
                 return;
             }
             
@@ -702,6 +962,7 @@
         function hapusIndividu(idx) {
             listIndividu.splice(idx, 1);
             renderListIndividu();
+            checkMainAnswered(23);
             saveDraft();
         }
 
@@ -736,10 +997,9 @@
         }
 
         // --- DRAFT LOGIC ---
-        const form = document.getElementById('sensusForm');
         function saveDraft() {
             if(!currentUser) return;
-            const formData = new FormData(form); const dataObj = Object.fromEntries(formData.entries());
+            const dataObj = Object.fromEntries(new FormData(document.getElementById('sensusForm')).entries());
             dataObj['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
             dataObj['dataIndividu'] = listIndividu; 
             localStorage.setItem(DRAFT_KEY, JSON.stringify(dataObj));
@@ -754,7 +1014,7 @@
 
                 for (let key in dataObj) {
                     if(key === 'dataIndividu') continue;
-                    const inputs = form.elements[key];
+                    const inputs = document.getElementById('sensusForm').elements[key];
                     if (inputs) {
                         if (inputs instanceof NodeList) { const radio = Array.from(inputs).find(r => r.value === dataObj[key]); if(radio) radio.checked = true; } 
                         else if (inputs.type === 'checkbox') { inputs.checked = dataObj[key] === 'on' || dataObj[key] === true; } 
@@ -768,28 +1028,31 @@
                     renderListIndividu();
                 }
 
+                // Cek warna hijau semua tombol di form utama berdasarkan isi draf
+                for(let i=0; i<=24; i++) { checkMainAnswered(i); }
+
                 document.getElementById('draftNotice').classList.remove('hidden');
             }
         }
 
         function clearDraft() {
-            localStorage.removeItem(DRAFT_KEY); form.reset();
+            localStorage.removeItem(DRAFT_KEY); document.getElementById('sensusForm').reset();
             document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
             document.getElementById('kecamatanKTP').value = 'Semanding'; document.getElementById('kecamatanDomisili').value = 'Semanding';
             updateDesa('kecamatanKTP', 'desaKTP'); updateDesa('kecamatanDomisili', 'desaDomisili');
             
             listIndividu = []; renderListIndividu();
+            for(let i=0; i<=24; i++) { checkMainAnswered(i); } // Reset warnanya
+
             document.getElementById('draftNotice').classList.add('hidden');
         }
-
-        form.addEventListener('input', saveDraft); form.addEventListener('change', saveDraft);
 
         function getLocation() {
             const gpsInput = document.getElementById('gpsCoords');
             if (navigator.geolocation) {
                 gpsInput.value = "Mencari lokasi...";
                 navigator.geolocation.getCurrentPosition(
-                    (pos) => { gpsInput.value = `${pos.coords.latitude}, ${pos.coords.longitude}`; saveDraft(); },
+                    (pos) => { gpsInput.value = `${pos.coords.latitude}, ${pos.coords.longitude}`; checkMainAnswered(0); saveDraft(); },
                     (err) => { gpsInput.value = ""; Swal.fire('Error', 'Gagal mengambil GPS.', 'error'); },
                     { enableHighAccuracy: true, timeout: 10000 }
                 );
@@ -797,12 +1060,11 @@
         }
 
         // --- SUBMIT FORM ---
-        form.addEventListener('submit', function(e) {
+        document.getElementById('sensusForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            if(!form.nomorKK.value || !form.namaKK.value) return Swal.fire('Error', 'Lengkapi Data Dasar!', 'warning');
+            if(!this.nomorKK.value || !this.namaKK.value) return Swal.fire('Error', 'Lengkapi Data Dasar!', 'warning');
 
-            const formData = new FormData(form);
-            const dataToSave = Object.fromEntries(formData.entries());
+            const dataToSave = Object.fromEntries(new FormData(this).entries());
             dataToSave['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
             dataToSave['petugasEmail'] = currentUser.email;
             dataToSave['petugasName'] = currentUser.name;
@@ -909,6 +1171,7 @@
                     canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     document.getElementById(hiddenInputId).value = canvas.toDataURL('image/jpeg', 0.6);
+                    checkMainAnswered(24); // Update status Foto warna hijau
                     saveDraft();
                 }
             }
@@ -1036,7 +1299,7 @@
             toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        // --- PWA INIT Tanpa Blob Protocol ---
+        // --- PWA INIT ---
         let deferredPrompt;
         function initPWA() {
             const manifest = {
@@ -1076,7 +1339,7 @@
             if (savedUser) { currentUser = JSON.parse(savedUser); initAppSession(); } 
             else { document.getElementById('login-page').classList.remove('hidden'); document.getElementById('app-container').classList.add('hidden'); }
             initPWA();
-            renderIndividuForm(); // Memuat format Akordeon pada saat pertama kali halaman terbuka
+            renderIndividuForm(); 
         };
     </script>
 </body>
