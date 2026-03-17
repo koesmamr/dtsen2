@@ -1292,7 +1292,12 @@
                     const result = await response.json();
                     
                     if(result.status === "success") {
-                        const syncedItem = sensusQueue.pop(); syncedItem.syncTime = new Date().toLocaleString('id-ID');
+                        const syncedItem = sensusQueue.pop(); 
+                        syncedItem.syncTime = new Date().toLocaleString('id-ID');
+                        
+                        // MENYIMPAN URL PDF RESMI DARI GOOGLE DOCS KE RIWAYAT LOKAL HP
+                        syncedItem.pdfUrl = result.pdfUrl; 
+
                         sensusHistory.unshift(syncedItem);
                         localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue)); localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
                         renderQueueList(); updateQueueBadge();
@@ -1325,7 +1330,22 @@
         // --- CETAK PDF ---
         function cetakPDF(index, listType) {
             const item = listType === 'queue' ? sensusQueue[index] : sensusHistory[index];
-            if (!item) return; const d = item.data;
+            if (!item) return; 
+
+            // JIKA DATA DARI SERVER & SUDAH MEMILIKI LINK PDF RESMI DARI TEMPLATE G-DOCS
+            if (listType === 'history' && item.pdfUrl && item.pdfUrl.startsWith('http')) {
+                Swal.fire({
+                    title: 'Membuka PDF Resmi...',
+                    text: 'Dokumen sedang dibuka di tab baru.',
+                    icon: 'info',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+                setTimeout(() => { window.open(item.pdfUrl, '_blank'); }, 1000);
+                return;
+            }
+
+            const d = item.data;
 
             const pdfContainer = document.createElement('div');
             pdfContainer.style.padding = '15px'; pdfContainer.style.fontFamily = 'Arial, sans-serif';
@@ -1401,7 +1421,7 @@
             toast.style.opacity = '1'; setTimeout(() => toast.style.opacity = '0', 3000);
         }
 
-        // --- PWA INIT Tanpa Blob Protocol ---
+        // --- PWA INIT ---
         let deferredPrompt;
         function initPWA() {
             const manifest = {
@@ -1411,7 +1431,8 @@
             const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
             document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${URL.createObjectURL(manifestBlob)}">`);
 
-            if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+            // Service Worker via Blob dihapus di sini untuk memperbaiki error 'blob: protocol not supported'
+            if ('serviceWorker' in navigator) {
                 console.log('Mode PWA Single-File: Pekerja Layanan (Service worker) ditiadakan untuk menghindari error protocol blob.');
             }
 
