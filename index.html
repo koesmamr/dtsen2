@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DTSEN (OFFLINE)</title>
+    
+    <!-- Favicon / Logo Web -->
+    <link rel="icon" href="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" type="image/png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Pustaka Baru untuk Login & Alert (Diadopsi dari Simpeg) -->
+    <!-- Pustaka Login & Alert -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Pustaka Generate PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -29,9 +36,10 @@
     <!-- HALAMAN LOGIN -->
     <div id="login-page" class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 to-blue-900 p-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl z-10 w-full max-w-sm text-center transform transition-all">
-            <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                <i class="fas fa-users text-4xl text-blue-600"></i>
-            </div>
+            
+            <!-- Logo Aplikasi -->
+            <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" alt="Logo DTSEN" class="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-md">
+            
             <h1 class="text-2xl font-bold mb-1 text-slate-800">DTSEN (OFFLINE)</h1>
             <p class="text-sm mb-6 text-slate-500">Data Tunggal Sosial dan Ekonomi Nasional</p>
             
@@ -175,6 +183,8 @@
                     <div class="p-5 space-y-4 grid grid-cols-2 gap-4">
                         <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
                         <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
+                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
+                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
                     </div>
                 </section>
 
@@ -227,7 +237,9 @@
     <!-- Banner PWA -->
     <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
         <div class="flex items-center gap-3">
-            <div class="bg-white p-2 rounded-lg"><i class="fas fa-file-signature text-blue-600 text-xl"></i></div>
+            <div class="bg-white p-2 rounded-lg">
+                <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon">
+            </div>
             <div>
                 <p class="font-bold">Install Aplikasi DTSEN</p>
                 <p class="text-xs text-blue-200">Akses lebih cepat & lancar saat offline.</p>
@@ -259,7 +271,7 @@
         let HISTORY_KEY = '';
         let sensusQueue = [];
         let sensusHistory = [];
-        let isSyncingProcess = false; // Flag untuk mencegah multiple sync bersamaan
+        let isSyncingProcess = false;
 
         function handleCredentialResponse(response) {
             try {
@@ -290,7 +302,7 @@
             sensusHistory = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
             
             initWilayah();
-            updateConnectionStatus(); // Ini akan memicu Auto-Sync jika online
+            updateConnectionStatus(); 
             updateQueueBadge();
             loadDraft();
         }
@@ -352,30 +364,24 @@
                 statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors';
                 if(btnSync) btnSync.disabled = false;
 
-                // FITUR AUTO-SYNC: Jika online dan ada antrean, trigger sinkronisasi otomatis
                 if (sensusQueue.length > 0 && currentUser && !isSyncingProcess) {
                     showToast("Koneksi pulih. Memulai Sinkronisasi Otomatis...");
-                    syncDataToServer(true); // true = mode auto (background)
+                    syncDataToServer(true); 
                 }
-
             } else {
                 statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; 
                 statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-red-500 px-2 py-1 rounded-full text-white shadow transition-colors';
                 if(btnSync) btnSync.disabled = true;
             }
-            
             updateOfflineIndicator();
         }
 
-        // Event listener saat HP putus/nyambung internet
         window.addEventListener('online', updateConnectionStatus); 
         window.addEventListener('offline', updateConnectionStatus);
 
-        // Mengatur tampilan tombol mengambang pintar
         function updateOfflineIndicator() {
             const indicator = document.getElementById('offlinePendingIndicator');
             const textEl = document.getElementById('offlinePendingText');
-            
             if (!indicator || !currentUser) return;
 
             if (sensusQueue.length > 0) {
@@ -383,15 +389,12 @@
                 document.getElementById('offlinePendingCount').innerText = sensusQueue.length;
                 
                 if (isSyncingProcess) {
-                    // Sedang proses upload
                     indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-all";
                     textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
                 } else if (!navigator.onLine) {
-                    // Offline dan ada data numpuk
                     indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-amber-600 transition-all animate-bounce";
                     textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
                 } else {
-                    // Online tapi belum terupload (Mungkin tertunda karena error)
                     indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-blue-700 transition-all";
                     textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
                 }
@@ -470,7 +473,6 @@
             updateQueueBadge();
             renderQueueList();
             
-            // Beritahu user, lalu coba auto sync jika sinyalnya ada
             showToast("Tersimpan sementara ke HP.");
             window.scrollTo({ top: 0, behavior: 'smooth' });
             
@@ -527,12 +529,15 @@
                 const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
                 list.innerHTML += `
                     <div class="bg-white p-3 rounded-lg border-l-4 border-amber-500 shadow-sm flex justify-between items-center">
-                        <div>
+                        <div class="flex-1">
                             <p class="font-bold text-slate-800 text-sm">${nama}</p>
                             <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
                             <p class="text-[10px] text-amber-600 mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
                         </div>
-                        <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:text-red-600 p-2"><i class="fas fa-trash-alt"></i></button>
+                        <div class="flex gap-1">
+                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 hover:text-blue-700 p-2" title="Cetak PDF/Struk"><i class="fas fa-file-pdf text-lg"></i></button>
+                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:text-red-600 p-2" title="Hapus"><i class="fas fa-trash-alt text-lg"></i></button>
+                        </div>
                     </div>`;
             });
         }
@@ -542,15 +547,16 @@
             if (sensusHistory.length === 0) {
                 list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-history text-4xl mb-3 text-slate-300"></i><p>Belum ada data yang tersinkron.</p></div>`; return;
             }
-            sensusHistory.forEach(item => {
+            sensusHistory.forEach((item, index) => {
                 const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
                 list.innerHTML += `
                     <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80">
-                        <div>
+                        <div class="flex-1">
                             <p class="font-bold text-slate-800 text-sm">${nama}</p>
                             <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
                             <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime}</p>
                         </div>
+                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded shadow-sm" title="Lihat/Cetak PDF"><i class="fas fa-file-pdf text-lg"></i></button>
                     </div>`;
             });
         }
@@ -594,21 +600,15 @@
                 return;
             }
 
-            // Flag nyala
             isSyncingProcess = true;
-            
-            // Update UI Button di Modal
             const btnSync = document.getElementById('btnSyncNow'); 
             const originalText = btnSync.innerHTML;
             btnSync.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...'; 
             btnSync.disabled = true;
-            
-            // Update UI Floating Indicator
             updateOfflineIndicator();
 
             let hasError = false;
 
-            // Proses satu persatu
             for(let i = sensusQueue.length - 1; i >= 0; i--) {
                 try {
                     const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sensusQueue[i].data) });
@@ -631,12 +631,10 @@
                 }
             }
 
-            // Kembalikan state flag & UI
             isSyncingProcess = false;
             btnSync.innerHTML = originalText; btnSync.disabled = false;
             updateOfflineIndicator();
 
-            // Pesan Keberhasilan
             if(sensusQueue.length === 0 && !hasError) {
                 if(isAutoMode) {
                     showToast("Semua data berhasil tersinkron otomatis!");
@@ -645,6 +643,87 @@
                     switchTab('riwayat');
                 }
             }
+        }
+
+        // --- FUNGSI CETAK PDF (html2pdf) ---
+        function cetakPDF(index, listType) {
+            const item = listType === 'queue' ? sensusQueue[index] : sensusHistory[index];
+            if (!item) return;
+            const d = item.data;
+
+            // Persiapan HTML Template untuk PDF
+            const pdfContainer = document.createElement('div');
+            pdfContainer.style.padding = '20px';
+            pdfContainer.style.fontFamily = 'Arial, sans-serif';
+            pdfContainer.style.fontSize = '12px';
+            pdfContainer.style.color = '#000';
+
+            const alamatKtpLengkap = `${d.alamatKTP || '-'} RT ${d.rtKTP || '-'}/RW ${d.rwKTP || '-'}, Kec. ${d.kecamatan || '-'}, Desa ${d.desa || '-'}`;
+            const alamatDomLengkap = d.samaDenganKtp ? "Sama dengan KTP" : `${d.alamatDom || '-'} RT ${d.rtDom || '-'}/RW ${d.rwDom || '-'}, Kec. ${d.kecamatanDom || '-'}, Desa ${d.desaDom || '-'}`;
+            
+            const imgHtml = (src) => src ? `<img src="${src}" style="width: 120px; height: 120px; object-fit: cover; border: 1px solid #ccc; border-radius:4px;">` : `<div style="width: 120px; height: 120px; border: 1px dashed #ccc; display:flex; align-items:center; justify-content:center; color:#999; font-size:10px; margin:auto;">TIDAK ADA</div>`;
+
+            pdfContainer.innerHTML = `
+                <div style="text-align:center; margin-bottom: 15px;">
+                    <h2 style="margin:0; font-size:16px; font-weight:bold; text-transform:uppercase;">FORM SENSUS DATA PENDUDUK KABUPATEN TUBAN 2026</h2>
+                    <h3 style="margin:5px 0 0 0; font-size:14px; font-weight:normal;">DATA KELUARGA (DTSEN)</h3>
+                    <hr style="margin-top:10px; border:1px solid #333;">
+                </div>
+                
+                <div style="text-align:right; font-size:10px; margin-bottom:10px; color:#555;">
+                    Dicatat oleh: ${d.petugasName || '-'} | Waktu Pengisian: ${item.timestamp}
+                </div>
+
+                <h4 style="background-color:#e2e8f0; padding:6px; margin:10px 0 5px 0; border:1px solid #cbd5e1;">I. DATA DASAR</h4>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px; font-size:11px;">
+                    <tr><td style="width:35%; padding:6px; border:1px solid #cbd5e1; font-weight:bold;">1. Nomor KK</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.nomorKK || '-'}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">2. Nama Kepala Keluarga</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">3. Alamat KTP</td><td style="padding:6px; border:1px solid #cbd5e1;">${alamatKtpLengkap}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">4. Status Keberadaan</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.statusKeluarga || '-'}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">5. Alamat Domisili</td><td style="padding:6px; border:1px solid #cbd5e1;">${alamatDomLengkap}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Titik Koordinat GPS</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.gpsCoords || '-'}</td></tr>
+                </table>
+
+                <h4 style="background-color:#e2e8f0; padding:6px; margin:15px 0 5px 0; border:1px solid #cbd5e1;">II. DATA RUMAH & ASET</h4>
+                <table style="width:100%; border-collapse:collapse; margin-bottom:10px; font-size:11px;">
+                    <tr><td style="width:35%; padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Jumlah Anggota Keluarga</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.jmlAnggota || '0'} Orang</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Status Kepemilikan Rumah</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.statusRumah || '-'}</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Kepemilikan Sepeda Motor</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.asetMotor || '0'} Unit</td></tr>
+                    <tr><td style="padding:6px; border:1px solid #cbd5e1; font-weight:bold;">Kepemilikan Sapi</td><td style="padding:6px; border:1px solid #cbd5e1;">${d.asetSapi || '0'} Ekor</td></tr>
+                </table>
+
+                <h4 style="background-color:#e2e8f0; padding:6px; margin:15px 0 5px 0; border:1px solid #cbd5e1;">III. FOTO DOKUMENTASI</h4>
+                <table style="width:100%; border-collapse:collapse; text-align:center; font-size:11px; margin-top:10px;">
+                    <tr>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Selfie GPS</b><br><br>${imgHtml(d.fotoSelfie)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Depan Rumah</b><br><br>${imgHtml(d.fotoRumahDepan)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Ruang Tamu</b><br><br>${imgHtml(d.fotoRuangTamu)}</td>
+                        <td style="padding:10px; border:1px solid #cbd5e1; width:25%;"><b>Kamar Mandi</b><br><br>${imgHtml(d.fotoKamarMandi)}</td>
+                    </tr>
+                </table>
+            `;
+
+            const opt = { 
+                margin: 10, 
+                filename: `DTSEN_${d.nomorKK}_${d.namaKK.replace(/[^a-zA-Z0-9]/g, "")}.pdf`, 
+                image: { type: 'jpeg', quality: 0.98 }, 
+                html2canvas: { scale: 2, useCORS: true }, 
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
+            };
+
+            Swal.fire({
+                title: 'Mencetak PDF...',
+                text: 'Mohon tunggu sebentar',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            html2pdf().set(opt).from(pdfContainer).save().then(() => {
+                Swal.close();
+            }).catch(err => {
+                Swal.close();
+                Swal.fire('Error', 'Gagal membuat file PDF: ' + err.message, 'error');
+            });
         }
 
         function showToast(msg) {
@@ -665,18 +744,17 @@
                 background_color: "#f1f5f9",
                 theme_color: "#1d4ed8",
                 icons: [{
-                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%231d4ed8' d='M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z'/%3E%3C/svg%3E",
+                    src: "https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true",
                     sizes: "512x512",
-                    type: "image/svg+xml"
+                    type: "image/png"
                 }]
             };
             const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
             const manifestURL = URL.createObjectURL(manifestBlob);
             document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
 
-            // Injecting Service Worker yang mensupport Cache Offline untuk masuk tanpa internet
             const swCode = `
-                const CACHE_NAME = 'dtsen-offline-v2';
+                const CACHE_NAME = 'dtsen-offline-v3';
                 const PAGE_URL = "${window.location.href.split('?')[0]}";
                 
                 self.addEventListener('install', (e) => { 
