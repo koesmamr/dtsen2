@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTSEN (OFFLINE)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Pustaka Baru untuk Login & Alert (Diadopsi dari Simpeg) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.25rem; height: 1.25rem; }
+        .section-card { transition: all 0.3s ease; }
+    </style>
+    
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans antialiased pb-20 selection:bg-blue-200">
+
+    <!-- HALAMAN LOGIN -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 to-blue-900 p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl z-10 w-full max-w-sm text-center transform transition-all">
+            <div class="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <i class="fas fa-users text-4xl text-blue-600"></i>
+            </div>
+            <h1 class="text-2xl font-bold mb-1 text-slate-800">DTSEN (OFFLINE)</h1>
+            <p class="text-sm mb-6 text-slate-500">Data Tunggal Sosial dan Ekonomi Nasional</p>
+            
+            <div class="bg-amber-50 text-amber-800 p-3 rounded-lg text-xs mb-6 text-left border border-amber-200">
+                <i class="fas fa-lock mr-1"></i> Data yang disimpan bersifat pribadi per akun. Silakan login untuk melanjutkan.
+            </div>
+
+            <!-- Google Sign-In Button Container -->
+            <div id="g_id_onload"
+                 data-client_id="181120297143-lvpop0ra4o9q6i3g18b74ubsuc8e59fh.apps.googleusercontent.com" 
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="flex justify-center mt-4 w-full">
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP CONTAINER (Ditampilkan setelah login) -->
+    <div id="app-container" class="hidden">
+        <!-- Navbar Sticky -->
+        <header class="bg-blue-700 text-white shadow-md sticky top-0 z-50">
+            <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img id="userAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer" onclick="confirmLogout()" title="Klik untuk Logout">
+                    <div>
+                        <h1 class="text-sm font-bold leading-tight truncate w-32 sm:w-48" id="userNameHeader">Nama Petugas</h1>
+                        <p class="text-[10px] text-blue-200">Petugas DTSEN</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="toggleQueueModal()" class="relative p-2 bg-blue-800 rounded-full hover:bg-blue-900 transition shadow-inner">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span id="queueCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow hidden">0</span>
+                    </button>
+                    <div id="statusIndicator" class="flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-3xl mx-auto px-4 py-6">
+            <!-- Notifikasi Auto Save -->
+            <div id="draftNotice" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm flex justify-between items-center shadow-sm">
+                <span><i class="fas fa-info-circle mr-2"></i>Draf isian sebelumnya telah dimuat ulang.</span>
+                <button type="button" onclick="clearDraft()" class="text-amber-600 hover:text-amber-800 font-semibold underline">Hapus Draf</button>
+            </div>
+
+            <form id="sensusForm" class="space-y-6">
+                <!-- SECTION 1: DATA DASAR -->
+                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
+                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">1</div>
+                        DATA DASAR (Keluarga)
+                    </div>
+                    <div class="p-5 space-y-5">
+                        <!-- GPS -->
+                        <div class="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">Titik Koordinat Lokasi Sensus</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded-lg bg-white px-3 py-2 text-sm text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 border">
+                                <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm">
+                                    <i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">1. Nomor KK</label>
+                                <input type="number" name="nomorKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-1">2. Nama Kepala Keluarga</label>
+                                <input type="text" name="namaKK" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 uppercase" required>
+                            </div>
+                        </div>
+
+                        <!-- Alamat KTP -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">3. Alamat KTP Lengkap</label>
+                            <textarea name="alamatKTP" rows="2" class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 border-slate-300 text-sm" placeholder="Nama Jalan/Gang/Blok..."></textarea>
+                            
+                            <div class="grid grid-cols-2 gap-2 mt-2">
+                                <div><label class="text-xs text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
+                                <div><label class="text-xs text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"></div>
+                                <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option></select></div>
+                                <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option></select></div>
+                            </div>
+                        </div>
+
+                        <!-- Status & Domisili -->
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-2">4. Status Keberadaan Keluarga</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="Ditemukan" class="form-radio" required> Ditemukan</label>
+                                <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="Pindah/Tidak Bertemu" class="form-radio"> Pindah/Tidak Bertemu</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-semibold text-slate-700">5. Alamat Domisili</label>
+                                <label class="flex items-center gap-2 text-sm text-blue-600 font-medium cursor-pointer"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox" onchange="toggleDomisili()"> Sama dengan KTP</label>
+                            </div>
+                            <div id="boxDomisili" class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all">
+                                <textarea name="alamatDom" rows="2" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm" placeholder="Nama Jalan Domisili..."></textarea>
+                                <div class="grid grid-cols-2 gap-2 mt-2">
+                                    <div><label class="text-xs text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-xs text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded-lg px-3 py-2 border-slate-300 text-sm"><option value="">-- Pilih --</option></select></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 2 & 3 (Aset & Rumah) -->
+                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
+                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">2</div>
+                        DATA RUMAH & ASET
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-xs font-semibold text-slate-700">Jml Anggota</label><input type="number" name="jmlAnggota" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
+                            <div><label class="block text-xs font-semibold text-slate-700">Status Kepemilikan</label><select name="statusRumah" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"><option value="Milik Sendiri">Milik Sendiri</option><option value="Kontrak/Sewa">Kontrak/Sewa</option></select></div>
+                            <div><label class="block text-xs font-semibold text-slate-700">Motor (Unit)</label><input type="number" name="asetMotor" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
+                            <div><label class="block text-xs font-semibold text-slate-700">Sapi (Ekor)</label><input type="number" name="asetSapi" class="w-full border rounded-lg px-3 py-2 text-sm border-slate-300"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SECTION 4: FOTO -->
+                <section class="section-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-4 font-bold text-slate-700 flex items-center">
+                        <div class="bg-blue-100 text-blue-700 w-8 h-8 rounded-full flex items-center justify-center mr-3">3</div>
+                        FOTO DOKUMENTASI
+                    </div>
+                    <div class="p-5 space-y-4 grid grid-cols-2 gap-4">
+                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
+                        <div class="space-y-1"><label class="block text-xs font-semibold text-slate-700">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
+                    </div>
+                </section>
+
+                <div class="pt-4 pb-10">
+                    <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 active:scale-95 transition-transform flex justify-center items-center gap-2">
+                        <i class="fas fa-save"></i> Simpan Data Sensus
+                    </button>
+                    <p class="text-center text-xs text-slate-500 mt-3">Data akan diantrekan, dan dikirim otomatis saat ada internet.</p>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- TOMBOL MENGAMBANG (Hanya Muncul Jika Ada Data Pending & Offline) -->
+    <button id="offlinePendingIndicator" onclick="toggleQueueModal()" class="fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:scale-105 transition-all hidden">
+        <div id="offlinePendingText" class="font-bold text-sm">
+            <i class="fas fa-exclamation-triangle"></i> Tertunda
+        </div>
+        <span id="offlinePendingCount" class="bg-white text-amber-600 px-2 py-0.5 rounded-full text-xs font-black">0</span>
+    </button>
+
+    <!-- Modal Antrean & Riwayat -->
+    <div id="queueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-end sm:items-center justify-center transition-opacity">
+        <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col transform transition-transform translate-y-full" id="queueModalContent">
+            
+            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+                <h2 class="font-bold text-lg text-slate-800" id="modalTitle"><i class="fas fa-list-ul mr-2 text-blue-600"></i>Antrean Sinkronisasi</h2>
+                <button type="button" onclick="toggleQueueModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-200 text-sm font-semibold bg-white">
+                <button class="flex-1 py-3 text-blue-600 border-b-2 border-blue-600" id="tabAntrean" onclick="switchTab('antrean')">Antrean (<span id="countAntreanTab">0</span>)</button>
+                <button class="flex-1 py-3 text-slate-500 hover:text-slate-700" id="tabRiwayat" onclick="switchTab('riwayat')">Berhasil Terkirim</button>
+            </div>
+
+            <!-- List Antrean -->
+            <div id="queueList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100"></div>
+            <!-- List Riwayat -->
+            <div id="historyList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100 hidden"></div>
+
+            <div class="p-4 border-t border-slate-200 bg-white" id="syncFooter">
+                <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all">
+                    <i class="fas fa-sync-alt"></i> Sinkronkan Semua Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Banner PWA -->
+    <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
+        <div class="flex items-center gap-3">
+            <div class="bg-white p-2 rounded-lg"><i class="fas fa-file-signature text-blue-600 text-xl"></i></div>
+            <div>
+                <p class="font-bold">Install Aplikasi DTSEN</p>
+                <p class="text-xs text-blue-200">Akses lebih cepat & lancar saat offline.</p>
+            </div>
+        </div>
+        <div class="flex gap-2 w-full sm:w-auto">
+            <button id="closeInstallBtn" class="flex-1 sm:flex-none px-4 py-2 border border-blue-400 rounded-lg text-sm hover:bg-blue-800">Nanti</button>
+            <button id="installBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white text-blue-900 font-bold rounded-lg text-sm">Install</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-[110] flex items-center gap-2">
+        <i class="fas fa-info-circle"></i> <span id="toastMsg">Pesan</span>
+    </div>
+
+    <script>
+        // --- DATA WILAYAH TUBAN ---
+        const DATA_WILAYAH_TUBAN = {
+            "Bancar": ["Bancar", "Banjarjo", "Bogorejo", "Boncong", "Bulumeduro"],
+            "Jenu": ["Beji", "Bogang", "Jenggolo", "Jenu", "Kaliuntu"],
+            "Tuban": ["Baturetno", "Doromukti", "Karangsari", "Kebonsari", "Latsari", "Ronggomulyo"]
+        };
+
+        // --- MANAJEMEN USER & SESI ---
+        let currentUser = null;
+        let DRAFT_KEY = '';
+        let QUEUE_KEY = '';
+        let HISTORY_KEY = '';
+        let sensusQueue = [];
+        let sensusHistory = [];
+        let isSyncingProcess = false; // Flag untuk mencegah multiple sync bersamaan
+
+        function handleCredentialResponse(response) {
+            try {
+                const payload = JSON.parse(atob(response.credential.split('.')[1]));
+                currentUser = { email: payload.email, name: payload.name, picture: payload.picture };
+                localStorage.setItem('sensus_user', JSON.stringify(currentUser));
+                
+                Swal.fire({ icon: 'success', title: 'Login Berhasil', text: `Selamat datang, ${currentUser.name}`, timer: 1500, showConfirmButton: false });
+                initAppSession();
+            } catch (error) {
+                Swal.fire('Error', 'Gagal memproses login Google.', 'error');
+            }
+        }
+
+        function initAppSession() {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('app-container').classList.remove('hidden');
+
+            document.getElementById('userNameHeader').innerText = currentUser.name;
+            document.getElementById('userAvatar').src = currentUser.picture || 'https://via.placeholder.com/40';
+
+            const safeEmail = currentUser.email.replace(/[^a-zA-Z0-9]/g, '_');
+            DRAFT_KEY = 'draft_' + safeEmail;
+            QUEUE_KEY = 'queue_' + safeEmail;
+            HISTORY_KEY = 'history_' + safeEmail;
+
+            sensusQueue = JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
+            sensusHistory = JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+            
+            initWilayah();
+            updateConnectionStatus(); // Ini akan memicu Auto-Sync jika online
+            updateQueueBadge();
+            loadDraft();
+        }
+
+        function confirmLogout() {
+            Swal.fire({
+                title: 'Keluar Akun?',
+                text: "Anda akan keluar dari sesi saat ini. Draf dan antrean Anda akan tetap tersimpan aman di HP ini.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Logout',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('sensus_user');
+                    currentUser = null;
+                    document.getElementById('login-page').classList.remove('hidden');
+                    document.getElementById('app-container').classList.add('hidden');
+                    document.getElementById('offlinePendingIndicator').classList.add('hidden');
+                }
+            });
+        }
+
+        // --- FUNGSI ALAMAT & UI UMUM ---
+        function initWilayah() {
+            const kecSelects = ['kecamatanKTP', 'kecamatanDomisili'];
+            const kecOptions = Object.keys(DATA_WILAYAH_TUBAN).sort();
+            kecSelects.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    el.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    kecOptions.forEach(kec => el.innerHTML += `<option value="${kec}">${kec}</option>`);
+                }
+            });
+        }
+
+        function updateDesa(kecId, desaId) {
+            const kec = document.getElementById(kecId).value;
+            const desaEl = document.getElementById(desaId);
+            desaEl.innerHTML = '<option value="">-- Pilih Desa --</option>';
+            if (kec && DATA_WILAYAH_TUBAN[kec]) {
+                DATA_WILAYAH_TUBAN[kec].sort().forEach(desa => desaEl.innerHTML += `<option value="${desa}">${desa}</option>`);
+            }
+        }
+
+        function toggleDomisili() {
+            const cb = document.getElementById('samaDenganKtp');
+            const box = document.getElementById('boxDomisili');
+            cb.checked ? box.classList.add('hidden') : box.classList.remove('hidden');
+        }
+
+        // --- OFFLINE & AUTO-SYNC LOGIC ---
+        function updateConnectionStatus() {
+            const statusEl = document.getElementById('statusIndicator');
+            const btnSync = document.getElementById('btnSyncNow');
+            
+            if (navigator.onLine) {
+                statusEl.innerHTML = '<i class="fas fa-wifi"></i>'; 
+                statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors';
+                if(btnSync) btnSync.disabled = false;
+
+                // FITUR AUTO-SYNC: Jika online dan ada antrean, trigger sinkronisasi otomatis
+                if (sensusQueue.length > 0 && currentUser && !isSyncingProcess) {
+                    showToast("Koneksi pulih. Memulai Sinkronisasi Otomatis...");
+                    syncDataToServer(true); // true = mode auto (background)
+                }
+
+            } else {
+                statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; 
+                statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-red-500 px-2 py-1 rounded-full text-white shadow transition-colors';
+                if(btnSync) btnSync.disabled = true;
+            }
+            
+            updateOfflineIndicator();
+        }
+
+        // Event listener saat HP putus/nyambung internet
+        window.addEventListener('online', updateConnectionStatus); 
+        window.addEventListener('offline', updateConnectionStatus);
+
+        // Mengatur tampilan tombol mengambang pintar
+        function updateOfflineIndicator() {
+            const indicator = document.getElementById('offlinePendingIndicator');
+            const textEl = document.getElementById('offlinePendingText');
+            
+            if (!indicator || !currentUser) return;
+
+            if (sensusQueue.length > 0) {
+                indicator.classList.remove('hidden');
+                document.getElementById('offlinePendingCount').innerText = sensusQueue.length;
+                
+                if (isSyncingProcess) {
+                    // Sedang proses upload
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 transition-all";
+                    textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+                } else if (!navigator.onLine) {
+                    // Offline dan ada data numpuk
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-amber-600 transition-all animate-bounce";
+                    textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
+                } else {
+                    // Online tapi belum terupload (Mungkin tertunda karena error)
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:bg-blue-700 transition-all";
+                    textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
+                }
+            } else {
+                indicator.classList.add('hidden');
+            }
+        }
+
+        const form = document.getElementById('sensusForm');
+        function saveDraft() {
+            if(!currentUser) return;
+            const formData = new FormData(form);
+            const dataObj = Object.fromEntries(formData.entries());
+            dataObj['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(dataObj));
+        }
+
+        function loadDraft() {
+            const draft = localStorage.getItem(DRAFT_KEY);
+            if (draft) {
+                const dataObj = JSON.parse(draft);
+                if(dataObj.kecamatan) { document.getElementById('kecamatanKTP').value = dataObj.kecamatan; updateDesa('kecamatanKTP', 'desaKTP'); }
+                if(dataObj.kecamatanDom) { document.getElementById('kecamatanDomisili').value = dataObj.kecamatanDom; updateDesa('kecamatanDomisili', 'desaDomisili'); }
+
+                for (let key in dataObj) {
+                    const inputs = form.elements[key];
+                    if (inputs) {
+                        if (inputs instanceof NodeList) { const radio = Array.from(inputs).find(r => r.value === dataObj[key]); if(radio) radio.checked = true; } 
+                        else if (inputs.type === 'checkbox') { inputs.checked = dataObj[key] === 'on' || dataObj[key] === true; } 
+                        else { inputs.value = dataObj[key]; }
+                    }
+                }
+                toggleDomisili(); document.getElementById('draftNotice').classList.remove('hidden');
+            }
+        }
+
+        function clearDraft() {
+            localStorage.removeItem(DRAFT_KEY); form.reset();
+            document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
+            document.getElementById('desaKTP').innerHTML = '<option value="">-- Pilih --</option>';
+            document.getElementById('desaDomisili').innerHTML = '<option value="">-- Pilih --</option>';
+            document.getElementById('draftNotice').classList.add('hidden');
+        }
+
+        form.addEventListener('input', saveDraft); form.addEventListener('change', saveDraft);
+
+        function getLocation() {
+            const gpsInput = document.getElementById('gpsCoords');
+            if (navigator.geolocation) {
+                gpsInput.value = "Mencari lokasi...";
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => { gpsInput.value = `${pos.coords.latitude}, ${pos.coords.longitude}`; saveDraft(); },
+                    (err) => { gpsInput.value = ""; Swal.fire('Error', 'Gagal mengambil GPS. Pastikan Izin Lokasi aktif.', 'error'); },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            }
+        }
+
+        // --- SUBMIT FORM LOKAL ---
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if(!form.nomorKK.value || !form.namaKK.value) return Swal.fire('Error', 'Lengkapi Data Dasar!', 'warning');
+
+            const formData = new FormData(form);
+            const dataToSave = Object.fromEntries(formData.entries());
+            dataToSave['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
+            dataToSave['petugasEmail'] = currentUser.email;
+            dataToSave['petugasName'] = currentUser.name;
+
+            sensusQueue.unshift({ id: 'SENSUS-' + Date.now(), timestamp: new Date().toLocaleString('id-ID'), data: dataToSave });
+            localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
+            
+            clearDraft();
+            document.getElementById('gpsCoords').value = '';
+            
+            updateQueueBadge();
+            renderQueueList();
+            
+            // Beritahu user, lalu coba auto sync jika sinyalnya ada
+            showToast("Tersimpan sementara ke HP.");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            if(navigator.onLine && !isSyncingProcess) {
+                setTimeout(() => syncDataToServer(true), 1000);
+            }
+        });
+
+        // --- MODAL ANTREAN & RIWAYAT ---
+        function toggleQueueModal() {
+            const modal = document.getElementById('queueModal'); const content = document.getElementById('queueModalContent');
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden'); modal.classList.add('flex');
+                setTimeout(() => { content.classList.remove('translate-y-full'); }, 10);
+                switchTab('antrean'); 
+            } else {
+                content.classList.add('translate-y-full');
+                setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 300);
+            }
+        }
+
+        function switchTab(tab) {
+            const tabA = document.getElementById('tabAntrean'); const tabR = document.getElementById('tabRiwayat');
+            const listA = document.getElementById('queueList'); const listR = document.getElementById('historyList');
+            const footer = document.getElementById('syncFooter');
+
+            if(tab === 'antrean') {
+                tabA.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
+                tabR.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                listA.classList.remove('hidden'); listR.classList.add('hidden'); footer.classList.remove('hidden');
+                renderQueueList();
+            } else {
+                tabR.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600";
+                tabA.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                listR.classList.remove('hidden'); listA.classList.add('hidden'); footer.classList.add('hidden');
+                renderHistoryList();
+            }
+        }
+
+        function updateQueueBadge() {
+            const badge = document.getElementById('queueCountBadge');
+            document.getElementById('countAntreanTab').innerText = sensusQueue.length;
+            if (sensusQueue.length > 0) { badge.innerText = sensusQueue.length; badge.classList.remove('hidden'); } 
+            else { badge.classList.add('hidden'); }
+            updateOfflineIndicator();
+        }
+
+        function renderQueueList() {
+            const list = document.getElementById('queueList'); list.innerHTML = '';
+            if (sensusQueue.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-check-circle text-4xl mb-3 text-slate-300"></i><p>Tidak ada data antrean.</p></div>`; return;
+            }
+            sensusQueue.forEach((item, index) => {
+                const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-amber-500 shadow-sm flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">${nama}</p>
+                            <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
+                            <p class="text-[10px] text-amber-600 mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
+                        </div>
+                        <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:text-red-600 p-2"><i class="fas fa-trash-alt"></i></button>
+                    </div>`;
+            });
+        }
+
+        function renderHistoryList() {
+            const list = document.getElementById('historyList'); list.innerHTML = '';
+            if (sensusHistory.length === 0) {
+                list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-history text-4xl mb-3 text-slate-300"></i><p>Belum ada data yang tersinkron.</p></div>`; return;
+            }
+            sensusHistory.forEach(item => {
+                const nama = item.data.namaKK ? item.data.namaKK.toUpperCase() : 'TANPA NAMA';
+                list.innerHTML += `
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80">
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">${nama}</p>
+                            <p class="text-[10px] text-slate-500 font-mono">KK: ${item.data.nomorKK}</p>
+                            <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime}</p>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function deleteQueueItem(index) {
+            Swal.fire({ title: 'Hapus Antrean?', text: "Data ini akan dihapus permanen dari HP.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    sensusQueue.splice(index, 1); localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
+                    renderQueueList(); updateQueueBadge();
+                }
+            });
+        }
+
+        // --- SINKRONISASI PINTAR KE SERVER ---
+        const GAS_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_ID_ANDA/exec';
+
+        function compressImage(fileInput, hiddenInputId) {
+            const file = fileInput.files[0]; if (!file) return;
+            const reader = new FileReader(); reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                const img = new Image(); img.src = e.target.result;
+                img.onload = function() {
+                    const canvas = document.createElement('canvas'); const MAX_WIDTH = 800; const scale = MAX_WIDTH / img.width;
+                    canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
+                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    document.getElementById(hiddenInputId).value = canvas.toDataURL('image/jpeg', 0.6);
+                    saveDraft();
+                }
+            }
+        }
+
+        async function syncDataToServer(isAutoMode = false) {
+            if (!navigator.onLine) {
+                if(!isAutoMode) Swal.fire('Offline', 'HP Anda tidak terhubung ke internet.', 'error');
+                return;
+            }
+            if (sensusQueue.length === 0 || isSyncingProcess) return;
+            if (GAS_URL.includes('GANTI_DENGAN_ID_ANDA')) {
+                if(!isAutoMode) Swal.fire('Setup Error', 'URL Google Apps Script belum disetting pada file HTML.', 'error');
+                return;
+            }
+
+            // Flag nyala
+            isSyncingProcess = true;
+            
+            // Update UI Button di Modal
+            const btnSync = document.getElementById('btnSyncNow'); 
+            const originalText = btnSync.innerHTML;
+            btnSync.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...'; 
+            btnSync.disabled = true;
+            
+            // Update UI Floating Indicator
+            updateOfflineIndicator();
+
+            let hasError = false;
+
+            // Proses satu persatu
+            for(let i = sensusQueue.length - 1; i >= 0; i--) {
+                try {
+                    const response = await fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(sensusQueue[i].data) });
+                    const result = await response.json();
+                    
+                    if(result.status === "success") {
+                        const syncedItem = sensusQueue.pop();
+                        syncedItem.syncTime = new Date().toLocaleString('id-ID');
+                        sensusHistory.unshift(syncedItem);
+                        
+                        localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
+                        localStorage.setItem(HISTORY_KEY, JSON.stringify(sensusHistory));
+                        
+                        renderQueueList(); updateQueueBadge();
+                    } else { throw new Error(result.message); }
+                } catch (error) {
+                    hasError = true;
+                    if(!isAutoMode) Swal.fire('Sinkronisasi Gagal', 'Terjadi kesalahan saat mengirim data. Coba lagi nanti.', 'error');
+                    break; 
+                }
+            }
+
+            // Kembalikan state flag & UI
+            isSyncingProcess = false;
+            btnSync.innerHTML = originalText; btnSync.disabled = false;
+            updateOfflineIndicator();
+
+            // Pesan Keberhasilan
+            if(sensusQueue.length === 0 && !hasError) {
+                if(isAutoMode) {
+                    showToast("Semua data berhasil tersinkron otomatis!");
+                } else {
+                    Swal.fire('Berhasil', 'Semua data telah masuk ke Server!', 'success');
+                    switchTab('riwayat');
+                }
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMsg').innerText = msg;
+            toast.style.opacity = '1';
+            setTimeout(() => { toast.style.opacity = '0'; }, 3000);
+        }
+
+        // --- PWA INIT DENGAN NETWORK-FIRST STRATEGY ---
+        let deferredPrompt;
+        function initPWA() {
+            const manifest = {
+                name: "DTSEN (OFFLINE) - Data Tunggal Sosial Ekonomi Nasional",
+                short_name: "DTSEN",
+                start_url: window.location.href.split('?')[0],
+                display: "standalone",
+                background_color: "#f1f5f9",
+                theme_color: "#1d4ed8",
+                icons: [{
+                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%231d4ed8' d='M64 480H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H288c-10.1 0-19.6-4.7-25.6-12.8L243.2 57.6C231.1 41.5 212.1 32 192 32H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64z'/%3E%3C/svg%3E",
+                    sizes: "512x512",
+                    type: "image/svg+xml"
+                }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(manifestBlob);
+            document.querySelector('head').insertAdjacentHTML('beforeend', `<link rel="manifest" href="${manifestURL}">`);
+
+            // Injecting Service Worker yang mensupport Cache Offline untuk masuk tanpa internet
+            const swCode = `
+                const CACHE_NAME = 'dtsen-offline-v2';
+                const PAGE_URL = "${window.location.href.split('?')[0]}";
+                
+                self.addEventListener('install', (e) => { 
+                    e.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.add(PAGE_URL)));
+                    self.skipWaiting(); 
+                });
+                
+                self.addEventListener('activate', (e) => { e.waitUntil(clients.claim()); });
+                
+                self.addEventListener('fetch', (e) => { 
+                    if (e.request.method !== 'GET' || !e.request.url.startsWith('http')) return;
+                    
+                    e.respondWith(
+                        fetch(e.request).then((response) => {
+                            const clone = response.clone();
+                            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+                            return response;
+                        }).catch(() => {
+                            return caches.match(e.request).then((res) => {
+                                return res || caches.match(PAGE_URL);
+                            });
+                        })
+                    ); 
+                });
+            `;
+            const swBlob = new Blob([swCode], {type: 'application/javascript'});
+            const swURL = URL.createObjectURL(swBlob);
+            
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register(swURL).catch(err => console.log('PWA SW err:', err));
+            }
+
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault(); deferredPrompt = e;
+                const banner = document.getElementById('installBanner');
+                banner.classList.remove('hidden'); banner.classList.add('flex');
+            });
+
+            document.getElementById('installBtn').addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        const banner = document.getElementById('installBanner');
+                        banner.classList.add('hidden'); banner.classList.remove('flex');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+
+            document.getElementById('closeInstallBtn').addEventListener('click', () => {
+                const banner = document.getElementById('installBanner');
+                banner.classList.add('hidden'); banner.classList.remove('flex');
+            });
+        }
+
+        // --- ONLOAD STARTUP ---
+        window.onload = () => {
+            const savedUser = localStorage.getItem('sensus_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                initAppSession();
+            } else {
+                document.getElementById('login-page').classList.remove('hidden');
+                document.getElementById('app-container').classList.add('hidden');
+            }
+            initPWA();
+        };
+    </script>
+</body>
+</html>
