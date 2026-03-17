@@ -12,165 +12,183 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
-        .form-radio, .form-checkbox { accent-color: #2563eb; width: 1.1rem; height: 1.1rem; }
-        .modal-overlay { background-color: rgba(15, 23, 42, 0.7); backdrop-filter: blur(4px); }
+        /* Glassmorphism Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.5); border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.7); }
+        
+        .form-radio, .form-checkbox { accent-color: #f97316; width: 1.1rem; height: 1.1rem; background-color: rgba(255,255,255,0.5); }
+        .modal-overlay { background-color: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); }
+        
+        /* Glass Input Styles */
+        .glass-input {
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-color: #f97316; /* Orange focus */
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3);
+        }
     </style>
     
-    <meta name="theme-color" content="#1d4ed8">
+    <meta name="theme-color" content="#f97316">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans antialiased pb-20 selection:bg-blue-200">
+<body class="bg-gradient-to-br from-orange-400 via-yellow-300 to-blue-500 bg-fixed min-h-screen text-slate-800 font-sans antialiased pb-20 selection:bg-orange-200">
 
     <!-- HALAMAN LOGIN -->
-    <div id="login-page" class="min-h-screen flex items-center justify-center relative bg-gradient-to-br from-blue-600 to-blue-900 p-4 z-50">
-        <div class="bg-white p-8 rounded-2xl shadow-2xl z-10 w-full max-w-sm text-center">
-            <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" alt="Logo DTSEN" class="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-md">
-            <h1 class="text-2xl font-bold mb-1 text-slate-800">DTSEN (OFFLINE)</h1>
-            <p class="text-sm mb-6 text-slate-500">Data Tunggal Sosial dan Ekonomi Nasional</p>
-            <div class="bg-amber-50 text-amber-800 p-3 rounded-lg text-xs mb-6 text-left border border-amber-200">
-                <i class="fas fa-lock mr-1"></i> Data yang disimpan bersifat pribadi per akun. Silakan login untuk melanjutkan.
+    <div id="login-page" class="min-h-screen flex items-center justify-center relative p-4 z-50">
+        <div class="bg-white/30 backdrop-blur-xl border border-white/50 p-8 rounded-3xl shadow-2xl z-10 w-full max-w-sm text-center">
+            <img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" alt="Logo DTSEN" class="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-xl">
+            <h1 class="text-2xl font-black mb-1 text-slate-900 drop-shadow-sm">DTSEN (OFFLINE)</h1>
+            <p class="text-sm mb-6 text-slate-800 font-medium">Data Tunggal Sosial dan Ekonomi Nasional</p>
+            <div class="bg-white/40 backdrop-blur-md text-slate-800 font-medium p-3 rounded-xl text-xs mb-6 text-left border border-white/50 shadow-inner">
+                <i class="fas fa-lock mr-1 text-orange-600"></i> Data yang disimpan bersifat pribadi per akun. Silakan login.
             </div>
             <div id="g_id_onload" data-client_id="181120297143-lvpop0ra4o9q6i3g18b74ubsuc8e59fh.apps.googleusercontent.com" data-callback="handleCredentialResponse" data-auto_prompt="false"></div>
             <div class="flex justify-center mt-4 w-full">
-                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left"></div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="filled_blue" data-text="sign_in_with" data-shape="pill" data-logo_alignment="left"></div>
             </div>
         </div>
     </div>
 
     <!-- APP CONTAINER -->
     <div id="app-container" class="hidden">
-        <!-- Navbar -->
-        <header class="bg-blue-700 text-white shadow-md sticky top-0 z-40">
+        <!-- Navbar Glass -->
+        <header class="bg-white/20 backdrop-blur-lg border-b border-white/40 shadow-lg sticky top-0 z-40">
             <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
                 <div class="flex items-center gap-3">
-                    <img id="userAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white shadow-sm cursor-pointer" onclick="confirmLogout()" title="Klik untuk Logout">
+                    <img id="userAvatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-white/80 shadow-md cursor-pointer" onclick="confirmLogout()" title="Klik untuk Logout">
                     <div>
-                        <h1 class="text-sm font-bold leading-tight truncate w-32 sm:w-48" id="userNameHeader">Nama Petugas</h1>
-                        <p class="text-[10px] text-blue-200">Petugas DTSEN</p>
+                        <h1 class="text-sm font-bold leading-tight truncate w-32 sm:w-48 text-slate-900 drop-shadow-sm" id="userNameHeader">Nama Petugas</h1>
+                        <p class="text-[10px] text-slate-800 font-medium font-mono">PETUGAS DTSEN</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button type="button" onclick="toggleQueueModal()" class="relative p-2 bg-blue-800 rounded-full hover:bg-blue-900 transition shadow-inner">
+                    <button type="button" onclick="toggleQueueModal()" class="relative p-2 bg-white/40 border border-white/50 rounded-full hover:bg-white/60 transition shadow-sm text-slate-800">
                         <i class="fas fa-cloud-upload-alt"></i>
-                        <span id="queueCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow hidden">0</span>
+                        <span id="queueCountBadge" class="absolute -top-1 -right-1 bg-orange-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-md hidden border border-white/50">0</span>
                     </button>
-                    <div id="statusIndicator" class="flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow transition-colors"><i class="fas fa-wifi"></i></div>
+                    <div id="statusIndicator" class="flex items-center gap-1 text-[10px] font-bold bg-green-400/80 backdrop-blur-sm border border-white/40 px-2 py-1 rounded-full text-slate-900 shadow-sm transition-colors"><i class="fas fa-wifi"></i></div>
                 </div>
             </div>
         </header>
 
         <main class="max-w-3xl mx-auto px-3 sm:px-4 py-6">
-            <div id="draftNotice" class="hidden mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm flex justify-between items-center shadow-sm">
-                <span><i class="fas fa-info-circle mr-2"></i>Draf belum tersimpan dimuat ulang.</span>
-                <button type="button" onclick="clearDraft()" class="text-amber-600 hover:text-amber-800 font-semibold underline">Hapus Draf</button>
+            <div id="draftNotice" class="hidden mb-5 p-3 bg-white/50 backdrop-blur-md border border-white/60 text-slate-800 rounded-xl text-sm flex justify-between items-center shadow-lg">
+                <span class="font-medium"><i class="fas fa-info-circle mr-2 text-blue-600"></i>Draf belum tersimpan dimuat ulang.</span>
+                <button type="button" onclick="clearDraft()" class="text-orange-600 hover:text-orange-800 font-bold bg-white/50 px-2 py-1 rounded-lg border border-white/50 shadow-sm">Hapus Draf</button>
             </div>
 
             <form id="sensusForm">
                 
                 <!-- BAGIAN 1: DATA DASAR -->
                 <div class="mb-6">
-                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span> DATA DASAR (Keluarga)</h2>
+                    <h2 class="font-black text-slate-900 mb-3 flex items-center drop-shadow-sm"><span class="bg-gradient-to-br from-orange-400 to-orange-600 shadow-md text-white w-7 h-7 rounded-full flex items-center justify-center text-xs mr-2 border border-white/30">1</span> DATA DASAR (Keluarga)</h2>
                     
                     <!-- 0. GPS -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-0">
-                        <button type="button" id="mq-btn-0" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(0)">
-                            <span>0. Titik Koordinat Lokasi Sensus</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-0"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-0">
+                        <button type="button" id="mq-btn-0" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(0)">
+                            <span>0. Titik Koordinat Lokasi Sensus</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-0"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-0">
-                            <div class="p-4 bg-white rounded-b">
+                        <div class="hidden border-t border-white/40" id="mq-body-0">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
                                 <div class="flex gap-2">
-                                    <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full border-slate-300 rounded bg-slate-50 px-2 py-1.5 text-xs text-slate-500 border focus:outline-none">
-                                    <button type="button" onclick="getLocation()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-xs font-semibold hover:bg-blue-700 whitespace-nowrap shadow-sm"><i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS</button>
+                                    <input type="text" id="gpsCoords" name="gpsCoords" readonly placeholder="Belum diambil..." class="w-full glass-input rounded-lg px-3 py-2 text-xs">
+                                    <button type="button" onclick="getLocation()" class="bg-blue-500/80 backdrop-blur-md border border-white/30 text-white px-3 py-2 rounded-lg text-xs font-bold hover:bg-blue-600/90 whitespace-nowrap shadow-md"><i class="fas fa-map-marker-alt mr-1"></i> Ambil GPS</button>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(0)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(0)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 1. Nomor KK -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-1">
-                        <button type="button" id="mq-btn-1" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(1)">
-                            <span>1. Nomor KK</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-1"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-1">
+                        <button type="button" id="mq-btn-1" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(1)">
+                            <span>1. Nomor KK</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-1"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-1">
-                            <div class="p-4 bg-white rounded-b">
-                                <input type="number" name="nomorKK" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="16 Digit Nomor KK" required>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(1)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-1">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <input type="number" name="nomorKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="16 Digit Nomor KK" required>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(1)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 2. Nama KK -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-2">
-                        <button type="button" id="mq-btn-2" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(2)">
-                            <span>2. Nama Kepala Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-2"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-2">
+                        <button type="button" id="mq-btn-2" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(2)">
+                            <span>2. Nama Kepala Keluarga</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-2"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-2">
-                            <div class="p-4 bg-white rounded-b">
-                                <input type="text" name="namaKK" class="w-full border rounded px-3 py-2 text-xs border-slate-300 uppercase outline-none focus:ring-2 focus:ring-blue-500" placeholder="Sesuai KTP" required>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(2)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-2">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <input type="text" name="namaKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs uppercase" placeholder="Sesuai KTP" required>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(2)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 3. Alamat KTP -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-3">
-                        <button type="button" id="mq-btn-3" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(3)">
-                            <span>3. Alamat KTP Lengkap</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-3"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-3">
+                        <button type="button" id="mq-btn-3" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(3)">
+                            <span>3. Alamat KTP Lengkap</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-3"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-3">
-                            <div class="p-4 bg-white rounded-b">
-                                <textarea name="alamatKTP" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama Jalan/Gang/Blok..."></textarea>
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div><label class="text-[10px] text-slate-500 font-medium">RT</label><input type="number" name="rtKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
-                                    <div><label class="text-[10px] text-slate-500 font-medium">RW</label><input type="number" name="rwKTP" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"></div>
-                                    <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
-                                    <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-3">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <textarea name="alamatKTP" rows="2" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="Nama Jalan/Gang/Blok..."></textarea>
+                                <div class="grid grid-cols-2 gap-3 mt-3">
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">RT</label><input type="number" name="rtKTP" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">RW</label><input type="number" name="rwKTP" class="w-full glass-input rounded-lg px-3 py-2 text-xs"></div>
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kecamatan</label><select id="kecamatanKTP" name="kecamatan" onchange="updateDesa('kecamatanKTP', 'desaKTP')" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
+                                    <div><label class="text-[10px] text-slate-800 font-bold ml-1">Desa/Kelurahan</label><select id="desaKTP" name="desa" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(3)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(3)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 4. Keberadaan -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-4">
-                        <button type="button" id="mq-btn-4" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(4)">
-                            <span>4. Status Keberadaan Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-4"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-4">
+                        <button type="button" id="mq-btn-4" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(4)">
+                            <span>4. Status Keberadaan Keluarga</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-4"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-4">
-                            <div class="p-4 bg-white rounded-b">
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
-                                    <label class="flex items-center gap-2"><input type="radio" name="statusKeluarga" value="TIDAK ELIGIBLE" class="form-radio"> TIDAK ELIGIBLE</label>
+                        <div class="hidden border-t border-white/40" id="mq-body-4">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-medium text-slate-800">
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="TIDAK ELIGIBLE" class="form-radio"> TIDAK ELIGIBLE</label>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(4)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-4 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(4)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 5. Domisili -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-5">
-                        <button type="button" id="mq-btn-5" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(5)">
-                            <span>5. Alamat Domisili</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-5"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-5">
+                        <button type="button" id="mq-btn-5" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(5)">
+                            <span>5. Alamat Domisili</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-5"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-5">
-                            <div class="p-4 bg-white rounded-b">
-                                <label class="flex items-center gap-1 text-xs text-blue-600 font-medium cursor-pointer mb-2"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox w-3 h-3" onchange="toggleDomisili()"> Sama dgn KTP</label>
-                                <div id="boxDomisili" class="bg-gray-50 p-3 rounded border border-gray-200 transition-all">
-                                    <textarea name="alamatDom" rows="2" class="w-full border rounded px-2 py-1.5 border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none" placeholder="Nama Jalan Domisili..."></textarea>
-                                    <div class="grid grid-cols-2 gap-2 mt-2">
-                                        <div><label class="text-[10px] text-slate-500 font-medium">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
-                                        <div><label class="text-[10px] text-slate-500 font-medium">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full border rounded px-2 py-1 border-slate-300 text-xs"><option value="">-- Pilih --</option></select></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-5">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <label class="flex items-center gap-2 text-xs text-slate-900 font-bold cursor-pointer mb-3 bg-white/50 p-2 rounded-lg border border-white/50 inline-flex shadow-sm"><input type="checkbox" id="samaDenganKtp" name="samaDenganKtp" class="form-checkbox" onchange="toggleDomisili()"> SAMA DENGAN ALAMAT KTP</label>
+                                <div id="boxDomisili" class="transition-all mt-2 space-y-3">
+                                    <textarea name="alamatDom" rows="2" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="Nama Jalan Domisili..."></textarea>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">Kecamatan</label><select id="kecamatanDomisili" name="kecamatanDom" onchange="updateDesa('kecamatanDomisili', 'desaDomisili')" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
+                                        <div><label class="text-[10px] text-slate-800 font-bold ml-1">Desa/Kelurahan</label><select id="desaDomisili" name="desaDom" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option></select></div>
                                     </div>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(5)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-4 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(5)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -178,188 +196,188 @@
 
                 <!-- BAGIAN 2: DATA RUMAH -->
                 <div class="mb-6">
-                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span> DATA RUMAH & FASILITAS</h2>
+                    <h2 class="font-black text-slate-900 mb-3 flex items-center drop-shadow-sm"><span class="bg-gradient-to-br from-orange-400 to-orange-600 shadow-md text-white w-7 h-7 rounded-full flex items-center justify-center text-xs mr-2 border border-white/30">2</span> DATA RUMAH & FASILITAS</h2>
                     
                     <!-- 6. Jml Anggota -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-6">
-                        <button type="button" id="mq-btn-6" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(6)">
-                            <span>6. Jumlah Anggota Keluarga</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-6"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-6">
+                        <button type="button" id="mq-btn-6" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(6)">
+                            <span>6. Jumlah Anggota Keluarga</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-6"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-6">
-                            <div class="p-4 bg-white rounded-b">
-                                <input type="number" name="jmlAnggota" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Jumlah Orang">
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(6)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-6">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <input type="number" name="jmlAnggota" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="Jumlah Orang">
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(6)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 7. Jml KK -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-7">
-                        <button type="button" id="mq-btn-7" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(7)">
-                            <span>7. Jumlah KK Dalam Rumah & List NIK</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-7"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-7">
+                        <button type="button" id="mq-btn-7" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(7)">
+                            <span>7. Jumlah KK Dalam Rumah & List NIK</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-7"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-7">
-                            <div class="p-4 bg-white rounded-b">
-                                <div><label class="text-[10px] text-slate-500 font-medium">Berapa KK dalam rumah?</label><input type="number" name="jmlKkDalamRumah" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
-                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">List NIK/KK Lain (Pisahkan dengan koma jika ada)</label><input type="text" name="listNikKkLain" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(7)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-7">
+                            <div class="p-4 bg-white/20 rounded-b-xl space-y-3">
+                                <div><label class="text-[10px] text-slate-800 font-bold ml-1">Berapa KK dalam rumah?</label><input type="number" name="jmlKkDalamRumah" class="w-full glass-input rounded-lg px-3 py-2 text-xs mt-1"></div>
+                                <div><label class="text-[10px] text-slate-800 font-bold ml-1">List NIK/KK Lain (Pisahkan dengan koma jika ada)</label><input type="text" name="listNikKkLain" class="w-full glass-input rounded-lg px-3 py-2 text-xs mt-1"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(7)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 8. Kepemilikan Rumah -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-8">
-                        <button type="button" id="mq-btn-8" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(8)">
-                            <span>8. Kepemilikan Rumah</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-8"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-8">
+                        <button type="button" id="mq-btn-8" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(8)">
+                            <span>8. Kepemilikan Rumah</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-8"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-8">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="statusRumah" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="MILIK SENDIRI">MILIK SENDIRI</option><option value="KONTRAK/SEWA">KONTRAK/SEWA</option><option value="BEBAS SEWA">BEBAS SEWA</option><option value="DINAS">DINAS</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(8)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-8">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="statusRumah" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="MILIK SENDIRI">MILIK SENDIRI</option><option value="KONTRAK/SEWA">KONTRAK/SEWA</option><option value="BEBAS SEWA">BEBAS SEWA</option><option value="DINAS">DINAS</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(8)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 9. Luas Lantai -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-9">
-                        <button type="button" id="mq-btn-9" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(9)">
-                            <span>9. Luas Lantai Bangunan (m2)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-9"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-9">
+                        <button type="button" id="mq-btn-9" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(9)">
+                            <span>9. Luas Lantai Bangunan (m2)</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-9"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-9">
-                            <div class="p-4 bg-white rounded-b">
-                                <input type="number" name="luasLantai" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500" placeholder="Dalam meter persegi">
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(9)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-9">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <input type="number" name="luasLantai" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="Dalam meter persegi">
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(9)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 10. Lantai -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-10">
-                        <button type="button" id="mq-btn-10" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(10)">
-                            <span>10. Jenis Lantai Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-10"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-10">
+                        <button type="button" id="mq-btn-10" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(10)">
+                            <span>10. Jenis Lantai Terluas</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-10"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-10">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="jenisLantai" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="MARMER/GRANIT">MARMER/GRANIT</option><option value="KERAMIK">KERAMIK</option><option value="PARKET/VINIL/KARPET">PARKET/VINIL/KARPET</option><option value="UBIN/TEGEL/TERASO">UBIN/TEGEL/TERASO</option><option value="KAYU/PAPAN">KAYU/PAPAN</option><option value="SEMEN/BATA MERAH">SEMEN/BATA MERAH</option><option value="BAMBU">BAMBU</option><option value="TANAH">TANAH</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(10)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-10">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="jenisLantai" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="MARMER/GRANIT">MARMER/GRANIT</option><option value="KERAMIK">KERAMIK</option><option value="PARKET/VINIL/KARPET">PARKET/VINIL/KARPET</option><option value="UBIN/TEGEL/TERASO">UBIN/TEGEL/TERASO</option><option value="KAYU/PAPAN">KAYU/PAPAN</option><option value="SEMEN/BATA MERAH">SEMEN/BATA MERAH</option><option value="BAMBU">BAMBU</option><option value="TANAH">TANAH</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(10)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 11. Dinding -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-11">
-                        <button type="button" id="mq-btn-11" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(11)">
-                            <span>11. Jenis Dinding Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-11"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-11">
+                        <button type="button" id="mq-btn-11" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(11)">
+                            <span>11. Jenis Dinding Terluas</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-11"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-11">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="jenisDinding" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TEMBOK">TEMBOK</option><option value="PLESTERAN/ANYAMAN BAMBU/KAWAT">PLESTERAN/ANYAMAN BAMBU/KAWAT</option><option value="KAYU/PAPAN/GYPSUM">KAYU/PAPAN/GYPSUM</option><option value="ANYAMAN BAMBU">ANYAMAN BAMBU</option><option value="BATANG KAYU">BATANG KAYU</option><option value="BAMBU">BAMBU</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(11)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-11">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="jenisDinding" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="TEMBOK">TEMBOK</option><option value="PLESTERAN/ANYAMAN BAMBU/KAWAT">PLESTERAN/ANYAMAN BAMBU/KAWAT</option><option value="KAYU/PAPAN/GYPSUM">KAYU/PAPAN/GYPSUM</option><option value="ANYAMAN BAMBU">ANYAMAN BAMBU</option><option value="BATANG KAYU">BATANG KAYU</option><option value="BAMBU">BAMBU</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(11)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 12. Atap -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-12">
-                        <button type="button" id="mq-btn-12" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(12)">
-                            <span>12. Jenis Atap Terluas</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-12"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-12">
+                        <button type="button" id="mq-btn-12" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(12)">
+                            <span>12. Jenis Atap Terluas</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-12"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-12">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="jenisAtap" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="BETON">BETON</option><option value="GENTENG">GENTENG</option><option value="SENG">SENG</option><option value="ASBES">ASBES</option><option value="BAMBU">BAMBU</option><option value="KAYU/SIRAP">KAYU/SIRAP</option><option value="JERAMI/IJUK/RUMBIA">JERAMI/IJUK/RUMBIA</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(12)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-12">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="jenisAtap" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="BETON">BETON</option><option value="GENTENG">GENTENG</option><option value="SENG">SENG</option><option value="ASBES">ASBES</option><option value="BAMBU">BAMBU</option><option value="KAYU/SIRAP">KAYU/SIRAP</option><option value="JERAMI/IJUK/RUMBIA">JERAMI/IJUK/RUMBIA</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(12)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 13. Sumber Air -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-13">
-                        <button type="button" id="mq-btn-13" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(13)">
-                            <span>13. Sumber Air Utama</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-13"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-13">
+                        <button type="button" id="mq-btn-13" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(13)">
+                            <span>13. Sumber Air Utama</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-13"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-13">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="sumberAir" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="AIR KEMASAN BERMERK">AIR KEMASAN BERMERK</option><option value="AIR ISI ULANG">AIR ISI ULANG</option><option value="LEDING/PDAM">LEDING/PDAM</option><option value="SUMUR BOR/POMPA">SUMUR BOR/POMPA</option><option value="SUMUR TERLINDUNG">SUMUR TERLINDUNG</option><option value="SUMUR TAK TERLINDUNG">SUMUR TAK TERLINDUNG</option><option value="MATA AIR TERLINDUNG">MATA AIR TERLINDUNG</option><option value="MATA AIR TAK TERLINDUNG">MATA AIR TAK TERLINDUNG</option><option value="AIR PERMUKAAN">AIR PERMUKAAN (SUNGAI/DANAU)</option><option value="AIR HUJAN">AIR HUJAN</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(13)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-13">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="sumberAir" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="AIR KEMASAN BERMERK">AIR KEMASAN BERMERK</option><option value="AIR ISI ULANG">AIR ISI ULANG</option><option value="LEDING/PDAM">LEDING/PDAM</option><option value="SUMUR BOR/POMPA">SUMUR BOR/POMPA</option><option value="SUMUR TERLINDUNG">SUMUR TERLINDUNG</option><option value="SUMUR TAK TERLINDUNG">SUMUR TAK TERLINDUNG</option><option value="MATA AIR TERLINDUNG">MATA AIR TERLINDUNG</option><option value="MATA AIR TAK TERLINDUNG">MATA AIR TAK TERLINDUNG</option><option value="AIR PERMUKAAN">AIR PERMUKAAN (SUNGAI/DANAU)</option><option value="AIR HUJAN">AIR HUJAN</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(13)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 14. Bahan Bakar -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-14">
-                        <button type="button" id="mq-btn-14" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(14)">
-                            <span>14. Bahan Bakar Memasak</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-14"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-14">
+                        <button type="button" id="mq-btn-14" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(14)">
+                            <span>14. Bahan Bakar Memasak</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-14"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-14">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="bahanBakar" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TIDAK MEMASAK DI RUMAH">TIDAK MEMASAK DI RUMAH</option><option value="LISTRIK">LISTRIK</option><option value="GAS ELPIJI 5,5 KG/BLUE GAZ">GAS ELPIJI 5,5 KG/BLUE GAZ</option><option value="GAS ELPIJI 12 KG">GAS ELPIJI 12 KG</option><option value="GAS ELPIJI 3 KG">GAS ELPIJI 3 KG</option><option value="GAS KOTA/METERAN PGN">GAS KOTA/METERAN PGN</option><option value="BIOGAS">BIOGAS</option><option value="MINYAK TANAH">MINYAK TANAH</option><option value="BRIKET">BRIKET</option><option value="ARANG">ARANG</option><option value="KAYU BAKAR">KAYU BAKAR</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(14)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-14">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="bahanBakar" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="TIDAK MEMASAK DI RUMAH">TIDAK MEMASAK DI RUMAH</option><option value="LISTRIK">LISTRIK</option><option value="GAS ELPIJI 5,5 KG/BLUE GAZ">GAS ELPIJI 5,5 KG/BLUE GAZ</option><option value="GAS ELPIJI 12 KG">GAS ELPIJI 12 KG</option><option value="GAS ELPIJI 3 KG">GAS ELPIJI 3 KG</option><option value="GAS KOTA/METERAN PGN">GAS KOTA/METERAN PGN</option><option value="BIOGAS">BIOGAS</option><option value="MINYAK TANAH">MINYAK TANAH</option><option value="BRIKET">BRIKET</option><option value="ARANG">ARANG</option><option value="KAYU BAKAR">KAYU BAKAR</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(14)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 15. Akses Sinyal -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-15">
-                        <button type="button" id="mq-btn-15" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(15)">
-                            <span>15. Akses Sinyal Internet</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-15"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-15">
+                        <button type="button" id="mq-btn-15" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(15)">
+                            <span>15. Akses Sinyal Internet</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-15"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-15">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="aksesTelkom" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="ADA">ADA</option><option value="TIDAK ADA">TIDAK ADA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(15)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-15">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="aksesTelkom" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="ADA">ADA</option><option value="TIDAK ADA">TIDAK ADA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(15)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 16. Penerangan -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-16">
-                        <button type="button" id="mq-btn-16" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(16)">
-                            <span>16. Sumber Penerangan & ID PLN</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-16"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-16">
+                        <button type="button" id="mq-btn-16" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(16)">
+                            <span>16. Sumber Penerangan & ID PLN</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-16"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-16">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="sumberPenerangan" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="LISTRIK PLN DENGAN METERAN">LISTRIK PLN DENGAN METERAN</option><option value="LISTRIK PLN TANPA METERAN">LISTRIK PLN TANPA METERAN</option><option value="LISTRIK NON-PLN">LISTRIK NON-PLN</option><option value="BUKAN LISTRIK">BUKAN LISTRIK</option></select>
-                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">ID Pelanggan PLN & Daya (Khusus Meteran)</label><input type="text" name="idPln" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1" placeholder="Contoh: 123456789 - 900W"></div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(17)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-16">
+                            <div class="p-4 bg-white/20 rounded-b-xl space-y-3">
+                                <select name="sumberPenerangan" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="LISTRIK PLN DENGAN METERAN">LISTRIK PLN DENGAN METERAN</option><option value="LISTRIK PLN TANPA METERAN">LISTRIK PLN TANPA METERAN</option><option value="LISTRIK NON-PLN">LISTRIK NON-PLN</option><option value="BUKAN LISTRIK">BUKAN LISTRIK</option></select>
+                                <div><label class="text-[10px] text-slate-800 font-bold ml-1">ID Pelanggan PLN & Daya (Khusus Meteran)</label><input type="text" name="idPln" class="w-full glass-input rounded-lg px-3 py-2 text-xs mt-1" placeholder="Contoh: 123456789 - 900W"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(17)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 17. Fasilitas BAB -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-17">
-                        <button type="button" id="mq-btn-17" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(17)">
-                            <span>17. Kepemilikan Fasilitas BAB</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-17"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-17">
+                        <button type="button" id="mq-btn-17" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(17)">
+                            <span>17. Kepemilikan Fasilitas BAB</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-17"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-17">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="fasilitasBAB" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI">ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI</option><option value="ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU">ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU</option><option value="ADA, DI MCK KOMUNAL">ADA, DI MCK KOMUNAL</option><option value="ADA, DI MCK UMUM">ADA, DI MCK UMUM</option><option value="ADA, TAPI TIDAK MENGGUNAKAN">ADA, TAPI TIDAK MENGGUNAKAN</option><option value="TIDAK ADA FASILITAS">TIDAK ADA FASILITAS</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(17)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-17">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="fasilitasBAB" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI">ADA, DIGUNAKAN HANYA ANGGOTA SENDIRI</option><option value="ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU">ADA, DIGUNAKAN BERSAMA KELUARGA TERTENTU</option><option value="ADA, DI MCK KOMUNAL">ADA, DI MCK KOMUNAL</option><option value="ADA, DI MCK UMUM">ADA, DI MCK UMUM</option><option value="ADA, TAPI TIDAK MENGGUNAKAN">ADA, TAPI TIDAK MENGGUNAKAN</option><option value="TIDAK ADA FASILITAS">TIDAK ADA FASILITAS</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(18)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 18. Jenis Kloset -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-18">
-                        <button type="button" id="mq-btn-18" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(18)">
-                            <span>18. Jenis Kloset</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-18"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-18">
+                        <button type="button" id="mq-btn-18" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(18)">
+                            <span>18. Jenis Kloset</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-18"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-18">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="jenisKloset" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="LEHER ANGSA">LEHER ANGSA</option><option value="PLENGSENGAN DENGAN TUTUP">PLENGSENGAN DGN TUTUP</option><option value="PLENGSENGAN TANPA TUTUP">PLENGSENGAN TANPA TUTUP</option><option value="CEMPLUNG/CUBLUK">CEMPLUNG/CUBLUK</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(18)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-18">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="jenisKloset" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="LEHER ANGSA">LEHER ANGSA</option><option value="PLENGSENGAN DENGAN TUTUP">PLENGSENGAN DGN TUTUP</option><option value="PLENGSENGAN TANPA TUTUP">PLENGSENGAN TANPA TUTUP</option><option value="CEMPLUNG/CUBLUK">CEMPLUNG/CUBLUK</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(19)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 19. Buang Akhir Tinja -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-19">
-                        <button type="button" id="mq-btn-19" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(19)">
-                            <span>19. Tempat Buang Akhir Tinja</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-19"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-19">
+                        <button type="button" id="mq-btn-19" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(19)">
+                            <span>19. Tempat Buang Akhir Tinja</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-19"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-19">
-                            <div class="p-4 bg-white rounded-b">
-                                <select name="pembuanganTinja" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500"><option value="">-- Pilih --</option><option value="TANGKI SEPTIK">TANGKI SEPTIK</option><option value="IPAL">IPAL</option><option value="KOLAM/SAWAH/SUNGAI/DANAU/LAUT">KOLAM/SAWAH/SUNGAI</option><option value="LUBANG TANAH">LUBANG TANAH</option><option value="PANTAI/TANAH LAPANG/KEBUN">PANTAI/TANAH LAPANG</option><option value="TANPA TANGKI SEPTIK">TANPA TANGKI SEPTIK</option><option value="LAINNYA">LAINNYA</option></select>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(19)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-19">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <select name="pembuanganTinja" class="w-full glass-input rounded-lg px-3 py-2 text-xs"><option value="">-- Pilih --</option><option value="TANGKI SEPTIK">TANGKI SEPTIK</option><option value="IPAL">IPAL</option><option value="KOLAM/SAWAH/SUNGAI/DANAU/LAUT">KOLAM/SAWAH/SUNGAI</option><option value="LUBANG TANAH">LUBANG TANAH</option><option value="PANTAI/TANAH LAPANG/KEBUN">PANTAI/TANAH LAPANG</option><option value="TANPA TANGKI SEPTIK">TANPA TANGKI SEPTIK</option><option value="LAINNYA">LAINNYA</option></select>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(20)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -367,71 +385,71 @@
 
                 <!-- BAGIAN 3: ASET -->
                 <div class="mb-6">
-                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">3</span> KEPEMILIKAN ASET</h2>
+                    <h2 class="font-black text-slate-900 mb-3 flex items-center drop-shadow-sm"><span class="bg-gradient-to-br from-orange-400 to-orange-600 shadow-md text-white w-7 h-7 rounded-full flex items-center justify-center text-xs mr-2 border border-white/30">3</span> KEPEMILIKAN ASET</h2>
                     
                     <!-- 20. Aset Bergerak -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-20">
-                        <button type="button" id="mq-btn-20" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(20)">
-                            <span>20. Aset Bergerak (Unit)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-20"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-20">
+                        <button type="button" id="mq-btn-20" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(20)">
+                            <span>20. Aset Bergerak (Unit)</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-20"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-20">
-                            <div class="p-4 bg-white rounded-b">
-                                <p class="text-[10px] text-slate-500 italic mb-2">Isi angka (kosongkan jika tidak punya).</p>
+                        <div class="hidden border-t border-white/40" id="mq-body-20">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <p class="text-[10px] text-slate-800 font-medium italic mb-2">Isi angka (kosongkan jika tidak punya).</p>
                                 <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                                    <div><label class="text-[9px] text-slate-500">Gas >=5.5kg</label><input type="number" name="asetGas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kulkas</label><input type="number" name="asetKulkas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">AC</label><input type="number" name="asetAC" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Pemanas Air</label><input type="number" name="asetPemanas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Telp Rumah</label><input type="number" name="asetTelp" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">TV >=30"</label><input type="number" name="asetTV" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Emas (Gram)</label><input type="number" name="asetEmas" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Komputer/Lap</label><input type="number" name="asetKomputer" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Sepeda</label><input type="number" name="asetSepeda" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Motor</label><input type="number" name="asetMotor" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Mobil</label><input type="number" name="asetMobil" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Smartphone</label><input type="number" name="asetHP" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Perahu</label><input type="number" name="asetPerahu" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kapal</label><input type="number" name="asetKapal" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Alat Berat</label><input type="number" name="asetAlatBerat" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Gas >=5.5kg</label><input type="number" name="asetGas" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Kulkas</label><input type="number" name="asetKulkas" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">AC</label><input type="number" name="asetAC" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Pemanas Air</label><input type="number" name="asetPemanas" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Telp Rumah</label><input type="number" name="asetTelp" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">TV >=30"</label><input type="number" name="asetTV" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Emas (Gram)</label><input type="number" name="asetEmas" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Komputer/Lap</label><input type="number" name="asetKomputer" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Sepeda</label><input type="number" name="asetSepeda" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Motor</label><input type="number" name="asetMotor" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Mobil</label><input type="number" name="asetMobil" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Smartphone</label><input type="number" name="asetHP" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Perahu</label><input type="number" name="asetPerahu" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Kapal</label><input type="number" name="asetKapal" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Alat Berat</label><input type="number" name="asetAlatBerat" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 mt-2">
-                                    <div><label class="text-[9px] text-slate-500">Total Harga Jual Motor (Rp)</label><input type="number" name="hargaMotor" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Total Harga Jual Mobil (Rp)</label><input type="number" name="hargaMobil" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                                <div class="grid grid-cols-2 gap-3 mt-3 pt-3 border-t border-white/30">
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Total Harga Jual Motor (Rp)</label><input type="number" name="hargaMotor" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Total Harga Jual Mobil (Rp)</label><input type="number" name="hargaMobil" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(20)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-4 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(20)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 21. Aset Tak Bergerak -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-21">
-                        <button type="button" id="mq-btn-21" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(21)">
-                            <span>21. Aset Tak Bergerak</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-21"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-21">
+                        <button type="button" id="mq-btn-21" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(21)">
+                            <span>21. Aset Tak Bergerak</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-21"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-21">
-                            <div class="p-4 bg-white rounded-b">
-                                <div><label class="text-[10px] text-slate-500 font-medium">Luas Lahan Lain (m2)</label><input type="number" name="luasLahan" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
-                                <div class="mt-2"><label class="text-[10px] text-slate-500 font-medium">Jumlah Rumah/Bangunan Lain</label><input type="number" name="jmlBangunanLain" class="w-full border rounded px-3 py-2 text-xs border-slate-300 outline-none focus:ring-2 focus:ring-blue-500 mt-1"></div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(21)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-21">
+                            <div class="p-4 bg-white/20 rounded-b-xl space-y-3">
+                                <div><label class="text-[10px] text-slate-800 font-bold ml-1">Luas Lahan Lain (m2)</label><input type="number" name="luasLahan" class="w-full glass-input rounded-lg px-3 py-2 text-xs mt-1"></div>
+                                <div><label class="text-[10px] text-slate-800 font-bold ml-1">Jumlah Rumah/Bangunan Lain</label><input type="number" name="jmlBangunanLain" class="w-full glass-input rounded-lg px-3 py-2 text-xs mt-1"></div>
+                                <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(21)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
 
                     <!-- 22. Ternak -->
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-22">
-                        <button type="button" id="mq-btn-22" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(22)">
-                            <span>22. Ternak (Ekor)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-22"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-22">
+                        <button type="button" id="mq-btn-22" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(22)">
+                            <span>22. Ternak (Ekor)</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-22"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-22">
-                            <div class="p-4 bg-white rounded-b">
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div><label class="text-[9px] text-slate-500">Sapi</label><input type="number" name="asetSapi" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kerbau</label><input type="number" name="asetKerbau" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Kuda</label><input type="number" name="asetKuda" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div><label class="text-[9px] text-slate-500">Babi</label><input type="number" name="asetBabi" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
-                                    <div class="col-span-2"><label class="text-[9px] text-slate-500">Kambing/Domba</label><input type="number" name="asetKambing" class="w-full border rounded px-2 py-1.5 text-xs mt-1 focus:ring-2 focus:ring-blue-500 outline-none"></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-22">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Sapi</label><input type="number" name="asetSapi" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Kerbau</label><input type="number" name="asetKerbau" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Kuda</label><input type="number" name="asetKuda" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div><label class="text-[9px] text-slate-800 font-bold">Babi</label><input type="number" name="asetBabi" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
+                                    <div class="col-span-2"><label class="text-[9px] text-slate-800 font-bold">Kambing/Domba</label><input type="number" name="asetKambing" class="w-full glass-input rounded-lg px-2 py-1.5 text-xs mt-1"></div>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(22)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-4 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(22)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -439,19 +457,19 @@
 
                 <!-- BAGIAN 4: DATA INDIVIDU -->
                 <div class="mb-6">
-                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">4</span> ANGGOTA KELUARGA</h2>
+                    <h2 class="font-black text-slate-900 mb-3 flex items-center drop-shadow-sm"><span class="bg-gradient-to-br from-orange-400 to-orange-600 shadow-md text-white w-7 h-7 rounded-full flex items-center justify-center text-xs mr-2 border border-white/30">4</span> ANGGOTA KELUARGA</h2>
                     
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-23">
-                        <button type="button" id="mq-btn-23" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(23)">
-                            <span>23. Data Individu (Q1 - Q37)</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-23"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-23">
+                        <button type="button" id="mq-btn-23" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(23)">
+                            <span>23. Data Individu (Q1 - Q37)</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-23"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-23">
-                            <div class="p-4 bg-white rounded-b">
-                                <button type="button" onclick="openIndividuModal()" class="w-full bg-indigo-600 text-white px-3 py-2 rounded text-xs hover:bg-indigo-700 shadow-sm mb-3"><i class="fas fa-user-plus mr-1"></i> Tambah Anggota Keluarga Baru</button>
-                                <div id="individuListContainer" class="space-y-3 bg-indigo-50/50 p-3 rounded border border-indigo-100 min-h-[60px]">
-                                    <p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-2">Belum ada data anggota keluarga dicatat.</p>
+                        <div class="hidden border-t border-white/40" id="mq-body-23">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
+                                <button type="button" onclick="openIndividuModal()" class="w-full bg-blue-600/80 backdrop-blur-md border border-white/40 text-white px-3 py-3 rounded-xl text-xs font-bold hover:bg-blue-700/90 shadow-lg mb-4 transition-all"><i class="fas fa-user-plus mr-1"></i> Tambah Anggota Keluarga Baru</button>
+                                <div id="individuListContainer" class="space-y-3 bg-white/30 backdrop-blur-sm p-4 rounded-xl border border-white/50 min-h-[80px] shadow-inner">
+                                    <p id="emptyIndividuText" class="text-xs text-center text-slate-700 font-medium py-2">Belum ada data anggota keluarga dicatat.</p>
                                 </div>
-                                <div class="mt-3 text-right"><button type="button" class="bg-blue-100 text-blue-700 px-3 py-1.5 rounded text-[10px] font-bold hover:bg-blue-200" onclick="nextMainQuestion(23)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
+                                <div class="mt-4 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(23)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
@@ -459,26 +477,26 @@
 
                 <!-- BAGIAN 5: FOTO DOKUMENTASI -->
                 <div class="mb-6">
-                    <h2 class="font-bold text-slate-800 mb-3 flex items-center"><span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">5</span> FOTO DOKUMENTASI</h2>
+                    <h2 class="font-black text-slate-900 mb-3 flex items-center drop-shadow-sm"><span class="bg-gradient-to-br from-orange-400 to-orange-600 shadow-md text-white w-7 h-7 rounded-full flex items-center justify-center text-xs mr-2 border border-white/30">5</span> FOTO DOKUMENTASI</h2>
                     
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="mq-container-24">
-                        <button type="button" id="mq-btn-24" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center rounded" onclick="toggleMainQuestion(24)">
-                            <span>24. Foto Survey Lapangan</span><i class="fas fa-chevron-down text-slate-400 transition-transform duration-300" id="mq-icon-24"></i>
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-lg transition-all" id="mq-container-24">
+                        <button type="button" id="mq-btn-24" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center rounded-xl transition-all" onclick="toggleMainQuestion(24)">
+                            <span>24. Foto Survey Lapangan</span><i class="fas fa-chevron-down text-slate-600 transition-transform duration-300" id="mq-icon-24"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="mq-body-24">
-                            <div class="p-4 bg-white rounded-b grid grid-cols-2 gap-4">
-                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
-                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
-                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
-                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-700 uppercase">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-500"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
-                                <div class="col-span-2 mt-3 text-right"><button type="button" class="bg-green-500 text-white px-4 py-2 rounded text-[10px] font-bold hover:bg-green-600 shadow-sm" onclick="nextMainQuestion(24)">Selesai & Tutup <i class="fas fa-check ml-1"></i></button></div>
+                        <div class="hidden border-t border-white/40" id="mq-body-24">
+                            <div class="p-4 bg-white/20 rounded-b-xl grid grid-cols-2 gap-4">
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-800 ml-1">Selfie GPS</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoSelfie')" class="text-xs w-full text-slate-700 bg-white/40 rounded-lg p-1 border border-white/50"><input type="hidden" name="fotoSelfie" id="fotoSelfie"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-800 ml-1">Depan Rumah</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRumahDepan')" class="text-xs w-full text-slate-700 bg-white/40 rounded-lg p-1 border border-white/50"><input type="hidden" name="fotoRumahDepan" id="fotoRumahDepan"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-800 ml-1">Ruang Tamu</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoRuangTamu')" class="text-xs w-full text-slate-700 bg-white/40 rounded-lg p-1 border border-white/50"><input type="hidden" name="fotoRuangTamu" id="fotoRuangTamu"></div>
+                                <div class="space-y-1"><label class="block text-[10px] font-bold text-slate-800 ml-1">Kamar Mandi</label><input type="file" accept="image/*" capture="environment" onchange="compressImage(this, 'fotoKamarMandi')" class="text-xs w-full text-slate-700 bg-white/40 rounded-lg p-1 border border-white/50"><input type="hidden" name="fotoKamarMandi" id="fotoKamarMandi"></div>
+                                <div class="col-span-2 mt-3 text-right"><button type="button" class="bg-green-500/90 border border-white/50 text-white px-5 py-2 rounded-lg text-xs font-black hover:bg-green-600 shadow-md backdrop-blur-sm" onclick="nextMainQuestion(24)">Selesai & Tutup <i class="fas fa-check ml-1"></i></button></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="pt-2 pb-10">
-                    <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:bg-blue-700 active:scale-95 transition-transform flex justify-center items-center gap-2">
+                    <button type="submit" class="w-full bg-gradient-to-r from-orange-500 to-yellow-500 text-white py-4 rounded-2xl font-black text-lg shadow-xl border border-white/40 hover:from-orange-600 hover:to-yellow-600 active:scale-95 transition-all flex justify-center items-center gap-2">
                         <i class="fas fa-save"></i> Simpan Data Sensus Lengkap
                     </button>
                 </div>
@@ -490,73 +508,73 @@
          MODAL FORM DATA INDIVIDU (AKORDEON/WIZARD)
     =========================================== -->
     <div id="modalIndividu" class="fixed inset-0 modal-overlay z-[150] hidden items-center justify-center p-2 sm:p-4">
-        <div class="bg-white w-full max-w-lg rounded-xl shadow-2xl flex flex-col h-[95vh] sm:h-[85vh]">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-indigo-600 text-white rounded-t-xl">
-                <h2 class="font-bold text-sm sm:text-base"><i class="fas fa-user-plus mr-2"></i>Data Individu (Q1-Q37)</h2>
-                <button type="button" onclick="closeIndividuModal()" class="w-8 h-8 rounded-full bg-indigo-500 hover:bg-indigo-400"><i class="fas fa-times"></i></button>
+        <div class="bg-white/60 backdrop-blur-xl border border-white/50 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col h-[95vh] sm:h-[85vh] overflow-hidden">
+            <div class="p-4 border-b border-white/40 flex justify-between items-center bg-gradient-to-r from-blue-500/80 to-blue-600/80 text-white backdrop-blur-md">
+                <h2 class="font-bold text-sm sm:text-base drop-shadow-md"><i class="fas fa-user-plus mr-2"></i>Data Individu (Q1-Q37)</h2>
+                <button type="button" onclick="closeIndividuModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 border border-white/30 shadow-sm transition-colors"><i class="fas fa-times"></i></button>
             </div>
             
-            <div class="flex-1 overflow-y-auto p-3 bg-slate-50 relative">
+            <div class="flex-1 overflow-y-auto p-4 relative">
                 <form id="formIndividuSingle">
                     <div id="accordionContainer" class="space-y-2 pb-6"></div>
                 </form>
             </div>
             
-            <div class="p-3 border-t border-slate-200 bg-white rounded-b-xl flex gap-2">
-                <button type="button" onclick="closeIndividuModal()" class="w-1/3 bg-slate-200 text-slate-700 py-2 rounded font-semibold text-sm">Batal</button>
-                <button type="button" onclick="simpanIndividuKeList()" class="w-2/3 bg-indigo-600 text-white py-2 rounded font-semibold text-sm shadow-sm hover:bg-indigo-700">Selesai & Simpan</button>
+            <div class="p-3 border-t border-white/40 bg-white/40 backdrop-blur-md flex gap-2">
+                <button type="button" onclick="closeIndividuModal()" class="w-1/3 bg-white/50 text-slate-800 border border-white/50 py-2.5 rounded-xl font-bold text-sm hover:bg-white/70 shadow-sm transition-all">Batal</button>
+                <button type="button" onclick="simpanIndividuKeList()" class="w-2/3 bg-blue-600/90 text-white border border-white/30 py-2.5 rounded-xl font-bold text-sm shadow-md hover:bg-blue-700 transition-all">Selesai & Simpan</button>
             </div>
         </div>
     </div>
 
     <!-- TOMBOL MENGAMBANG & MODAL ANTREAN -->
-    <button id="offlinePendingIndicator" onclick="toggleQueueModal()" class="fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:scale-105 transition-all hidden">
-        <div id="offlinePendingText" class="font-bold text-sm"><i class="fas fa-exclamation-triangle"></i> Tertunda</div>
-        <span id="offlinePendingCount" class="bg-white text-amber-600 px-2 py-0.5 rounded-full text-xs font-black">0</span>
+    <button id="offlinePendingIndicator" onclick="toggleQueueModal()" class="fixed bottom-6 right-4 sm:right-6 bg-gradient-to-br from-orange-400 to-red-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer hover:scale-105 transition-all border border-white/40 hidden">
+        <div id="offlinePendingText" class="font-bold text-sm drop-shadow-sm"><i class="fas fa-exclamation-triangle"></i> Tertunda</div>
+        <span id="offlinePendingCount" class="bg-white/90 text-red-600 px-2 py-0.5 rounded-full text-xs font-black shadow-inner">0</span>
     </button>
 
-    <div id="queueModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] hidden items-end sm:items-center justify-center transition-opacity">
-        <div class="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col transform transition-transform translate-y-full" id="queueModalContent">
-            <div class="p-4 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-                <h2 class="font-bold text-lg text-slate-800" id="modalTitle"><i class="fas fa-list-ul mr-2 text-blue-600"></i>Antrean Sinkronisasi</h2>
-                <button type="button" onclick="toggleQueueModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600"><i class="fas fa-times"></i></button>
+    <div id="queueModal" class="fixed inset-0 modal-overlay z-[100] hidden items-end sm:items-center justify-center transition-opacity">
+        <div class="bg-white/60 backdrop-blur-xl border border-white/50 w-full sm:max-w-md rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col transform transition-transform translate-y-full" id="queueModalContent">
+            <div class="p-4 border-b border-white/40 flex justify-between items-center bg-white/40">
+                <h2 class="font-bold text-lg text-slate-900 drop-shadow-sm" id="modalTitle"><i class="fas fa-list-ul mr-2 text-orange-600"></i>Antrean Sinkronisasi</h2>
+                <button type="button" onclick="toggleQueueModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/50 hover:bg-white/80 text-slate-800 shadow-sm border border-white/50"><i class="fas fa-times"></i></button>
             </div>
-            <div class="flex border-b border-slate-200 text-sm font-semibold bg-white">
-                <button class="flex-1 py-3 text-blue-600 border-b-2 border-blue-600" id="tabAntrean" onclick="switchTab('antrean')">Antrean (<span id="countAntreanTab">0</span>)</button>
-                <button class="flex-1 py-3 text-slate-500 hover:text-slate-700" id="tabRiwayat" onclick="switchTab('riwayat')">Berhasil Terkirim</button>
+            <div class="flex border-b border-white/40 text-sm font-bold bg-white/30 backdrop-blur-md">
+                <button class="flex-1 py-3 text-orange-700 border-b-2 border-orange-500 transition-colors" id="tabAntrean" onclick="switchTab('antrean')">Antrean (<span id="countAntreanTab">0</span>)</button>
+                <button class="flex-1 py-3 text-slate-600 hover:text-slate-900 hover:bg-white/20 transition-colors" id="tabRiwayat" onclick="switchTab('riwayat')">Berhasil Terkirim</button>
             </div>
-            <div id="queueList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100"></div>
-            <div id="historyList" class="p-4 overflow-y-auto flex-1 space-y-3 bg-slate-100 hidden"></div>
-            <div class="p-4 border-t border-slate-200 bg-white" id="syncFooter">
-                <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-green-600 text-white py-3 rounded-xl font-bold shadow-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all mb-2">
+            <div id="queueList" class="p-4 overflow-y-auto flex-1 space-y-3"></div>
+            <div id="historyList" class="p-4 overflow-y-auto flex-1 space-y-3 hidden"></div>
+            <div class="p-4 border-t border-white/40 bg-white/40 backdrop-blur-md" id="syncFooter">
+                <button type="button" id="btnSyncNow" onclick="syncDataToServer(false)" class="w-full bg-gradient-to-r from-blue-500 to-blue-600 border border-white/40 text-white py-3 rounded-xl font-bold shadow-lg hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2 transition-all">
                     <i class="fas fa-sync-alt"></i> Sinkronkan Semua Sekarang
                 </button>
             </div>
-            <div class="p-4 border-t border-slate-200 bg-white hidden" id="historyFooter">
-                <button type="button" onclick="fetchHistoryFromServer()" class="w-full bg-blue-100 text-blue-700 py-3 rounded-xl font-bold hover:bg-blue-200 transition-all flex justify-center items-center gap-2">
+            <div class="p-4 border-t border-white/40 bg-white/40 backdrop-blur-md hidden" id="historyFooter">
+                <button type="button" onclick="fetchHistoryFromServer()" class="w-full bg-white/60 text-blue-700 border border-white/60 py-3 rounded-xl font-bold hover:bg-white/80 shadow-sm transition-all flex justify-center items-center gap-2">
                     <i class="fas fa-cloud-download-alt"></i> Tarik Riwayat dari Server
                 </button>
-                <p class="text-center text-[10px] text-slate-400 mt-2">Gunakan jika riwayat kosong/baru pindah HP.</p>
+                <p class="text-center text-[10px] text-slate-600 font-medium mt-2">Gunakan jika riwayat kosong/baru pindah HP.</p>
             </div>
         </div>
     </div>
 
-    <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
+    <div id="installBanner" class="fixed bottom-0 left-0 right-0 bg-blue-900/80 backdrop-blur-xl border-t border-white/30 text-white p-4 shadow-2xl z-[120] hidden flex-col sm:flex-row justify-between items-center gap-3 transform transition-transform">
         <div class="flex items-center gap-3">
-            <div class="bg-white p-2 rounded-lg"><img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon"></div>
+            <div class="bg-white p-2 rounded-lg shadow-sm"><img src="https://github.com/koesmamr/dtsen2/blob/main/dtsenlogo.png?raw=true" class="w-6 h-6 object-contain" alt="icon"></div>
             <div>
-                <p class="font-bold">Install Aplikasi DTSEN</p>
-                <p class="text-xs text-blue-200">Akses lebih cepat & lancar saat offline.</p>
+                <p class="font-bold drop-shadow-sm">Install Aplikasi DTSEN</p>
+                <p class="text-xs text-blue-100">Akses lebih cepat & lancar saat offline.</p>
             </div>
         </div>
         <div class="flex gap-2 w-full sm:w-auto">
-            <button id="closeInstallBtn" class="flex-1 sm:flex-none px-4 py-2 border border-blue-400 rounded-lg text-sm hover:bg-blue-800">Nanti</button>
-            <button id="installBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white text-blue-900 font-bold rounded-lg text-sm">Install</button>
+            <button id="closeInstallBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white/10 border border-white/30 rounded-xl text-sm font-medium hover:bg-white/20 transition-colors">Nanti</button>
+            <button id="installBtn" class="flex-1 sm:flex-none px-4 py-2 bg-white text-blue-900 font-bold rounded-xl text-sm shadow-md hover:bg-gray-100 transition-colors">Install</button>
         </div>
     </div>
 
-    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-800 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl opacity-0 transition-opacity duration-300 pointer-events-none z-[110] flex items-center gap-2">
-        <i class="fas fa-info-circle"></i> <span id="toastMsg">Pesan</span>
+    <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-900/80 backdrop-blur-md border border-slate-700 text-white px-6 py-3 rounded-full text-sm font-medium shadow-2xl opacity-0 transition-opacity duration-300 pointer-events-none z-[160] flex items-center gap-2">
+        <i class="fas fa-info-circle text-orange-400"></i> <span id="toastMsg">Pesan</span>
     </div>
 
     <script>
@@ -593,19 +611,19 @@
         
         let listIndividu = [];
         let currentOpenQ = null; 
-        let currentMainOpenQ = null; // Melacak Akordeon Utama
+        let currentMainOpenQ = null;
 
-        // --- LOGIKA AKORDEON FORM UTAMA ---
+        // --- LOGIKA AKORDEON FORM UTAMA (GLASSMORPHISM VERSION) ---
         function toggleMainQuestion(index) {
             if (currentMainOpenQ !== null && currentMainOpenQ !== index) {
                 const oldBody = document.getElementById(`mq-body-${currentMainOpenQ}`);
                 if (oldBody) {
                     oldBody.classList.add('hidden');
                     document.getElementById(`mq-icon-${currentMainOpenQ}`).classList.remove('rotate-180');
-                    document.getElementById(`mq-container-${currentMainOpenQ}`).classList.remove('ring-2', 'ring-blue-400');
+                    document.getElementById(`mq-container-${currentMainOpenQ}`).classList.remove('ring-2', 'ring-orange-400');
                     const oldBtn = document.getElementById(`mq-btn-${currentMainOpenQ}`);
-                    oldBtn.classList.remove('rounded-t');
-                    oldBtn.classList.add('rounded');
+                    oldBtn.classList.remove('rounded-t-xl');
+                    oldBtn.classList.add('rounded-xl');
                     checkMainAnswered(currentMainOpenQ);
                 }
             }
@@ -620,22 +638,21 @@
             if (!targetBody.classList.contains('hidden')) {
                 targetBody.classList.add('hidden');
                 targetIcon.classList.remove('rotate-180');
-                targetContainer.classList.remove('ring-2', 'ring-blue-400');
-                targetBtn.classList.remove('rounded-t');
-                targetBtn.classList.add('rounded');
+                targetContainer.classList.remove('ring-2', 'ring-orange-400');
+                targetBtn.classList.remove('rounded-t-xl');
+                targetBtn.classList.add('rounded-xl');
                 currentMainOpenQ = null;
                 checkMainAnswered(index);
             } else {
                 targetBody.classList.remove('hidden');
                 targetIcon.classList.add('rotate-180');
-                targetContainer.classList.add('ring-2', 'ring-blue-400');
-                targetBtn.classList.remove('rounded');
-                targetBtn.classList.add('rounded-t');
+                targetContainer.classList.add('ring-2', 'ring-orange-400');
+                targetBtn.classList.remove('rounded-xl');
+                targetBtn.classList.add('rounded-t-xl');
                 currentMainOpenQ = index;
                 
                 setTimeout(() => {
                     targetContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    // Coba fokus otomatis pada input pertama yang bukan hidden
                     const firstInput = targetBody.querySelector('input:not([type="hidden"]), select, textarea');
                     if(firstInput) firstInput.focus();
                 }, 50);
@@ -659,13 +676,8 @@
             const hiddenInputs = body.querySelectorAll('input[type="hidden"]');
             let isFilled = false;
 
-            // Logika spesifik
-            if (idx === 5) { // Domisili
-                if (document.getElementById('samaDenganKtp').checked) isFilled = true;
-            }
-            if (idx === 23) { // Individu
-                if (listIndividu.length > 0) isFilled = true;
-            }
+            if (idx === 5 && document.getElementById('samaDenganKtp').checked) isFilled = true;
+            if (idx === 23 && listIndividu.length > 0) isFilled = true;
 
             if(!isFilled) {
                 inputs.forEach(el => {
@@ -684,15 +696,14 @@
 
             const btn = document.getElementById(`mq-btn-${idx}`);
             if (isFilled) {
-                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
-                btn.classList.remove('bg-slate-50', 'text-slate-700');
+                btn.classList.add('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.remove('bg-white/40', 'text-slate-800');
             } else {
-                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
-                btn.classList.add('bg-slate-50', 'text-slate-700');
+                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.add('bg-white/40', 'text-slate-800');
             }
         }
 
-        // Listener global untuk validasi real-time form utama
         document.getElementById('sensusForm').addEventListener('input', () => { if(currentMainOpenQ !== null) checkMainAnswered(currentMainOpenQ); saveDraft(); });
         document.getElementById('sensusForm').addEventListener('change', () => { if(currentMainOpenQ !== null) checkMainAnswered(currentMainOpenQ); saveDraft(); });
 
@@ -744,23 +755,23 @@
                 
                 if (q.type === 'select') {
                     const optionsHtml = q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('');
-                    inputHtml = `<select id="${q.id}" class="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow" onchange="checkAnswered(${index})"><option value="">-- Pilih Jawaban --</option>${optionsHtml}</select>`;
+                    inputHtml = `<select id="${q.id}" class="w-full glass-input rounded-lg px-3 py-2 text-xs" onchange="checkAnswered(${index})"><option value="">-- Pilih Jawaban --</option>${optionsHtml}</select>`;
                 } else {
-                    inputHtml = `<input type="${q.type}" id="${q.id}" placeholder="${q.placeholder || ''}" class="w-full border border-slate-300 rounded px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 outline-none transition-shadow" oninput="checkAnswered(${index})">`;
+                    inputHtml = `<input type="${q.type}" id="${q.id}" placeholder="${q.placeholder || ''}" class="w-full glass-input rounded-lg px-3 py-2 text-xs" oninput="checkAnswered(${index})">`;
                 }
                 
                 const nextBtn = nextIndex < individuQuestions.length 
-                    ? `<button type="button" class="bg-indigo-100 text-indigo-700 px-3 py-1.5 rounded text-[10px] font-bold shadow-sm hover:bg-indigo-200 transition-colors" onclick="toggleQuestion(${nextIndex})">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button>` 
-                    : `<button type="button" class="bg-green-500 text-white px-3 py-1.5 rounded text-[10px] font-bold shadow-sm hover:bg-green-600 transition-colors" onclick="simpanIndividuKeList()">Simpan Anggota <i class="fas fa-check ml-1"></i></button>`;
+                    ? `<button type="button" class="bg-blue-500/80 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-[10px] font-bold shadow-md hover:bg-blue-600/90 transition-colors border border-white/30" onclick="toggleQuestion(${nextIndex})">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button>` 
+                    : `<button type="button" class="bg-green-500/90 backdrop-blur-sm text-white px-4 py-2 rounded-lg text-[10px] font-bold shadow-md hover:bg-green-600 border border-white/30" onclick="simpanIndividuKeList()">Simpan Anggota <i class="fas fa-check ml-1"></i></button>`;
 
                 container.innerHTML += `
-                    <div class="border border-slate-200 rounded mb-2 bg-white shadow-sm transition-all" id="q-container-${index}">
-                        <button type="button" id="q-btn-${index}" class="w-full text-left px-4 py-3 bg-slate-50 font-semibold text-xs text-slate-700 flex justify-between items-center transition-colors rounded" onclick="toggleQuestion(${index})">
+                    <div class="border border-white/50 rounded-xl mb-2 bg-white/30 backdrop-blur-md shadow-sm transition-all" id="q-container-${index}">
+                        <button type="button" id="q-btn-${index}" class="w-full text-left px-4 py-3 bg-white/40 font-bold text-xs text-slate-800 flex justify-between items-center transition-colors rounded-xl" onclick="toggleQuestion(${index})">
                             <span>${q.label}</span>
-                            <i class="fas fa-chevron-down text-slate-400 transition-transform duration-300 transform" id="q-icon-${index}"></i>
+                            <i class="fas fa-chevron-down text-slate-600 transition-transform duration-300 transform" id="q-icon-${index}"></i>
                         </button>
-                        <div class="hidden border-t border-slate-100" id="q-body-${index}">
-                            <div class="p-4 bg-white rounded-b">
+                        <div class="hidden border-t border-white/40" id="q-body-${index}">
+                            <div class="p-4 bg-white/20 rounded-b-xl">
                                 ${inputHtml}
                                 <div class="mt-3 text-right">
                                     ${nextBtn}
@@ -778,9 +789,10 @@
                 if (oldBody) {
                     oldBody.classList.add('hidden');
                     document.getElementById(`q-icon-${currentOpenQ}`).classList.remove('rotate-180');
-                    document.getElementById(`q-container-${currentOpenQ}`).classList.remove('ring-2', 'ring-indigo-400');
-                    document.getElementById(`q-btn-${currentOpenQ}`).classList.remove('rounded-t');
-                    document.getElementById(`q-btn-${currentOpenQ}`).classList.add('rounded');
+                    document.getElementById(`q-container-${currentOpenQ}`).classList.remove('ring-2', 'ring-blue-400');
+                    document.getElementById(`q-btn-${currentOpenQ}`).classList.remove('rounded-t-xl');
+                    document.getElementById(`q-btn-${currentOpenQ}`).classList.add('rounded-xl');
+                    checkAnswered(currentOpenQ);
                 }
             }
             
@@ -792,16 +804,17 @@
             if (!targetBody.classList.contains('hidden')) {
                 targetBody.classList.add('hidden');
                 targetIcon.classList.remove('rotate-180');
-                targetContainer.classList.remove('ring-2', 'ring-indigo-400');
-                targetBtn.classList.remove('rounded-t');
-                targetBtn.classList.add('rounded');
+                targetContainer.classList.remove('ring-2', 'ring-blue-400');
+                targetBtn.classList.remove('rounded-t-xl');
+                targetBtn.classList.add('rounded-xl');
                 currentOpenQ = null;
+                checkAnswered(index);
             } else {
                 targetBody.classList.remove('hidden');
                 targetIcon.classList.add('rotate-180');
-                targetContainer.classList.add('ring-2', 'ring-indigo-400');
-                targetBtn.classList.remove('rounded');
-                targetBtn.classList.add('rounded-t');
+                targetContainer.classList.add('ring-2', 'ring-blue-400');
+                targetBtn.classList.remove('rounded-xl');
+                targetBtn.classList.add('rounded-t-xl');
                 currentOpenQ = index;
                 
                 setTimeout(() => {
@@ -818,11 +831,11 @@
             const btn = document.getElementById(`q-btn-${index}`);
             
             if (val && val.trim() !== '') {
-                btn.classList.add('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
-                btn.classList.remove('bg-slate-50', 'text-slate-700');
+                btn.classList.add('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.remove('bg-white/40', 'text-slate-800');
             } else {
-                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
-                btn.classList.add('bg-slate-50', 'text-slate-700');
+                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.add('bg-white/40', 'text-slate-800');
             }
         }
 
@@ -851,7 +864,6 @@
             
             initWilayah(); updateConnectionStatus(); updateQueueBadge(); loadDraft();
 
-            // Tampilkan pertanyaan pertama otomatis (Titik Koordinat GPS)
             setTimeout(() => { toggleMainQuestion(0); }, 300);
         }
 
@@ -891,7 +903,7 @@
         function toggleDomisili() {
             const cb = document.getElementById('samaDenganKtp'); const box = document.getElementById('boxDomisili');
             cb.checked ? box.classList.add('hidden') : box.classList.remove('hidden');
-            checkMainAnswered(5); // update warna
+            checkMainAnswered(5); 
         }
 
         // --- DATA INDIVIDU (OPERASI MODAL) ---
@@ -901,13 +913,13 @@
             currentOpenQ = null;
             individuQuestions.forEach((q, idx) => {
                 const btn = document.getElementById(`q-btn-${idx}`);
-                btn.classList.remove('bg-green-100', 'text-green-800', 'border-b', 'border-green-300');
-                btn.classList.add('bg-slate-50', 'text-slate-700', 'rounded');
-                btn.classList.remove('rounded-t');
+                btn.classList.remove('bg-yellow-300/70', 'text-slate-900', 'border-b', 'border-white/50', 'shadow-inner');
+                btn.classList.add('bg-white/40', 'text-slate-800', 'rounded-xl');
+                btn.classList.remove('rounded-t-xl');
                 
                 document.getElementById(`q-body-${idx}`).classList.add('hidden');
                 document.getElementById(`q-icon-${idx}`).classList.remove('rotate-180');
-                document.getElementById(`q-container-${idx}`).classList.remove('ring-2', 'ring-indigo-400');
+                document.getElementById(`q-container-${idx}`).classList.remove('ring-2', 'ring-blue-400');
             });
 
             document.getElementById('modalIndividu').classList.remove('hidden');
@@ -933,7 +945,7 @@
 
             listIndividu.push(individu);
             renderListIndividu();
-            checkMainAnswered(23); // update indikator akordeon utama
+            checkMainAnswered(23); 
             saveDraft();
             closeIndividuModal();
         }
@@ -941,19 +953,19 @@
         function renderListIndividu() {
             const container = document.getElementById('individuListContainer');
             if (listIndividu.length === 0) {
-                container.innerHTML = `<p id="emptyIndividuText" class="text-xs text-center text-slate-400 italic py-2">Belum ada data anggota keluarga dicatat.</p>`;
+                container.innerHTML = `<p id="emptyIndividuText" class="text-xs text-center text-slate-700 font-medium py-2">Belum ada data anggota keluarga dicatat.</p>`;
                 return;
             }
             
             container.innerHTML = '';
             listIndividu.forEach((ind, idx) => {
                 container.innerHTML += `
-                    <div class="bg-white p-3 rounded shadow-sm border border-indigo-100 flex justify-between items-center">
+                    <div class="bg-white/40 backdrop-blur-md p-3 rounded-xl shadow-sm border border-white/50 flex justify-between items-center">
                         <div>
-                            <p class="font-bold text-xs text-indigo-900">${ind.nama.toUpperCase()} <span class="bg-indigo-100 text-indigo-700 font-normal px-1 rounded text-[9px] ml-1">${ind.hubungan || '-'}</span></p>
-                            <p class="text-[10px] text-slate-500">NIK: ${ind.nik || '-'} | L/P: ${ind.jk || '-'}</p>
+                            <p class="font-bold text-xs text-slate-900">${ind.nama.toUpperCase()} <span class="bg-blue-100/80 text-blue-800 border border-white/40 font-bold px-1.5 py-0.5 rounded text-[9px] ml-1 shadow-sm">${ind.hubungan || '-'}</span></p>
+                            <p class="text-[10px] text-slate-700 mt-1 font-medium">NIK: ${ind.nik || '-'} | L/P: ${ind.jk || '-'}</p>
                         </div>
-                        <button type="button" onclick="hapusIndividu(${idx})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded"><i class="fas fa-trash text-xs"></i></button>
+                        <button type="button" onclick="hapusIndividu(${idx})" class="text-red-600 hover:text-red-800 bg-white/50 border border-white/60 p-2 rounded-lg shadow-sm"><i class="fas fa-trash text-xs"></i></button>
                     </div>
                 `;
             });
@@ -970,11 +982,11 @@
         function updateConnectionStatus() {
             const statusEl = document.getElementById('statusIndicator'); const btnSync = document.getElementById('btnSyncNow');
             if (navigator.onLine) {
-                statusEl.innerHTML = '<i class="fas fa-wifi"></i>'; statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-green-500 px-2 py-1 rounded-full text-white shadow';
+                statusEl.innerHTML = '<i class="fas fa-wifi"></i>'; statusEl.className = 'flex items-center gap-1 text-[10px] font-bold bg-green-400/80 backdrop-blur-sm border border-white/40 px-2 py-1 rounded-full text-slate-900 shadow-sm transition-colors';
                 if(btnSync) btnSync.disabled = false;
                 if (sensusQueue.length > 0 && currentUser && !isSyncingProcess) { showToast("Koneksi pulih. Sinkronisasi..."); syncDataToServer(true); }
             } else {
-                statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; statusEl.className = 'flex items-center gap-1 text-[10px] font-semibold bg-red-500 px-2 py-1 rounded-full text-white shadow';
+                statusEl.innerHTML = '<i class="fas fa-plane"></i> Offline'; statusEl.className = 'flex items-center gap-1 text-[10px] font-bold bg-red-400/80 backdrop-blur-sm border border-white/40 px-2 py-1 rounded-full text-slate-900 shadow-sm transition-colors';
                 if(btnSync) btnSync.disabled = true;
             }
             updateOfflineIndicator();
@@ -987,11 +999,11 @@
             if (sensusQueue.length > 0) {
                 indicator.classList.remove('hidden'); document.getElementById('offlinePendingCount').innerText = sensusQueue.length;
                 if (isSyncingProcess) {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3"; textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 border border-white/40"; textEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
                 } else if (!navigator.onLine) {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-amber-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 animate-bounce cursor-pointer hover:scale-105"; textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-gradient-to-br from-orange-400 to-red-500 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 animate-bounce cursor-pointer hover:scale-105 border border-white/40"; textEl.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Tertunda';
                 } else {
-                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer"; textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
+                    indicator.className = "fixed bottom-6 right-4 sm:right-6 bg-blue-600 text-white px-5 py-3 rounded-full shadow-2xl z-40 flex items-center gap-3 cursor-pointer border border-white/40"; textEl.innerHTML = '<i class="fas fa-cloud-upload-alt"></i> Siap Sinkron';
                 }
             } else { indicator.classList.add('hidden'); }
         }
@@ -1028,9 +1040,7 @@
                     renderListIndividu();
                 }
 
-                // Cek warna hijau semua tombol di form utama berdasarkan isi draf
                 for(let i=0; i<=24; i++) { checkMainAnswered(i); }
-
                 document.getElementById('draftNotice').classList.remove('hidden');
             }
         }
@@ -1042,7 +1052,7 @@
             updateDesa('kecamatanKTP', 'desaKTP'); updateDesa('kecamatanDomisili', 'desaDomisili');
             
             listIndividu = []; renderListIndividu();
-            for(let i=0; i<=24; i++) { checkMainAnswered(i); } // Reset warnanya
+            for(let i=0; i<=24; i++) { checkMainAnswered(i); } 
 
             document.getElementById('draftNotice').classList.add('hidden');
         }
@@ -1102,11 +1112,13 @@
             const syncFooter = document.getElementById('syncFooter'); const histFooter = document.getElementById('historyFooter');
 
             if(tab === 'antrean') {
-                tabA.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600"; tabR.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                tabA.className = "flex-1 py-3 text-orange-700 border-b-2 border-orange-500 transition-colors"; 
+                tabR.className = "flex-1 py-3 text-slate-600 hover:text-slate-900 hover:bg-white/20 transition-colors";
                 listA.classList.remove('hidden'); listR.classList.add('hidden'); syncFooter.classList.remove('hidden'); histFooter.classList.add('hidden');
                 renderQueueList();
             } else {
-                tabR.className = "flex-1 py-3 text-blue-600 border-b-2 border-blue-600"; tabA.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                tabR.className = "flex-1 py-3 text-blue-700 border-b-2 border-blue-500 transition-colors"; 
+                tabA.className = "flex-1 py-3 text-slate-600 hover:text-slate-900 hover:bg-white/20 transition-colors";
                 listR.classList.remove('hidden'); listA.classList.add('hidden'); syncFooter.classList.add('hidden'); histFooter.classList.remove('hidden');
                 renderHistoryList();
             }
@@ -1120,19 +1132,19 @@
 
         function renderQueueList() {
             const list = document.getElementById('queueList'); list.innerHTML = '';
-            if (sensusQueue.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-check-circle text-4xl mb-3 text-slate-300"></i><p>Tidak ada data antrean.</p></div>`; return; }
+            if (sensusQueue.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-600"><i class="fas fa-check-circle text-4xl mb-3 text-blue-500/80 drop-shadow"></i><p class="font-bold">Tidak ada data antrean.</p></div>`; return; }
             sensusQueue.forEach((item, index) => {
                 const d = item.data;
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg border-l-4 border-amber-500 shadow-sm flex justify-between items-center">
+                    <div class="bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-white/60 shadow-sm flex justify-between items-center">
                         <div class="flex-1">
-                            <p class="font-bold text-slate-800 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
-                            <p class="text-[10px] text-slate-500">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
-                            <p class="text-[10px] text-amber-600 mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
+                            <p class="font-black text-slate-900 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
+                            <p class="text-[10px] text-slate-800 font-medium">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
+                            <p class="text-[10px] text-orange-700 font-bold mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
                         </div>
                         <div class="flex gap-1">
-                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded"><i class="fas fa-file-pdf"></i></button>
-                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-400 hover:bg-red-50 p-2 rounded"><i class="fas fa-trash-alt"></i></button>
+                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-file-pdf"></i></button>
+                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-600 hover:bg-white hover:text-red-700 border border-white/40 bg-white/60 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>`;
             });
@@ -1140,17 +1152,17 @@
 
         function renderHistoryList() {
             const list = document.getElementById('historyList'); list.innerHTML = '';
-            if (sensusHistory.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-400"><i class="fas fa-history text-4xl mb-3 text-slate-300"></i><p>Belum ada data yang tersinkron.</p></div>`; return; }
+            if (sensusHistory.length === 0) { list.innerHTML = `<div class="text-center py-10 text-slate-600"><i class="fas fa-history text-4xl mb-3 text-slate-400 drop-shadow"></i><p class="font-bold">Belum ada data yang tersinkron.</p></div>`; return; }
             sensusHistory.forEach((item, index) => {
                 const d = item.data;
                 list.innerHTML += `
-                    <div class="bg-white p-3 rounded-lg border-l-4 border-green-500 shadow-sm flex justify-between items-center opacity-80 hover:opacity-100">
+                    <div class="bg-white/40 backdrop-blur-sm p-3 rounded-xl border border-white/60 shadow-sm flex justify-between items-center opacity-80 hover:opacity-100 transition-opacity">
                         <div class="flex-1">
-                            <p class="font-bold text-slate-800 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
-                            <p class="text-[10px] text-slate-500">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
-                            <p class="text-[10px] text-green-600 mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime || item.timestamp}</p>
+                            <p class="font-black text-slate-900 text-sm">${d.namaKK ? d.namaKK.toUpperCase() : '-'}</p>
+                            <p class="text-[10px] text-slate-800 font-medium">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
+                            <p class="text-[10px] text-green-700 font-bold mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime || item.timestamp}</p>
                         </div>
-                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-500 bg-blue-50 hover:bg-blue-100 p-2 rounded"><i class="fas fa-file-pdf"></i></button>
+                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-file-pdf"></i></button>
                     </div>`;
             });
         }
@@ -1171,7 +1183,7 @@
                     canvas.width = MAX_WIDTH; canvas.height = img.height * scale;
                     const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     document.getElementById(hiddenInputId).value = canvas.toDataURL('image/jpeg', 0.6);
-                    checkMainAnswered(24); // Update status Foto warna hijau
+                    checkMainAnswered(24); 
                     saveDraft();
                 }
             }
