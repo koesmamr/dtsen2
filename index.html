@@ -259,9 +259,26 @@
     <script>
         // --- DATA WILAYAH TUBAN ---
         const DATA_WILAYAH_TUBAN = {
-            "Bancar": ["Bancar", "Banjarjo", "Bogorejo", "Boncong", "Bulumeduro"],
-            "Jenu": ["Beji", "Bogang", "Jenggolo", "Jenu", "Kaliuntu"],
-            "Tuban": ["Baturetno", "Doromukti", "Karangsari", "Kebonsari", "Latsari", "Ronggomulyo"]
+            "Bancar": ["Bancar", "Banjarjo", "Bogorejo", "Boncong", "Bulumeduro", "Bulujowo", "Cingklung", "Jatisari", "Karangrejo", "Kayen", "Latsari", "Margosuko", "Ngampelrejo", "Ngujuran", "Pugoh", "Sembungin", "Siding", "Sidomulyo", "Sukoharjo", "Sukolilo", "Sumberan", "Tenggerkulon", "Tergambang", "Tlogoagung"],
+            "Bangilan": ["Bangilan", "Banuaju", "Bate", "Brangkal", "Cabak", "Kedungharjo", "Kedungjambangan", "Kedungmulyo", "Kumpulrejo", "Ngrojo", "Sidodadi", "Sidokumpul", "Sidotentrem", "Weden"],
+            "Grabagan": ["Banyubang", "Dahor", "Dermawuharjo", "Gesikan", "Grabagan", "Menyunyur", "Ngandong", "Ngarum", "Pakah", "Sumberejo", "Waleran"],
+            "Jatirogo": ["Bader", "Besowo", "Demit", "Dingil", "Jatiklabang", "Jombok", "Karangtengah", "Kebonharjo", "Kedungmakam", "Ketodan", "Ngepon", "Paseyan", "Sadang", "Sekaran", "Sidotentrem", "Sugihan", "Wangi", "Wotsogo"],
+            "Jenu": ["Beji", "Bogang", "Jenggolo", "Jenu", "Kaliuntu", "Karangasem", "Mentoso", "Purworejo", "Rawasan", "Remen", "Sekardadi", "Socorejo", "Sugihwaras", "Suwalan", "Tasikharjo", "Temaji", "Wadung", "Wayut"],
+            "Kenduruan": ["Bendonglateng", "Jamprong", "Jlodro", "Mlagen", "Sidohasri", "Sidomukti", "Sidorejo", "Sokogunung", "Tawaran"],
+            "Kerek": ["Gaji", "Gemulung", "Hargoretno", "Jarorejo", "Karanglo", "Kasian", "Kedungrejo", "Margomulyo", "Margorejo", "Mliwang", "Padasan", "Sidonganti", "Sumberarum", "Tenggerwetan", "Trantang", "Tuwiri Kulon", "Tuwiri Wetan"],
+            "Merakurak": ["Bogorejo", "Borehbangle", "Kapu", "Mandirejo", "Pongpongan", "Sambonggede", "Sembungrejo", "Sendanghaji", "Senori", "Sugihan", "Sumber", "Sumberjo", "Tahulu", "Tegalrejo", "Temandang", "Tlogowaru", "Tobo", "Tuwiri Kulon", "Tuwiri Wetan"],
+            "Montong": ["Bringin", "Guwoterus", "Jetak", "Maindu", "Manjung", "Montongsekar", "Nguluhan", "Pakel", "Pucangan", "Sumurgung", "Talangkembar", "Talun", "Tanggulangin"],
+            "Palang": ["Cendoro", "Cepokorejo", "Dawung", "Gesikharjo", "Glodog", "Karangagung", "Ketandung", "Kradenan", "Leran Kulon", "Leran Wetan", "Ngimbang", "Palang", "Panyuran", "Pliwetan", "Pucangan", "Sumurgung", "Tasikmadu", "Tegalbang", "Wangun"],
+            "Parengan": ["Brangkal", "Cengkong", "Dagangan", "Kemlaten", "Kumpulrejo", "Margorejo", "Mergoasri", "Mojomalang", "Moyang", "Ngawun", "Pacing", "Parangbatu", "Selogabus", "Sembung", "Sendangrejo", "Suciharjo", "Sugihwaras", "Wukirharjo"],
+            "Plumpang": ["Bandungrejo", "Cangkring", "Dasin", "Jatimulyo", "Kebomlati", "Kedungrojo", "Kedungsoko", "Klotok", "Magersari", "Ngrayung", "Penidon", "Plandirejo", "Plumpang", "Sembungrejo", "Sumberagung", "Sumurjalak", "Trutup"],
+            "Rengel": ["Banjaragung", "Banjarejo", "Bulurejo", "Campurejo", "Kanorejo", "Karangtinoto", "Kebonagung", "Maibit", "Ngadirejo", "Pekuwon", "Prambonwetan", "Punggulrejo", "Rengel", "Sawahan", "Sumberejo", "Tambirejo"],
+            "Semanding": ["Bejagung", "Bektiharjo", "Boto", "Gedongombo", "Genaharjo", "Gesing", "Jadi", "Karang", "Kowang", "Ngino", "Penambangan", "Prunggahan Kulon", "Prunggahan Wetan", "Sambongrejo", "Semanding", "Tegalagung", "Tunah"],
+            "Senori": ["Banyuurip", "Jatisari", "Kaligede", "Katerban", "Leran", "Medalem", "Rayung", "Sendang", "Sidoarjo", "Sidoharjo", "Wanglu Kulon", "Wanglu Wetan", "Wonosari"],
+            "Singgahan": ["Binangun", "Kedungjambe", "Lajo Kidul", "Lajo Lor", "Mergosari", "Mulyoagung", "Mulyorejo", "Saringembat", "Tanggir", "Tanjungrejo", "Tingkis", "Tunggulrejo"],
+            "Soko": ["Bangunrejo", "Glagahtengah", "Gununganyar", "Jati", "Jegulo", "Kendalrejo", "Kenongosari", "Klotok", "Menilo", "Mentoro", "Mojosari", "Nguruan", "Pandanagung", "Pandanwangi", "Prambon Tergayang", "Rahayu", "Sandingrejo", "Simo", "Soko", "Sokosari", "Sumurcinde", "Tluwe", "Wadung"],
+            "Tambakboyo": ["Belikanget", "Cokrowati", "Dasmangan", "Dikir", "Gadon", "Glondonggede", "Kenanti", "Klari", "Klodro", "Mander", "Merkawang", "Ngulahan", "Pabeyan", "Plajan", "Pulogede", "Sawir", "Sotang", "Tambakboyo"],
+            "Tuban": ["Baturetno", "Doromukti", "Karangsari", "Kebonsari", "Kembangbilo", "Kingking", "Kutorejo", "Latsari", "Mondokan", "Perbon", "Ronggomulyo", "Sendangharjo", "Sidomulyo", "Sidorejo", "Sugiharjo", "Sukolilo", "Sumurgung"],
+            "Widang": ["Banjar", "Bunut", "Compreng", "Kedungharjo", "Kujung", "Minohorejo", "Mlangi", "Mrutuk", "Ngadipuro", "Ngadirejo", "Patihan", "Simorejo", "Sumberejo", "Tegalsari", "Tegalrejo", "Widang"]
         };
 
         // --- MANAJEMEN USER & SESI ---
@@ -335,8 +352,15 @@
                 if(el) {
                     el.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                     kecOptions.forEach(kec => el.innerHTML += `<option value="${kec}">${kec}</option>`);
+                    
+                    // Set default otomatis ke Semanding
+                    el.value = "Semanding";
                 }
             });
+            
+            // Isi daftar desa sesuai default kecamatan
+            updateDesa('kecamatanKTP', 'desaKTP');
+            updateDesa('kecamatanDomisili', 'desaDomisili');
         }
 
         function updateDesa(kecId, desaId) {
@@ -434,8 +458,13 @@
         function clearDraft() {
             localStorage.removeItem(DRAFT_KEY); form.reset();
             document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
-            document.getElementById('desaKTP').innerHTML = '<option value="">-- Pilih --</option>';
-            document.getElementById('desaDomisili').innerHTML = '<option value="">-- Pilih --</option>';
+            
+            // Reset Dropdown ke Default Semanding
+            document.getElementById('kecamatanKTP').value = 'Semanding';
+            document.getElementById('kecamatanDomisili').value = 'Semanding';
+            updateDesa('kecamatanKTP', 'desaKTP');
+            updateDesa('kecamatanDomisili', 'desaDomisili');
+            
             document.getElementById('draftNotice').classList.add('hidden');
         }
 
