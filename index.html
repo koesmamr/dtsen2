@@ -1148,9 +1148,10 @@
                             <p class="text-[10px] text-slate-800 font-medium">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
                             <p class="text-[10px] text-orange-700 font-bold mt-1"><i class="fas fa-clock mr-1"></i>${item.timestamp}</p>
                         </div>
-                        <div class="flex gap-1">
-                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-file-pdf"></i></button>
-                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-600 hover:bg-white hover:text-red-700 border border-white/40 bg-white/60 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-trash-alt"></i></button>
+                        <div class="flex gap-1 flex-wrap justify-end">
+                            <button type="button" onclick="editQueueItem(${index})" class="text-green-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors" title="Edit Data"><i class="fas fa-edit"></i></button>
+                            <button type="button" onclick="cetakPDF(${index}, 'queue')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors" title="Cetak PDF"><i class="fas fa-file-pdf"></i></button>
+                            <button type="button" onclick="deleteQueueItem(${index})" class="text-red-600 hover:bg-white hover:text-red-700 border border-white/40 bg-white/60 shadow-sm p-2 rounded-lg transition-colors" title="Hapus"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     </div>`;
             });
@@ -1168,7 +1169,10 @@
                             <p class="text-[10px] text-slate-800 font-medium">KK: ${d.nomorKK} | Anggota: ${d.dataIndividu ? d.dataIndividu.length : 0} org</p>
                             <p class="text-[10px] text-green-700 font-bold mt-1"><i class="fas fa-check-double mr-1"></i>Terkirim: ${item.syncTime || item.timestamp}</p>
                         </div>
-                        <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors"><i class="fas fa-file-pdf"></i></button>
+                        <div class="flex gap-1 flex-wrap justify-end">
+                            <button type="button" onclick="editHistoryItem(${index})" class="text-green-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors" title="Edit Data Server"><i class="fas fa-edit"></i></button>
+                            <button type="button" onclick="cetakPDF(${index}, 'history')" class="text-blue-700 bg-white/60 hover:bg-white border border-white/40 shadow-sm p-2 rounded-lg transition-colors" title="Cetak PDF"><i class="fas fa-file-pdf"></i></button>
+                        </div>
                     </div>`;
             });
         }
@@ -1176,6 +1180,79 @@
         function deleteQueueItem(index) {
             Swal.fire({ title: 'Hapus Antrean?', text: "Data ini akan dihapus permanen dari HP.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus' })
             .then((r) => { if (r.isConfirmed) { sensusQueue.splice(index, 1); localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue)); renderQueueList(); updateQueueBadge(); } });
+        }
+        
+        function clearDraft() {
+            localStorage.removeItem(DRAFT_KEY); document.getElementById('sensusForm').reset();
+            document.getElementById('samaDenganKtp').checked = false; toggleDomisili();
+            document.getElementById('kecamatanKTP').value = 'Semanding'; document.getElementById('kecamatanDomisili').value = 'Semanding';
+            updateDesa('kecamatanKTP', 'desaKTP'); updateDesa('kecamatanDomisili', 'desaDomisili');
+            
+            listIndividu = []; renderListIndividu();
+            for(let i=0; i<=24; i++) { checkMainAnswered(i); } 
+
+            // Membuka kunci field NIK (jika sebelumnya pengguna berada dalam Mode Edit History)
+            const kkInput = document.querySelector('input[name="nomorKK"]');
+            if(kkInput) {
+                kkInput.removeAttribute('readonly');
+                kkInput.classList.remove('bg-white/20', 'cursor-not-allowed', 'opacity-60');
+            }
+
+            document.getElementById('draftNotice').classList.add('hidden');
+        }
+
+        function loadDataToForm(dataObj) {
+            localStorage.setItem(DRAFT_KEY, JSON.stringify(dataObj));
+            loadDraft();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function editQueueItem(index) {
+            Swal.fire({
+                title: 'Edit Data Antrean?',
+                text: "Data ini akan ditarik kembali ke formulir. Pastikan Anda menyimpannya kembali.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Edit',
+                cancelButtonText: 'Batal'
+            }).then((r) => {
+                if (r.isConfirmed) {
+                    const item = sensusQueue[index];
+                    sensusQueue.splice(index, 1);
+                    localStorage.setItem(QUEUE_KEY, JSON.stringify(sensusQueue));
+                    renderQueueList(); updateQueueBadge();
+                    
+                    loadDataToForm(item.data);
+                    toggleQueueModal();
+                    showToast("Data dimuat, siap diedit.");
+                }
+            });
+        }
+
+        function editHistoryItem(index) {
+            Swal.fire({
+                title: 'Edit Data di Server?',
+                text: "Anda akan mengubah data yang sudah terkirim ke Google Sheets. Nomor KK tidak bisa diubah karena merupakan kunci pembaruan data.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Edit',
+                cancelButtonText: 'Batal'
+            }).then((r) => {
+                if (r.isConfirmed) {
+                    const item = sensusHistory[index];
+                    loadDataToForm(item.data);
+                    
+                    // Kunci NIK agar tidak diubah-ubah, karena sebagai Primary Key Upsert
+                    const kkInput = document.querySelector('input[name="nomorKK"]');
+                    if(kkInput) {
+                        kkInput.setAttribute('readonly', true);
+                        kkInput.classList.add('bg-white/20', 'cursor-not-allowed', 'opacity-60');
+                    }
+
+                    toggleQueueModal();
+                    Swal.fire('Mode Edit', 'Data dimuat. Jika Anda menyimpan kembali, sistem akan otomatis memperbarui baris yang sudah ada di server (bukan menggandakan).', 'info');
+                }
+            });
         }
 
         // --- SINKRONISASI PINTAR & CLOUD FETCH ---
