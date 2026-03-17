@@ -116,7 +116,7 @@
                         </button>
                         <div class="hidden border-t border-white/40" id="mq-body-1">
                             <div class="p-4 bg-white/20 rounded-b-xl">
-                                <input type="number" name="nomorKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="16 Digit Nomor KK" required>
+                                <input type="number" name="nomorKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs" placeholder="16 Digit Nomor KK">
                                 <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(1)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                         </button>
                         <div class="hidden border-t border-white/40" id="mq-body-2">
                             <div class="p-4 bg-white/20 rounded-b-xl">
-                                <input type="text" name="namaKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs uppercase" placeholder="Sesuai KTP" required>
+                                <input type="text" name="namaKK" class="w-full glass-input rounded-lg px-3 py-2 text-xs uppercase" placeholder="Sesuai KTP">
                                 <div class="mt-3 text-right"><button type="button" class="bg-yellow-400/80 backdrop-blur-md border border-white/50 text-slate-900 px-4 py-2 rounded-lg text-[10px] font-black hover:bg-yellow-500/90 shadow-md" onclick="nextMainQuestion(2)">Selanjutnya <i class="fas fa-arrow-down ml-1"></i></button></div>
                             </div>
                         </div>
@@ -164,7 +164,7 @@
                         <div class="hidden border-t border-white/40" id="mq-body-4">
                             <div class="p-4 bg-white/20 rounded-b-xl">
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-medium text-slate-800">
-                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio" required> DITEMUKAN</label>
+                                    <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="DITEMUKAN" class="form-radio"> DITEMUKAN</label>
                                     <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="PINDAH/TIDAK DITEMUKAN" class="form-radio"> PINDAH/TIDAK DITEMUKAN</label>
                                     <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="MENOLAK SURVEY" class="form-radio"> MENOLAK SURVEY</label>
                                     <label class="flex items-center gap-2 bg-white/40 p-2 rounded-lg border border-white/50 shadow-sm"><input type="radio" name="statusKeluarga" value="DALAM LEMBAGA" class="form-radio"> DALAM LEMBAGA</label>
@@ -1078,7 +1078,12 @@
         // --- SUBMIT FORM ---
         document.getElementById('sensusForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            if(!this.nomorKK.value || !this.namaKK.value) return Swal.fire('Error', 'Lengkapi Data Dasar!', 'warning');
+            
+            // Validasi Minimal Harus Ada Nomor KK
+            if(!this.nomorKK.value) {
+                toggleMainQuestion(1); // Buka panel Nomer KK agar terlihat
+                return Swal.fire('Peringatan', 'Minimal Nomor KK harus diisi untuk menyimpan data!', 'warning');
+            }
 
             const dataToSave = Object.fromEntries(new FormData(this).entries());
             dataToSave['samaDenganKtp'] = document.getElementById('samaDenganKtp').checked;
